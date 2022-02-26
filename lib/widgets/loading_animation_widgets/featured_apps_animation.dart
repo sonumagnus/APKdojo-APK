@@ -9,8 +9,8 @@ class FeaturedAppAnimation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.cyanAccent,
-      highlightColor: Colors.black12,
+      baseColor: Colors.cyan.shade100,
+      highlightColor: Colors.grey.shade100,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: GridView.count(

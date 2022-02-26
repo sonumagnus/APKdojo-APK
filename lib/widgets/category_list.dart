@@ -2,7 +2,6 @@ import 'package:apkdojo/widgets/category_app_listing.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/category_list_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 
 class CategoryList extends StatefulWidget {
   final String type;
@@ -20,17 +19,12 @@ class _CategoryListState extends State<CategoryList> {
 
   Future<List> getCategories() async {
     var response = await Dio().get(
-        "https://api.apkdojo.com/categories.php?type=${widget.type}&lang=en",
-        options: buildCacheOptions(const Duration(days: 7)));
+        "https://api.apkdojo.com/categories.php?type=${widget.type}&lang=en");
     return response.data['results'];
   }
 
   @override
   void initState() {
-    Dio().interceptors.add(DioCacheManager(CacheConfig(
-            baseUrl:
-                "https://api.apkdojo.com/categories.php?type=${widget.type}&lang=en"))
-        .interceptor);
     categories = getCategories();
     super.initState();
   }
@@ -43,7 +37,7 @@ class _CategoryListState extends State<CategoryList> {
         if (snapshot.hasData) {
           return ListView.builder(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            physics: const ScrollPhysics(),
             itemCount: widget.cateListCount == "categoryLength"
                 ? snapshot.data!.length
                 : int.parse(widget.cateListCount),
@@ -83,8 +77,10 @@ class _CategoryListState extends State<CategoryList> {
           return Text("${snapshot.error}");
         }
 
-        return const CategoryListAnimation(
-          animatedTileCount: 6,
+        return CategoryListAnimation(
+          animatedTileCount: widget.cateListCount == 'categoryLength'
+              ? 10
+              : int.parse(widget.cateListCount),
         );
       },
     );

@@ -1,6 +1,15 @@
+import 'package:apkdojo/widgets/loading_animation_widgets/slug_animation.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/apk_details_expansion_panel.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/developer_apps.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/rating_size_version.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/related_apps.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/slug_description.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/slug_icon_name_download_button.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/slug_screenshot.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/user_reviews_expansion_panel.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/whatsnew_expansion_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 class Slug extends StatefulWidget {
   final String seourl;
@@ -40,119 +49,50 @@ class _SlugState extends State<Slug> {
           future: app,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              return ListView(
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
                 children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Image.network(
-                          snapshot.data!['icon'],
-                          width: 80,
-                          height: 80,
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            snapshot.data!['name'],
-                            style: const TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(snapshot.data!['developer']),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text("Download"),
-                          )
-                        ],
-                      ),
-                    ],
+                  SlugIconNameDownloadButton(
+                    icon: snapshot.data!['icon'],
+                    developer: snapshot.data!['developer'],
+                    developerUrl: snapshot.data!['developer_url'],
+                    name: snapshot.data!['name'],
+                    seourl: snapshot.data!['seourl'],
                   ),
-                  Table(
-                    border: TableBorder.all(style: BorderStyle.solid),
-                    children: [
-                      TableRow(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Text(snapshot.data!['rating']),
-                                const Text('Rating'),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(children: [
-                              Text(snapshot.data!['size']),
-                              const Text('Size')
-                            ]),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(children: [
-                              Text(snapshot.data!['version']),
-                              const Text("Version"),
-                            ]),
-                          ),
-                        ],
-                      ),
-                    ],
+                  RatingSizeVersionTable(
+                    rating: snapshot.data!['rating'],
+                    size: snapshot.data!['size'],
+                    version: snapshot.data!['version'],
                   ),
-                  Html(
-                    data: snapshot.data!['des'],
+                  SlugDescription(
+                    description: snapshot.data!['des'],
                   ),
-                  SizedBox(
-                    height: 250,
-                    child: ListView.builder(
-                      itemCount: snapshot.data!['screenshots'].length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (_, int index) {
-                        return Image.network(
-                            snapshot.data!['screenshots'][index]);
-                      },
-                    ),
-                  ),
+                  SlugScreenshot(
+                      screenshotCount: snapshot.data!['screenshots'].length,
+                      screenshots: snapshot.data!['screenshots']),
                   Container(
                     color: null,
                     child: ExpansionPanelList(
                       children: [
-                        ExpansionPanel(
-                            headerBuilder: (BuildContext context, isOpen) {
-                              return const Text("User Review");
-                            },
-                            body: Text(snapshot.data!['reviews'][0]['rating']),
-                            isExpanded: _isOpen[0]),
-                        ExpansionPanel(
-                            headerBuilder: (BuildContext context, isOpen) {
-                              return const Text("APK Details");
-                            },
-                            body: const Text("hello"),
-                            isExpanded: _isOpen[1]),
-                        ExpansionPanel(
-                            headerBuilder: (BuildContext context, isOpen) {
-                              return const Text("What's New");
-                            },
-                            body: Text(snapshot.data!['whatsnew']),
-                            isExpanded: _isOpen[2]),
+                        userReviewsExpansionPanel(snapshot, _isOpen),
+                        apkDetailsExpansionPanel(snapshot, _isOpen),
+                        whatsNewExpansionPanel(snapshot, _isOpen),
                       ],
                       expansionCallback: (i, isOpen) => setState(() {
                         _isOpen[i] = !isOpen;
                       }),
                     ),
-                  )
+                  ),
+                  DeveloperApps(seourl: snapshot.data!['seourl']),
+                  RelatedApps(relatedApps: snapshot.data!['related'])
                 ],
               );
             } else if (snapshot.hasError) {
               return Text('${snapshot.error}');
             }
             return const Center(
-              child: CircularProgressIndicator(),
+              child: SlugLoadingAnimation(),
             );
           },
         ),

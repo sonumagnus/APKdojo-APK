@@ -9,13 +9,14 @@ class HomeAppGridAnimation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.cyanAccent,
-      highlightColor: Colors.black12,
+      baseColor: Colors.cyan.shade100,
+      highlightColor: Colors.grey.shade100,
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: GridView.count(
           shrinkWrap: true,
-          crossAxisSpacing: 5,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 12,
           crossAxisCount: 4,
           childAspectRatio: 4 / 6,
           children: <Widget>[
@@ -37,7 +38,7 @@ class SingleApp extends StatelessWidget {
     return Column(
       children: [
         Container(
-          height: 125,
+          height: 120,
           decoration: const BoxDecoration(
             color: Colors.cyan,
             borderRadius: BorderRadius.all(

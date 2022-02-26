@@ -37,7 +37,7 @@ class _HomeState extends State<Home> {
                   color: Colors.white,
                 ),
               )
-            : const Text("HomePage"),
+            : const Text("APKdojo"),
         actions: [
           IconButton(
               onPressed: () {
@@ -60,9 +60,7 @@ class _HomeState extends State<Home> {
         },
         child: const Icon(Icons.ac_unit),
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(

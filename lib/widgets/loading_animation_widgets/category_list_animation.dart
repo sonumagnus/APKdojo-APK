@@ -9,8 +9,8 @@ class CategoryListAnimation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.cyanAccent,
-      highlightColor: Colors.black12,
+      baseColor: Colors.cyan.shade100,
+      highlightColor: Colors.grey.shade100,
       child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: ListView(
@@ -31,16 +31,19 @@ class SingleCategoryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Container(
-        height: 40,
-        width: 40,
-        decoration:
-            const BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
-      ),
-      title: Container(
-        height: 16,
-        decoration: const BoxDecoration(color: Colors.red),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: ListTile(
+        leading: Container(
+          height: 50,
+          width: 50,
+          decoration:
+              const BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
+        ),
+        title: Container(
+          height: 20,
+          decoration: const BoxDecoration(color: Colors.red),
+        ),
       ),
     );
   }

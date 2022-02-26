@@ -15,17 +15,19 @@ class _StarRatingState extends State<StarRating> {
   @override
   Widget build(BuildContext context) {
     return RatingBar.builder(
-        initialRating: double.parse(widget.rating) / 20,
-        allowHalfRating: true,
-        itemCount: 5,
-        itemSize: double.parse(widget.starSize),
-        direction: Axis.horizontal,
-        itemBuilder: (context, _) => const Icon(
-              Icons.star,
-              color: Colors.amber,
-            ),
-        onRatingUpdate: (newRating) {
-          // print(newRating);
-        });
+      initialRating: double.parse(widget.rating) / 20,
+      allowHalfRating: true,
+      ignoreGestures: true,
+      itemCount: 5,
+      itemSize: double.parse(widget.starSize),
+      direction: Axis.horizontal,
+      itemBuilder: (context, _) => const Icon(
+        Icons.star,
+        color: Colors.amber,
+      ),
+      onRatingUpdate: (newRating) {
+        // print(newRating);
+      },
+    );
   }
 }

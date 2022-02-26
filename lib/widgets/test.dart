@@ -1,19 +1,37 @@
+import 'package:apkdojo/widgets/loading_animation_widgets/slug_animation.dart';
+import 'package:apkdojo/widgets/star_rating.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-class Test extends StatelessWidget {
+class Test extends StatefulWidget {
   const Test({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    List<int> text = [1, 2, 3, 4, 5, 6, 7];
+  _TestState createState() => _TestState();
+}
 
+class _TestState extends State<Test> {
+  late Future<Map> app;
+
+  Future<Map> getApp() async {
+    var response =
+        await Dio().get('https://api.apkdojo.com/app.php?id=netflix&lang=en');
+    return response.data;
+  }
+
+  @override
+  void initState() {
+    app = getApp();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Test page"),
+        title: const Text("Test Page"),
       ),
-      body: Column(
-        children: text.map((e) => Text(e.toString())).toList(),
-      ),
+      body: const SlugLoadingAnimation(),
     );
   }
 }

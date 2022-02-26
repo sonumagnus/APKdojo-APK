@@ -1,4 +1,10 @@
+import 'package:apkdojo/home.dart';
 import 'package:flutter/material.dart';
+import 'package:apkdojo/screens/about.dart';
+import 'package:apkdojo/screens/developers.dart';
+import 'package:apkdojo/screens/editors_choice.dart';
+import 'package:apkdojo/screens/terms_of_use.dart';
+import 'package:apkdojo/widgets/categorytabs.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({Key? key}) : super(key: key);
@@ -10,8 +16,8 @@ class MyDrawer extends StatelessWidget {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
-        children: const [
-          DrawerHeader(
+        children: [
+          const DrawerHeader(
             child: Text(
               "APKdojo",
               style: TextStyle(fontSize: 30, color: Colors.white),
@@ -19,32 +25,89 @@ class MyDrawer extends StatelessWidget {
             decoration: BoxDecoration(color: Colors.cyan),
           ),
           ListTile(
-            leading: Icon(Icons.home, size: size),
-            title: Text("Home", style: textStyle),
+            leading: const Icon(Icons.home, size: size),
+            title: const Text("Home", style: textStyle),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Home(),
+                ),
+              );
+            },
           ),
           ListTile(
-            leading: Icon(Icons.apps, size: size),
-            title: Text("Apps", style: textStyle),
+            leading: const Icon(Icons.apps, size: size),
+            title: const Text("Apps", style: textStyle),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CategoryByTabs(),
+                ),
+              );
+            },
           ),
           ListTile(
-            leading: Icon(Icons.games, size: size),
-            title: Text("Games", style: textStyle),
+            leading: const Icon(Icons.games, size: size),
+            title: const Text("Games", style: textStyle),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CategoryByTabs(),
+                ),
+              );
+            },
           ),
           ListTile(
-            leading: Icon(Icons.developer_board, size: size),
-            title: Text("Developers", style: textStyle),
+            leading: const Icon(Icons.developer_board, size: size),
+            title: const Text("Developers", style: textStyle),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Developers(),
+                ),
+              );
+            },
           ),
           ListTile(
-            leading: Icon(Icons.star, size: size),
-            title: Text("Editor's Choice", style: textStyle),
+            leading: const Icon(Icons.star, size: size),
+            title: const Text("Editor's Choice", style: textStyle),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditorsChoicePage(),
+                ),
+              );
+            },
           ),
           ListTile(
-            leading: Icon(Icons.verified_user, size: size),
-            title: Text("About", style: textStyle),
+            leading: const Icon(Icons.verified_user, size: size),
+            title: const Text("About", style: textStyle),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const About(),
+                ),
+              );
+            },
           ),
           ListTile(
-            leading: Icon(Icons.control_point_duplicate_outlined, size: size),
-            title: Text("Terms of Use", style: textStyle),
+            leading:
+                const Icon(Icons.control_point_duplicate_outlined, size: size),
+            title: const Text("Terms of Use", style: textStyle),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TermsOfUse(),
+                ),
+              );
+            },
           ),
         ],
       ),

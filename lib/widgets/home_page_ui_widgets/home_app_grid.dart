@@ -1,6 +1,7 @@
 import 'package:apkdojo/screens/slug.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/home_app_grid_animation.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/single_grid_app.dart';
 import 'package:apkdojo/widgets/star_rating.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -51,50 +52,18 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4, childAspectRatio: 4 / 6),
+                  crossAxisCount: 4,
+                  childAspectRatio: 4 / 6,
+                ),
                 itemCount: 8,
                 itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              Slug(seourl: snapshot.data![index]['seourl']),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          ClipRRect(
-                              borderRadius: BorderRadius.circular(5.0),
-                              child:
-                                  Image.network(snapshot.data![index]['icon'])),
-                          Text(
-                            snapshot.data![index]['name'],
-                            maxLines: 2,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              StarRating(
-                                rating:
-                                    "${snapshot.data![index]['star_rating']}",
-                                starSize: '11',
-                              ),
-                              Text(
-                                snapshot.data![index]['rating'],
-                                style: const TextStyle(fontSize: 10),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  );
+                  return SingleGridApp(
+                      name: snapshot.data![index]['name'],
+                      seourl: snapshot.data![index]['seourl'],
+                      icon: snapshot.data![index]['icon'],
+                      starRating:
+                          snapshot.data![index]['star_rating'].toString(),
+                      rating: snapshot.data![index]['rating']);
                 },
               );
             } else if (snapshot.hasError) {

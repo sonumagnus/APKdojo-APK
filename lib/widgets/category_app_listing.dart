@@ -1,4 +1,5 @@
-import 'package:apkdojo/screens/slug.dart';
+import 'package:apkdojo/widgets/loading_animation_widgets/category_app_listing_animation.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/single_horizonatal_app_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
@@ -37,51 +38,30 @@ class _CategoryAppListingState extends State<CategoryAppListing> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.categoryName.toUpperCase()),
-        ),
-        body: FutureBuilder<List>(
-          future: apps,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    elevation: 3,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                Slug(seourl: snapshot.data![index]['seourl']),
-                          ),
-                        );
-                      },
-                      child: ListTile(
-                          leading: Image.network(
-                            snapshot.data![index]['icon'],
-                            height: 45,
-                          ),
-                          title: Text(snapshot.data![index]['name']),
-                          trailing: const Icon(
-                            Icons.download,
-                            size: 30,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 5)),
-                    ),
-                  );
-                },
-              );
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
+      appBar: AppBar(
+        title: Text(widget.categoryName.toUpperCase()),
+      ),
+      body: FutureBuilder<List>(
+        future: apps,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (BuildContext context, int index) {
+                return SingleHorizontalAppTile(
+                    seourl: snapshot.data![index]['seourl'],
+                    icon: snapshot.data![index]['icon'],
+                    name: snapshot.data![index]['name']);
+              },
             );
-          },
-        ));
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
+          return const CategoryAppListingAnimation(
+            animatedTileCount: 9,
+          );
+        },
+      ),
+    );
   }
 }

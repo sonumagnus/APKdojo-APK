@@ -1,7 +1,6 @@
+import 'package:apkdojo/widgets/main_ui_widgets/single_vertical_app.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/featured_apps_animation.dart';
-import 'package:apkdojo/widgets/star_rating.dart';
 import 'package:dio/dio.dart';
-import 'package:apkdojo/screens/slug.dart';
 import 'package:flutter/material.dart';
 
 class FeaturedApps extends StatefulWidget {
@@ -45,50 +44,13 @@ class _FeaturedAppsState extends State<FeaturedApps> {
                   childAspectRatio: 10 / 6,
                   mainAxisSpacing: 12),
               itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            Slug(seourl: featuredApps[index]['seourl']),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 80,
-                    decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.lightGreen, Colors.lightBlueAccent],
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(6))),
-                    padding: const EdgeInsets.all(15.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: Image.network(
-                            featuredApps[index]['icon'],
-                            width: 80,
-                          ),
-                        ),
-                        Text(
-                          featuredApps[index]['name'],
-                          maxLines: 2,
-                          style: TextStyle(
-                              color: Colors.grey[800],
-                              overflow: TextOverflow.ellipsis),
-                        ),
-                        StarRating(
-                          rating: "${featuredApps[index]['star_rating']}",
-                          starSize: '14',
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              })
+                return SingleVerticalApp(
+                    seourl: featuredApps[index]['seourl'],
+                    icon: featuredApps[index]['icon'],
+                    name: featuredApps[index]['name'],
+                    starRating: "${featuredApps[index]['star_rating']}");
+              },
+            )
           : const FeaturedAppAnimation(
               animatedItemCount: 3,
             ),
