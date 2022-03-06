@@ -11,49 +11,110 @@ class FeaturedApps extends StatefulWidget {
 }
 
 class _FeaturedAppsState extends State<FeaturedApps> {
-  List featuredApps = [];
+  late Future<List> featuredApps;
+
   final String api =
       'https://api.apkdojo.com/v-apps.php?type=featured_apps&lang=en';
 
-  fetchApps() async {
+  Future<List> fetchApps() async {
     var response = await Dio().get(api);
     return response.data['featured_apps'];
   }
 
   @override
   void initState() {
-    fetchApps().then((value) {
-      setState(() {
-        featuredApps = value;
-      });
-    });
     super.initState();
+    featuredApps = fetchApps();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: null,
-      height: 180,
-      child: featuredApps.isNotEmpty
-          ? GridView.builder(
-              itemCount: 8,
+    return FutureBuilder<List>(
+      future: featuredApps,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return SizedBox(
+            height: 180,
+            child: ListView.builder(
+              shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  childAspectRatio: 10 / 6,
-                  mainAxisSpacing: 12),
+              // itemCount: snapshot.data!.length,
+              itemCount: 8,
               itemBuilder: (BuildContext context, int index) {
-                return SingleVerticalApp(
-                    seourl: featuredApps[index]['seourl'],
-                    icon: featuredApps[index]['icon'],
-                    name: featuredApps[index]['name'],
-                    starRating: "${featuredApps[index]['star_rating']}");
+                return Container(
+                  width: 125,
+                  padding: const EdgeInsets.only(right: 10),
+                  child: SingleVerticalApp(
+                    seourl: snapshot.data![index]['seourl'],
+                    name: snapshot.data![index]['name'],
+                    icon: snapshot.data![index]['icon'],
+                    starRating: snapshot.data![index]['star_rating'].toString(),
+                  ),
+                );
               },
-            )
-          : const FeaturedAppAnimation(
-              animatedItemCount: 3,
             ),
+          );
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+        return const FeaturedAppAnimation(animatedItemCount: 3);
+      },
     );
   }
 }
+
+
+// class FeaturedApps extends StatefulWidget {
+//   const FeaturedApps({Key? key}) : super(key: key);
+
+//   @override
+//   State<FeaturedApps> createState() => _FeaturedAppsState();
+// }
+
+// class _FeaturedAppsState extends State<FeaturedApps> {
+//   List featuredApps = [];
+//   final String api =
+//       'https://api.apkdojo.com/v-apps.php?type=featured_apps&lang=en';
+
+//   fetchApps() async {
+//     var response = await Dio().get(api);
+//     return response.data['featured_apps'];
+//   }
+
+//   @override
+//   void initState() {
+//     fetchApps().then((value) {
+//       setState(() {
+//         featuredApps = value;
+//       });
+//     });
+//     super.initState();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       color: null,
+//       height: 180,
+//       child: featuredApps.isNotEmpty
+//           ? GridView.builder(
+//               itemCount: 8,
+//               scrollDirection: Axis.horizontal,
+//               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//                   crossAxisCount: 1,
+//                   childAspectRatio: 10 / 6,
+//                   mainAxisSpacing: 12),
+//               itemBuilder: (BuildContext context, int index) {
+//                 return SingleVerticalApp(
+//                     seourl: featuredApps[index]['seourl'],
+//                     icon: featuredApps[index]['icon'],
+//                     name: featuredApps[index]['name'],
+//                     starRating: "${featuredApps[index]['star_rating']}");
+//               },
+//             )
+//           : const FeaturedAppAnimation(
+//               animatedItemCount: 3,
+//             ),
+//     );
+//   }
+// }
