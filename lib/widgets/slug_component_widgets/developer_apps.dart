@@ -31,42 +31,41 @@ class _DeveloperAppsState extends State<DeveloperApps> {
       future: developerApps,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: ListView(
-              physics: const ScrollPhysics(),
-              shrinkWrap: true,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Text(
-                    snapshot.data![0]['developer'],
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+          return ListView(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10, top: 10),
+                child: Text(
+                  snapshot.data![0]['developer'],
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                GridView.builder(
-                  physics: const ScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 10 / 14,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10),
+              ),
+              SizedBox(
+                height: 180,
+                child: ListView.builder(
                   itemCount: snapshot.data!.length,
+                  scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext context, int index) {
-                    return SingleVerticalApp(
-                      seourl: snapshot.data![index]['seourl'],
-                      name: snapshot.data![index]['name'],
-                      icon: snapshot.data![index]['icon'],
-                      starRating:
-                          snapshot.data![index]['star_rating'].toString(),
+                    return Container(
+                      padding: const EdgeInsets.only(right: 10),
+                      width: 125,
+                      child: SingleVerticalApp(
+                        seourl: snapshot.data![index]['seourl'],
+                        name: snapshot.data![index]['name'],
+                        icon: snapshot.data![index]['icon'],
+                        starRating:
+                            snapshot.data![index]['star_rating'].toString(),
+                      ),
                     );
                   },
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");
@@ -78,3 +77,43 @@ class _DeveloperAppsState extends State<DeveloperApps> {
     );
   }
 }
+
+
+
+// Padding(
+//             padding: const EdgeInsets.symmetric(vertical: 12),
+//             child: ListView(
+//               physics: const ScrollPhysics(),
+//               shrinkWrap: true,
+//               children: [
+//                 Padding(
+//                   padding: const EdgeInsets.only(bottom: 10),
+//                   child: Text(
+//                     snapshot.data![0]['developer'],
+//                     style: const TextStyle(
+//                         fontSize: 18, fontWeight: FontWeight.bold),
+//                   ),
+//                 ),
+//                 GridView.builder(
+//                   physics: const ScrollPhysics(),
+//                   scrollDirection: Axis.horizontal,
+//                   shrinkWrap: true,
+//                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//                       crossAxisCount: 3,
+//                       childAspectRatio: 10 / 14,
+//                       mainAxisSpacing: 10,
+//                       crossAxisSpacing: 10),
+//                   itemCount: snapshot.data!.length,
+//                   itemBuilder: (BuildContext context, int index) {
+//                     return SingleVerticalApp(
+//                       seourl: snapshot.data![index]['seourl'],
+//                       name: snapshot.data![index]['name'],
+//                       icon: snapshot.data![index]['icon'],
+//                       starRating:
+//                           snapshot.data![index]['star_rating'].toString(),
+//                     );
+//                   },
+//                 ),
+//               ],
+//             ),
+//           );

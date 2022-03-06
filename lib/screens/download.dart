@@ -31,48 +31,50 @@ class _DownloadState extends State<Download> {
       appBar: AppBar(
         title: Text("Donwload - ${widget.seourl}"),
       ),
-      body: FutureBuilder<Map>(
-        future: appDetail,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(100)),
-                  child: Image.network(
-                    snapshot.data!['icon'],
-                    height: 120,
+      body: SingleChildScrollView(
+        child: FutureBuilder<Map>(
+          future: appDetail,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(100)),
+                    child: Image.network(
+                      snapshot.data!['icon'],
+                      height: 120,
+                    ),
                   ),
-                ),
-                Text(
-                  snapshot.data!['name'],
-                  style: TextStyle(
-                    color: Colors.grey.shade700,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    snapshot.data!['name'],
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const Text(
-                  "Click here if the download doesn't start automatically",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(snapshot.data!['size']),
-                    Text(snapshot.data!['version']),
-                  ],
-                ),
-                DownloadPageAppSugesion(
-                    relatedAppList: snapshot.data!['related'])
-              ],
+                  const Text(
+                    "Click here if the download doesn't start automatically",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(snapshot.data!['size']),
+                      Text(snapshot.data!['version']),
+                    ],
+                  ),
+                  DownloadPageAppSugesion(
+                      relatedAppList: snapshot.data!['related'])
+                ],
+              );
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
+          },
+        ),
       ),
     );
   }

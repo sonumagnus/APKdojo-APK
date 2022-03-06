@@ -1,5 +1,4 @@
 import 'package:apkdojo/widgets/main_ui_widgets/single_grid_app.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/single_vertical_app.dart';
 import 'package:flutter/material.dart';
 
 class RelatedApps extends StatelessWidget {

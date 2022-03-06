@@ -50,7 +50,7 @@ class SingleGridApp extends StatelessWidget {
                   starSize: '11',
                 ),
                 Text(
-                  rating,
+                  rating == "null" ? "0.0" : rating,
                   style: const TextStyle(fontSize: 10),
                 )
               ],

@@ -10,7 +10,7 @@ class CategoryByTabs extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 5,
+          // toolbarHeight: 50,
           bottom: const TabBar(
             tabs: [
               Tab(text: 'Apps'),

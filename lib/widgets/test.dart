@@ -1,5 +1,4 @@
 import 'package:apkdojo/widgets/loading_animation_widgets/slug_animation.dart';
-import 'package:apkdojo/widgets/star_rating.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 

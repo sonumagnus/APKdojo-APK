@@ -1,8 +1,6 @@
-import 'package:apkdojo/screens/slug.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/home_app_grid_animation.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_grid_app.dart';
-import 'package:apkdojo/widgets/star_rating.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
@@ -53,7 +51,7 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
-                  childAspectRatio: 4 / 6,
+                  childAspectRatio: 10 / 16.8,
                 ),
                 itemCount: 8,
                 itemBuilder: (BuildContext context, int index) {
@@ -63,7 +61,7 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
                       icon: snapshot.data![index]['icon'],
                       starRating:
                           snapshot.data![index]['star_rating'].toString(),
-                      rating: snapshot.data![index]['rating']);
+                      rating: snapshot.data![index]['rating'].toString());
                 },
               );
             } else if (snapshot.hasError) {
