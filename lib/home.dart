@@ -1,4 +1,6 @@
+import 'package:apkdojo/screens/downloaded_apps.dart';
 import 'package:apkdojo/screens/homepage.dart';
+import 'package:apkdojo/screens/search_page.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
 import 'package:apkdojo/widgets/categorytabs.dart';
 import 'package:apkdojo/widgets/test.dart';
@@ -18,7 +20,8 @@ class _HomeState extends State<Home> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     // Category(),
-    CategoryByTabs()
+    CategoryByTabs(),
+    DownloadedApps()
   ];
 
   void _onItemTapped(int index) {
@@ -31,23 +34,15 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: isSearching
-            ? const TextField(
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              )
-            : const Text("APKdojo"),
+        title: const Text("APKdojo"),
         actions: [
           IconButton(
-              onPressed: () {
-                setState(() {
-                  isSearching = !isSearching;
-                });
-              },
-              icon: isSearching
-                  ? const Icon(Icons.cancel_outlined)
-                  : const Icon(Icons.search))
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const SearchPage()));
+            },
+            icon: const Icon(Icons.search),
+          ),
         ],
       ),
       drawer: const MyDrawer(),
@@ -55,7 +50,9 @@ class _HomeState extends State<Home> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const Test()),
+            MaterialPageRoute(
+              builder: (context) => const Test(),
+            ),
           );
         },
         child: const Icon(Icons.ac_unit),
@@ -68,7 +65,13 @@ class _HomeState extends State<Home> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.category), label: 'Category'),
+            icon: Icon(Icons.category),
+            label: 'Category',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.download),
+            label: 'Downloads',
+          ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],

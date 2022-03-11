@@ -1,67 +1,88 @@
 import 'package:apkdojo/widgets/loading_animation_widgets/category_app_listing_animation.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_horizonatal_app_tile.dart';
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class CategoryAppListing extends StatefulWidget {
+class CategoryAppListing extends HookWidget {
   final String categoryName;
   final String applicationType;
-  const CategoryAppListing(
-      {Key? key, required this.categoryName, required this.applicationType})
-      : super(key: key);
-
-  @override
-  State<CategoryAppListing> createState() => _CategoryAppListingState();
-}
-
-class _CategoryAppListingState extends State<CategoryAppListing> {
-  late Future<List> apps;
-
-  Future<List> getAppsList() async {
-    var response = await Dio().get(
-        'https://api.apkdojo.com/category.php?id=${widget.categoryName}&type=${widget.applicationType}&lang=en',
-        options: buildCacheOptions(const Duration(days: 7)));
-    return response.data['results'];
-  }
-
-  @override
-  void initState() {
-    Dio().interceptors.add(DioCacheManager(CacheConfig(
-            baseUrl:
-                'https://api.apkdojo.com/category.php?id=${widget.categoryName}&type=${widget.applicationType}&lang=en'))
-        .interceptor);
-    apps = getAppsList();
-    super.initState();
-  }
+  const CategoryAppListing({
+    Key? key,
+    required this.categoryName,
+    required this.applicationType,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final _appsList = useRef<List>([]);
+    final apps = useState<Map>({});
+    final _nextPage = useRef<int>(1);
+    ScrollController _scrollController = useScrollController();
+
+    void _fetchApps(int pageNum) async {
+      if (_nextPage.value == apps.value['total_pages']) return;
+      var _res = await Dio().get(
+          'https://api.apkdojo.com/category.php?id=$categoryName&type=$applicationType&lang=en&page=$pageNum');
+      apps.value = _res.data;
+      _appsList.value.addAll(apps.value['results']);
+      _nextPage.value = _nextPage.value + 1;
+    }
+
+    void _scrollerCallback() {
+      if (_scrollController.position.pixels !=
+          _scrollController.position.maxScrollExtent) return;
+      _fetchApps(_nextPage.value);
+    }
+
+    useEffect(() {
+      _scrollController.addListener(_scrollerCallback);
+      return () => _scrollController.removeListener(_scrollerCallback);
+    }, [_scrollController]);
+
+    useEffect(() {
+      _fetchApps(_nextPage.value);
+    }, []);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.categoryName.toUpperCase()),
+        title: Text(categoryName),
       ),
-      body: FutureBuilder<List>(
-        future: apps,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return SingleHorizontalAppTile(
-                    seourl: snapshot.data![index]['seourl'],
-                    icon: snapshot.data![index]['icon'],
-                    name: snapshot.data![index]['name']);
-              },
-            );
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          }
-          return const CategoryAppListingAnimation(
-            animatedTileCount: 9,
-          );
-        },
-      ),
+      body: _appsList.value.isEmpty
+          ? const CategoryAppListingAnimation(animatedTileCount: 9)
+          : SingleChildScrollView(
+              controller: _scrollController,
+              child: ListView(
+                physics: const ScrollPhysics(),
+                shrinkWrap: true,
+                children: [
+                  ListView.builder(
+                    physics: const ScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: _appsList.value.length,
+                    itemBuilder: (context, index) {
+                      return ListView(
+                        physics: const ScrollPhysics(),
+                        shrinkWrap: true,
+                        children: [
+                          SingleHorizontalAppTile(
+                            icon: _appsList.value[index]['icon'],
+                            name: _appsList.value[index]['name'],
+                            seourl: _appsList.value[index]['seourl'],
+                          )
+                        ],
+                      );
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _nextPage.value != apps.value['total_pages']
+                        ? const Center(child: CircularProgressIndicator())
+                        : const Center(child: Text("No More Data")),
+                  )
+                ],
+              ),
+            ),
     );
   }
 }

@@ -59,6 +59,7 @@ class _SlugState extends State<Slug> {
                     developerUrl: snapshot.data!['developer_url'],
                     name: snapshot.data!['name'],
                     seourl: snapshot.data!['seourl'],
+                    apkurl: snapshot.data!['apkurl'],
                   ),
                   RatingSizeVersionTable(
                     rating: snapshot.data!['rating'],

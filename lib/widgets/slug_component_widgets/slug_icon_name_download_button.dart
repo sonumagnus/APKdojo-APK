@@ -1,21 +1,90 @@
+import 'dart:isolate';
+import 'dart:ui';
 import 'package:apkdojo/screens/devprofile.dart';
-import 'package:apkdojo/screens/download.dart';
+// import 'package:apkdojo/screens/downloading.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class SlugIconNameDownloadButton extends StatelessWidget {
+class SlugIconNameDownloadButton extends StatefulWidget {
   final String icon;
-  final String developerUrl;
-  final String developer;
   final String name;
+  final String developer;
+  final String developerUrl;
   final String seourl;
-  const SlugIconNameDownloadButton(
-      {Key? key,
-      required this.icon,
-      required this.developer,
-      required this.developerUrl,
-      required this.name,
-      required this.seourl})
-      : super(key: key);
+  final String apkurl;
+  const SlugIconNameDownloadButton({
+    Key? key,
+    required this.icon,
+    required this.name,
+    required this.developer,
+    required this.developerUrl,
+    required this.seourl,
+    required this.apkurl,
+  }) : super(key: key);
+
+  @override
+  State<SlugIconNameDownloadButton> createState() =>
+      _SlugIconNameDownloadButtonState();
+}
+
+class _SlugIconNameDownloadButtonState
+    extends State<SlugIconNameDownloadButton> {
+  int progress = 0;
+  final ReceivePort _port = ReceivePort();
+
+  @override
+  void initState() {
+    super.initState();
+
+    IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader_send_port');
+    _port.listen((dynamic data) {
+      // ignore: unused_local_variable
+      String id = data[0];
+      // ignore: unused_local_variable
+      DownloadTaskStatus status = data[1];
+      progress = data[2];
+      setState(() {});
+    });
+
+    FlutterDownloader.registerCallback(downloadCallback);
+  }
+
+  @override
+  void dispose() {
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
+    super.dispose();
+  }
+
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    final SendPort send =
+        IsolateNameServer.lookupPortByName('downloader_send_port')!;
+    send.send([id, status, progress]);
+  }
+
+  void _download(String url) async {
+    final status = await Permission.storage.request();
+
+    if (status.isGranted) {
+      final externalDir = await getExternalStorageDirectory();
+
+      final taskId = await FlutterDownloader.enqueue(
+          url: url,
+          savedDir: externalDir!.path,
+          showNotification:
+              true, // show download progress in status bar (for Android)
+          openFileFromNotification: true,
+          saveInPublicStorage:
+              true // click on notification to open downloaded file (for Android)
+          );
+    } else {
+      // ignore: avoid_print
+      print('Permission Denied');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +96,7 @@ class SlugIconNameDownloadButton extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: Image.network(
-              icon,
+              widget.icon,
               width: 80,
               height: 80,
             ),
@@ -39,7 +108,7 @@ class SlugIconNameDownloadButton extends StatelessWidget {
             physics: const ScrollPhysics(),
             children: [
               Text(
-                name,
+                widget.name,
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -51,7 +120,7 @@ class SlugIconNameDownloadButton extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => DevProfileAndApps(
-                        devURL: developerUrl,
+                        devURL: widget.developerUrl,
                       ),
                     ),
                   );
@@ -63,7 +132,7 @@ class SlugIconNameDownloadButton extends StatelessWidget {
                       style: TextStyle(color: Colors.green, fontSize: 18),
                     ),
                     Text(
-                      developer,
+                      widget.developer,
                       style: TextStyle(color: Colors.grey.shade800),
                     ),
                   ],
@@ -73,19 +142,21 @@ class SlugIconNameDownloadButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Download(seourl: seourl),
-                        ),
-                      );
+                    onPressed: () async {
+                      _download(widget.apkurl);
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => Downloading(seourl: widget.seourl),
+                      //   ),
+                      // );
                     },
                     child: const Text("Download"),
                     style: ElevatedButton.styleFrom(
                       primary: Colors.green,
                     ),
                   ),
+                  Text(progress.toString()),
                   Container(
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
