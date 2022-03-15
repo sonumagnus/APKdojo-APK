@@ -1,5 +1,4 @@
 import 'package:apkdojo/home.dart';
-import 'package:apkdojo/screens/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:apkdojo/screens/about.dart';
 import 'package:apkdojo/screens/developers.dart';

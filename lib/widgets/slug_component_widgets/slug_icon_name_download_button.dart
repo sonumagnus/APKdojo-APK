@@ -1,11 +1,13 @@
+import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:apkdojo/screens/devprofile.dart';
-// import 'package:apkdojo/screens/downloading.dart';
+import 'package:apkdojo/screens/downloading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:apkdojo/app_state_management/downloading_progress.dart';
 
 class SlugIconNameDownloadButton extends StatefulWidget {
   final String icon;
@@ -31,7 +33,8 @@ class SlugIconNameDownloadButton extends StatefulWidget {
 
 class _SlugIconNameDownloadButtonState
     extends State<SlugIconNameDownloadButton> {
-  int progress = 0;
+  final downloadingProgress = DownloadingProgress();
+  // int progress = 0;
   final ReceivePort _port = ReceivePort();
 
   @override
@@ -45,7 +48,7 @@ class _SlugIconNameDownloadButtonState
       String id = data[0];
       // ignore: unused_local_variable
       DownloadTaskStatus status = data[1];
-      progress = data[2];
+      downloadingProgress.setProgress(data[2]);
       setState(() {});
     });
 
@@ -65,21 +68,38 @@ class _SlugIconNameDownloadButtonState
     send.send([id, status, progress]);
   }
 
-  void _download(String url) async {
+  void _download(String url, String name) async {
     final status = await Permission.storage.request();
 
     if (status.isGranted) {
-      final externalDir = await getExternalStorageDirectory();
+      Directory? externalDir = await getExternalStorageDirectory();
+
+      String newPath = "";
+      // print(externalDir!.path);
+      List<String> paths = externalDir!.path.split("/");
+      for (int x = 1; x < paths.length; x++) {
+        String folder = paths[x];
+        if (folder != "Android") {
+          newPath += "/" + folder;
+        } else {
+          break;
+        }
+      }
+      newPath = newPath + "/APKdojo";
+      externalDir = Directory(newPath);
+
+      if (!await externalDir.exists()) {
+        await externalDir.create(recursive: true);
+      }
 
       final taskId = await FlutterDownloader.enqueue(
-          url: url,
-          savedDir: externalDir!.path,
-          showNotification:
-              true, // show download progress in status bar (for Android)
-          openFileFromNotification: true,
-          saveInPublicStorage:
-              true // click on notification to open downloaded file (for Android)
-          );
+        url: url,
+        fileName: name,
+        savedDir: externalDir.path + "/",
+        showNotification: true,
+        openFileFromNotification: true,
+        saveInPublicStorage: false,
+      );
     } else {
       // ignore: avoid_print
       print('Permission Denied');
@@ -143,11 +163,11 @@ class _SlugIconNameDownloadButtonState
                 children: [
                   ElevatedButton(
                     onPressed: () async {
-                      _download(widget.apkurl);
+                      _download(widget.apkurl, "${widget.name}.jpg");
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(
-                      //     builder: (context) => Downloading(seourl: widget.seourl),
+                      //     builder: (context) => Download(seourl: widget.seourl),
                       //   ),
                       // );
                     },
@@ -156,7 +176,7 @@ class _SlugIconNameDownloadButtonState
                       primary: Colors.green,
                     ),
                   ),
-                  Text(progress.toString()),
+                  Text(downloadingProgress.progress.toString()),
                   Container(
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(

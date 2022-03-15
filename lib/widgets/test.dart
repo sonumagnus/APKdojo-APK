@@ -1,83 +1,117 @@
-import 'package:apkdojo/widgets/loading_animation_widgets/category_app_listing_animation.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/single_horizonatal_app_tile.dart';
-import 'package:dio/dio.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class Test extends HookWidget {
+class Test extends StatefulWidget {
   const Test({Key? key}) : super(key: key);
 
   @override
+  _TestState createState() => _TestState();
+}
+
+class _TestState extends State<Test> {
+  final Dio dio = Dio();
+  bool loading = false;
+  double progress = 0;
+
+  Future<bool> downloadApp(String url, String fileName) async {
+    late Directory? directory;
+    try {
+      if (Platform.isAndroid) {
+        if (await _requestPermission(Permission.storage)) {
+          directory = await getExternalStorageDirectory();
+          String newPath = "";
+          // print(directory);
+          List<String> paths = directory!.path.split("/");
+          for (int x = 1; x < paths.length; x++) {
+            String folder = paths[x];
+            if (folder != "Android") {
+              newPath += "/" + folder;
+            } else {
+              break;
+            }
+          }
+          newPath = newPath + "/APKdojo";
+          directory = Directory(newPath);
+        } else {
+          return false;
+        }
+      }
+      File saveFile = File(directory!.path + "/$fileName");
+      if (!await directory.exists()) {
+        await directory.create(recursive: true);
+      }
+      if (await directory.exists()) {
+        await dio.download(url, saveFile.path,
+            onReceiveProgress: (received, total) {
+          setState(() {
+            progress = received / total;
+          });
+        });
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> _requestPermission(Permission permission) async {
+    if (await permission.isGranted) {
+      return true;
+    } else {
+      var result = await permission.request();
+      if (result == PermissionStatus.granted) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  downloadFile(String url, String name) async {
+    setState(() {
+      loading = true;
+      progress = 0;
+    });
+    bool downloaded = await downloadApp(url, name);
+    if (downloaded) {
+      debugPrint("File Downloaded");
+    } else {
+      debugPrint("Problem Downloading File");
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final appsList = useRef<List>([]);
-    final apps = useState<Map>({});
-    final _nextPage = useRef<int>(1);
-    ScrollController _scrollController = useScrollController();
-
-    void _fetchApps(int pageNum) async {
-      if (_nextPage.value == apps.value['total_pages']) return;
-      var _res = await Dio().get(
-          'https://api.apkdojo.com/category.php?id=education&type=apps&lang=en&page=$pageNum');
-      apps.value = _res.data;
-      appsList.value.addAll(apps.value['results']);
-      debugPrint(appsList.value.toString());
-      _nextPage.value = _nextPage.value + 1;
-    }
-
-    void _scrollerCallback() {
-      if (_scrollController.position.pixels !=
-          _scrollController.position.maxScrollExtent) return;
-      _fetchApps(_nextPage.value);
-    }
-
-    useEffect(() {
-      _scrollController.addListener(_scrollerCallback);
-      return () => _scrollController.removeListener(_scrollerCallback);
-    }, [_scrollController]);
-
-    useEffect(() {
-      _fetchApps(_nextPage.value);
-    }, []);
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Infinite scroll testing"),
-      ),
-      body: appsList.value.isEmpty
-          ? const CategoryAppListingAnimation(animatedTileCount: 9)
-          : SingleChildScrollView(
-              controller: _scrollController,
-              child: ListView(
-                physics: const ScrollPhysics(),
-                shrinkWrap: true,
-                children: [
-                  ListView.builder(
-                    physics: const ScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: appsList.value.length,
-                    itemBuilder: (context, index) {
-                      return ListView(
-                        physics: const ScrollPhysics(),
-                        shrinkWrap: true,
-                        children: [
-                          SingleHorizontalAppTile(
-                            icon: appsList.value[index]['icon'],
-                            name: appsList.value[index]['name'],
-                            seourl: appsList.value[index]['seourl'],
-                          )
-                        ],
-                      );
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _nextPage.value != apps.value['total_pages']
-                        ? const Center(child: CircularProgressIndicator())
-                        : const Text("No More Data"),
-                  )
-                ],
+      body: Center(
+        child: loading
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: LinearProgressIndicator(
+                  minHeight: 10,
+                  value: progress,
+                ),
+              )
+            : TextButton.icon(
+                icon: const Icon(
+                  Icons.download_rounded,
+                ),
+                onPressed: () => downloadFile(
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                    "myVideo.mp4"),
+                label: const Text(
+                  "Download",
+                  style: TextStyle(fontSize: 25),
+                ),
               ),
-            ),
+      ),
     );
   }
 }

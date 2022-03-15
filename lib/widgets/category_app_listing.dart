@@ -18,15 +18,21 @@ class CategoryAppListing extends HookWidget {
     final _appsList = useRef<List>([]);
     final apps = useState<Map>({});
     final _nextPage = useRef<int>(1);
+
     ScrollController _scrollController = useScrollController();
 
     void _fetchApps(int pageNum) async {
       if (_nextPage.value == apps.value['total_pages']) return;
-      var _res = await Dio().get(
-          'https://api.apkdojo.com/category.php?id=$categoryName&type=$applicationType&lang=en&page=$pageNum');
-      apps.value = _res.data;
-      _appsList.value.addAll(apps.value['results']);
-      _nextPage.value = _nextPage.value + 1;
+
+      try {
+        var _res = await Dio().get(
+            'https://api.apkdojo.com/category.php?id=$categoryName&type=$applicationType&lang=en&page=$pageNum');
+        apps.value = _res.data;
+        _appsList.value.addAll(apps.value['results']);
+        _nextPage.value = _nextPage.value + 1;
+      } catch (e) {
+        debugPrint(e.toString());
+      }
     }
 
     void _scrollerCallback() {
@@ -78,7 +84,14 @@ class CategoryAppListing extends HookWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: _nextPage.value != apps.value['total_pages']
                         ? const Center(child: CircularProgressIndicator())
-                        : const Center(child: Text("No More Data")),
+                        : const Center(
+                            child: Chip(
+                              label: Text(
+                                "No More Data",
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ),
                   )
                 ],
               ),

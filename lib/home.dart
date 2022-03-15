@@ -38,8 +38,12 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const SearchPage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SearchPage(),
+                ),
+              );
             },
             icon: const Icon(Icons.search),
           ),

@@ -22,7 +22,7 @@ class RatingSizeVersionTable extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Text(rating),
+                  Text(rating != "null" ? rating : 0.0.toString()),
                   const Text('Rating'),
                 ],
               ),

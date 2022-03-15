@@ -62,7 +62,7 @@ class _SlugState extends State<Slug> {
                     apkurl: snapshot.data!['apkurl'],
                   ),
                   RatingSizeVersionTable(
-                    rating: snapshot.data!['rating'],
+                    rating: snapshot.data!['rating'].toString(),
                     size: snapshot.data!['size'],
                     version: snapshot.data!['version'],
                   ),
