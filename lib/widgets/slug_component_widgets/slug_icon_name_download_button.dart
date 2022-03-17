@@ -163,7 +163,11 @@ class _SlugIconNameDownloadButtonState
                 children: [
                   ElevatedButton(
                     onPressed: () async {
-                      _download(widget.apkurl, "${widget.name}.jpg");
+                      // _download(widget.apkurl, "${widget.name}.apk");
+                      _download(
+                          "https://images.unsplash.com/photo-1647293566959-fcebc61c70f6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0Mnx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=60",
+                          "${widget.name}.jpg");
+
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(

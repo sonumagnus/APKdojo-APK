@@ -10,8 +10,10 @@ void main() async {
       debug: true // optional: set false to disable printing logs to console
       );
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => DownloadingProgress(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => DownloadingProgress()),
+      ],
       child: MaterialApp(
         title: "Apkdojo",
         home: const Home(),
