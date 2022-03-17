@@ -12,11 +12,15 @@ class Test extends HookWidget {
     fetchApps() async {
       var _res = await Dio()
           .get("https://api.apkdojo.com/v-apps.php?type=featured_apps&lang=en");
-      featuredApps.value.addAll(_res.data["featured_apps"]);
+      featuredApps.value = _res.data['featured_apps'];
     }
 
     useEffect(() {
+      debugPrint('component initialiazed');
       fetchApps();
+      return () {
+        debugPrint('Component disposed');
+      };
     }, []);
     return Material(
       child: SizedBox(

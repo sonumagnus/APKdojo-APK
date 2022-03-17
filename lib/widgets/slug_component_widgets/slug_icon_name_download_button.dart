@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:apkdojo/screens/devprofile.dart';
-import 'package:apkdojo/screens/downloading.dart';
+// import 'package:apkdojo/screens/downloading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
@@ -92,6 +92,7 @@ class _SlugIconNameDownloadButtonState
         await externalDir.create(recursive: true);
       }
 
+      // ignore: unused_local_variable
       final taskId = await FlutterDownloader.enqueue(
         url: url,
         fileName: name,
@@ -164,9 +165,7 @@ class _SlugIconNameDownloadButtonState
                   ElevatedButton(
                     onPressed: () async {
                       // _download(widget.apkurl, "${widget.name}.apk");
-                      _download(
-                          "https://images.unsplash.com/photo-1647293566959-fcebc61c70f6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0Mnx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=60",
-                          "${widget.name}.jpg");
+                      _download(widget.apkurl, "${widget.name}.apk");
 
                       // Navigator.push(
                       //   context,

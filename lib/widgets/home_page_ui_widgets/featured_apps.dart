@@ -24,7 +24,14 @@ class _FeaturedAppsState extends State<FeaturedApps> {
   @override
   void initState() {
     super.initState();
+    debugPrint("featured apps initialized");
     featuredApps = fetchApps();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    debugPrint('featured apps disposed');
   }
 
   @override

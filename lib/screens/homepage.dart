@@ -19,32 +19,32 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: ListView(
-        shrinkWrap: true,
-        children: const [
-          Test(),
-          AppType(
-            mainHeading: "Editor's Choice",
-            followUpText: "Features By Apkdojo",
-            seeAllUrl: 'none',
-            showSeeAll: true,
-          ),
-          FeaturedApps(),
-          HomePageAppsGrid(type: "new_apps"),
-          AppType(
-              mainHeading: "Top Categories",
-              followUpText: "Apps",
-              seeAllUrl: "None",
-              showSeeAll: true),
-          CategoryList(type: 'apps', cateListCount: '6'),
-          HomePageAppsGrid(type: "new_games"),
-          AppType(
-              mainHeading: "Top Categories",
-              followUpText: "Games",
-              seeAllUrl: "none",
-              showSeeAll: true),
-          CategoryList(type: 'games', cateListCount: '6'),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: const [
+            AppType(
+              mainHeading: "Editor's Choice",
+              followUpText: "Features By Apkdojo",
+              seeAllUrl: 'none',
+              showSeeAll: true,
+            ),
+            FeaturedApps(),
+            HomePageAppsGrid(type: "new_apps"),
+            AppType(
+                mainHeading: "Top Categories",
+                followUpText: "Apps",
+                seeAllUrl: "None",
+                showSeeAll: true),
+            CategoryList(type: 'apps', cateListCount: '6'),
+            HomePageAppsGrid(type: "new_games"),
+            AppType(
+                mainHeading: "Top Categories",
+                followUpText: "Games",
+                seeAllUrl: "none",
+                showSeeAll: true),
+            CategoryList(type: 'games', cateListCount: '6'),
+          ],
+        ),
       ),
     );
   }
