@@ -1,7 +1,6 @@
 import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/category_list.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/home_app_grid.dart';
-import 'package:apkdojo/widgets/test.dart';
 import 'package:flutter/material.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/featured_apps.dart';
 

@@ -2,12 +2,10 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:apkdojo/screens/devprofile.dart';
-// import 'package:apkdojo/screens/downloading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:apkdojo/app_state_management/downloading_progress.dart';
 
 class SlugIconNameDownloadButton extends StatefulWidget {
   final String icon;
@@ -33,8 +31,7 @@ class SlugIconNameDownloadButton extends StatefulWidget {
 
 class _SlugIconNameDownloadButtonState
     extends State<SlugIconNameDownloadButton> {
-  final downloadingProgress = DownloadingProgress();
-  // int progress = 0;
+  int progress = 0;
   final ReceivePort _port = ReceivePort();
 
   @override
@@ -48,7 +45,7 @@ class _SlugIconNameDownloadButtonState
       String id = data[0];
       // ignore: unused_local_variable
       DownloadTaskStatus status = data[1];
-      downloadingProgress.setProgress(data[2]);
+      progress = data[2];
       setState(() {});
     });
 
@@ -136,6 +133,7 @@ class _SlugIconNameDownloadButtonState
                 ),
               ),
               GestureDetector(
+                onDoubleTap: null,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -162,24 +160,58 @@ class _SlugIconNameDownloadButtonState
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      // _download(widget.apkurl, "${widget.name}.apk");
-                      _download(widget.apkurl, "${widget.name}.apk");
-
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => Download(seourl: widget.seourl),
-                      //   ),
-                      // );
-                    },
-                    child: const Text("Download"),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 6.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        // _download(widget.apkurl, "${widget.name}.apk");
+                        _download(
+                            "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+                            "${widget.name}.mp4");
+                      },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            height: 35,
+                            width: 100,
+                            decoration: const BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey,
+                                  offset: Offset(4.0, 4.0),
+                                  blurRadius: 8.0,
+                                )
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(6),
+                              ),
+                              child: LinearProgressIndicator(
+                                value: double.parse("$progress") / 100,
+                                backgroundColor: Colors.green.shade500,
+                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                    Colors.blue),
+                              ),
+                            ),
+                          ),
+                          Align(
+                            child: Text(
+                              progress == 0
+                                  ? "Download"
+                                  : progress < 100
+                                      ? "Downloading"
+                                      : progress == 100
+                                          ? "Downloaded"
+                                          : "Download",
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  Text(downloadingProgress.progress.toString()),
                   Container(
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
@@ -194,7 +226,7 @@ class _SlugIconNameDownloadButtonState
                     ),
                   )
                 ],
-              )
+              ),
             ],
           ),
         ),
