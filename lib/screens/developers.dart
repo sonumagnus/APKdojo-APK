@@ -1,5 +1,7 @@
+import 'package:apkdojo/main.dart';
 import 'package:apkdojo/screens/devprofile.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/category_list_animation.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/search_icon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
@@ -29,7 +31,14 @@ class _DevelopersState extends State<Developers> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Developers"),
+        elevation: 1,
+        title: Text(
+          "Developers",
+          style: TextStyle(color: appBarTitleColor),
+        ),
+        backgroundColor: primaryColor,
+        iconTheme: IconThemeData(color: iconThemeColor),
+        actions: const [SearchIconWidget()],
       ),
       body: FutureBuilder<List>(
         future: developers,

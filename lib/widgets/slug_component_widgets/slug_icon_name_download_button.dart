@@ -190,7 +190,7 @@ class _SlugIconNameDownloadButtonState
                               ),
                               child: LinearProgressIndicator(
                                 value: double.parse("$progress") / 100,
-                                backgroundColor: Colors.green.shade500,
+                                backgroundColor: Colors.green,
                                 valueColor: const AlwaysStoppedAnimation<Color>(
                                     Colors.blue),
                               ),

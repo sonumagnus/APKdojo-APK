@@ -1,4 +1,6 @@
+import 'package:apkdojo/main.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/slug_animation.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/search_icon_widget.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/apk_details_expansion_panel.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/developer_apps.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/rating_size_version.dart';
@@ -41,7 +43,14 @@ class _SlugState extends State<Slug> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.seourl),
+        elevation: 1,
+        title: Text(
+          widget.seourl,
+          style: TextStyle(color: appBarTitleColor),
+        ),
+        backgroundColor: primaryColor,
+        iconTheme: IconThemeData(color: iconThemeColor),
+        actions: const [SearchIconWidget()],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(10.0),

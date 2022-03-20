@@ -1,3 +1,5 @@
+import 'package:apkdojo/main.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/search_icon_widget.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_vertical_app.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +31,14 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.devURL),
+        elevation: 1,
+        title: Text(
+          widget.devURL,
+          style: TextStyle(color: appBarTitleColor),
+        ),
+        backgroundColor: primaryColor,
+        iconTheme: IconThemeData(color: iconThemeColor),
+        actions: const [SearchIconWidget()],
       ),
       body: FutureBuilder<Map>(
         future: devInfo,

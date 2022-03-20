@@ -1,8 +1,10 @@
+import 'package:apkdojo/main.dart';
 import 'package:apkdojo/screens/downloaded_apps.dart';
 import 'package:apkdojo/screens/homepage.dart';
 import 'package:apkdojo/screens/search_page.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
 import 'package:apkdojo/widgets/categorytabs.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/search_icon_widget.dart';
 import 'package:apkdojo/widgets/test.dart';
 import 'package:flutter/material.dart';
 
@@ -34,20 +36,14 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("APKdojo"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SearchPage(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.search),
-          ),
-        ],
+        elevation: 1,
+        title: Text(
+          "APKdojo",
+          style: TextStyle(color: appBarTitleColor),
+        ),
+        backgroundColor: primaryColor,
+        iconTheme: IconThemeData(color: iconThemeColor),
+        actions: const [SearchIconWidget()],
       ),
       drawer: const MyDrawer(),
       floatingActionButton: FloatingActionButton(
