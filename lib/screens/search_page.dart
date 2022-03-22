@@ -30,10 +30,10 @@ class SearchPage extends HookWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
+        elevation: 1,
         iconTheme: IconThemeData(color: iconThemeColor),
         title: TextField(
           cursorColor: Colors.black54,
-          style: const TextStyle(color: Colors.white),
           onChanged: (text) {
             _searchKeyword.value = text;
           },

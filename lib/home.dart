@@ -1,7 +1,6 @@
 import 'package:apkdojo/main.dart';
-import 'package:apkdojo/screens/downloaded_apps.dart';
+import 'package:apkdojo/screens/download_manager.dart';
 import 'package:apkdojo/screens/homepage.dart';
-import 'package:apkdojo/screens/search_page.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
 import 'package:apkdojo/widgets/categorytabs.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/search_icon_widget.dart';
@@ -21,9 +20,8 @@ class _HomeState extends State<Home> {
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    // Category(),
     CategoryByTabs(),
-    DownloadedApps()
+    DownloadManager()
   ];
 
   void _onItemTapped(int index) {

@@ -1,8 +1,8 @@
-// import 'package:apkdojo/app_state_management/downloading_progress.dart';
 import 'package:apkdojo/home.dart';
+import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-// import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 
 Color primaryColor = Colors.white;
 Color iconThemeColor = Colors.black;
@@ -11,7 +11,12 @@ Color appBarTitleColor = Colors.black;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(debug: false);
-  runApp(const ApkDojo());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => DownloadingProgress(),
+      child: const ApkDojo(),
+    ),
+  );
 }
 
 class ApkDojo extends StatelessWidget {

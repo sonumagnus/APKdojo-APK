@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:apkdojo/screens/devprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 class SlugIconNameDownloadButton extends StatefulWidget {
   final String icon;
@@ -31,7 +33,6 @@ class SlugIconNameDownloadButton extends StatefulWidget {
 
 class _SlugIconNameDownloadButtonState
     extends State<SlugIconNameDownloadButton> {
-  int progress = 0;
   final ReceivePort _port = ReceivePort();
 
   @override
@@ -45,7 +46,8 @@ class _SlugIconNameDownloadButtonState
       String id = data[0];
       // ignore: unused_local_variable
       DownloadTaskStatus status = data[1];
-      progress = data[2];
+      // progress = data[2];
+      context.read<DownloadingProgress>().setProgress(data[2]);
       setState(() {});
     });
 
@@ -150,9 +152,11 @@ class _SlugIconNameDownloadButtonState
                       "• ",
                       style: TextStyle(color: Colors.green, fontSize: 18),
                     ),
-                    Text(
-                      widget.developer,
-                      style: TextStyle(color: Colors.grey.shade800),
+                    Expanded(
+                      child: Text(
+                        widget.developer,
+                        style: TextStyle(color: Colors.grey.shade800),
+                      ),
                     ),
                   ],
                 ),
@@ -166,50 +170,60 @@ class _SlugIconNameDownloadButtonState
                       onTap: () {
                         // _download(widget.apkurl, "${widget.name}.apk");
                         _download(
-                            "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-                            "${widget.name}.mp4");
+                            "https://images.unsplash.com/photo-1647784012071-4f85352a3d8a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw3fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=600&q=60",
+                            "${widget.name}.jpg");
+
+                        context
+                            .read<DownloadingProgress>()
+                            .setAppName(widget.name);
                       },
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            height: 35,
-                            width: 100,
-                            decoration: const BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  offset: Offset(4.0, 4.0),
-                                  blurRadius: 8.0,
-                                )
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(6),
+                      child: Consumer<DownloadingProgress>(
+                          builder: (context, _downloadProgress, child) {
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              height: 35,
+                              width: 100,
+                              decoration: const BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    offset: Offset(4.0, 4.0),
+                                    blurRadius: 8.0,
+                                  )
+                                ],
                               ),
-                              child: LinearProgressIndicator(
-                                value: double.parse("$progress") / 100,
-                                backgroundColor: Colors.green,
-                                valueColor: const AlwaysStoppedAnimation<Color>(
-                                    Colors.blue),
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(6),
+                                ),
+                                child: LinearProgressIndicator(
+                                  value: double.parse(
+                                          "${_downloadProgress.progress}") /
+                                      100,
+                                  backgroundColor: Colors.green,
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                          Colors.blue),
+                                ),
                               ),
                             ),
-                          ),
-                          Align(
-                            child: Text(
-                              progress == 0
-                                  ? "Download"
-                                  : progress < 100
-                                      ? "Downloading"
-                                      : progress == 100
-                                          ? "Downloaded"
-                                          : "Download",
-                              style: const TextStyle(color: Colors.white),
+                            Align(
+                              child: Text(
+                                _downloadProgress.progress == 0
+                                    ? "Download"
+                                    : _downloadProgress.progress < 100
+                                        ? "Downloading"
+                                        : _downloadProgress.progress == 100
+                                            ? "Downloaded"
+                                            : "Download",
+                                style: const TextStyle(color: Colors.white),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        );
+                      }),
                     ),
                   ),
                   Container(
