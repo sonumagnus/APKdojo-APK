@@ -1,6 +1,8 @@
+import 'package:apkdojo/widgets/categorytabs.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/category_list.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/home_app_grid.dart';
+import 'package:apkdojo/widgets/new_added_n_updated_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/featured_apps.dart';
 
@@ -24,7 +26,8 @@ class _HomePageState extends State<HomePage> {
             AppType(
               mainHeading: "Editor's Choice",
               followUpText: "Features By Apkdojo",
-              seeAllUrl: 'none',
+              seeAllUrl:
+                  NewAddedAndUpdatedApps(applicationType: "featured_apps"),
               showSeeAll: true,
             ),
             FeaturedApps(),
@@ -32,14 +35,16 @@ class _HomePageState extends State<HomePage> {
             AppType(
                 mainHeading: "Top Categories",
                 followUpText: "Apps",
-                seeAllUrl: "None",
+                seeAllUrl: CategoryByTabs(
+                  selectedIndex: 0,
+                ),
                 showSeeAll: true),
             CategoryList(type: 'apps', cateListCount: '6'),
             HomePageAppsGrid(type: "new_games"),
             AppType(
                 mainHeading: "Top Categories",
                 followUpText: "Games",
-                seeAllUrl: "none",
+                seeAllUrl: CategoryByTabs(selectedIndex: 1),
                 showSeeAll: true),
             CategoryList(type: 'games', cateListCount: '6'),
           ],

@@ -1,6 +1,7 @@
 import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/home_app_grid_animation.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_grid_app.dart';
+import 'package:apkdojo/widgets/new_added_n_updated_apps.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
@@ -40,7 +41,7 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
         AppType(
             mainHeading: widget.type == 'new_apps' ? "New Apps" : "New Games",
             followUpText: "New Added & Updated",
-            seeAllUrl: 'none',
+            seeAllUrl: NewAddedAndUpdatedApps(applicationType: widget.type),
             showSeeAll: true),
         FutureBuilder<List>(
           future: gridApps,

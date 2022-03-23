@@ -1,8 +1,8 @@
 import 'package:apkdojo/home.dart';
+import 'package:apkdojo/widgets/new_added_n_updated_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:apkdojo/screens/about.dart';
 import 'package:apkdojo/screens/developers.dart';
-import 'package:apkdojo/screens/editors_choice.dart';
 import 'package:apkdojo/screens/terms_of_use.dart';
 import 'package:apkdojo/widgets/categorytabs.dart';
 
@@ -43,7 +43,9 @@ class MyDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const CategoryByTabs(),
+                  builder: (context) => const CategoryByTabs(
+                    selectedIndex: 0,
+                  ),
                 ),
               );
             },
@@ -55,7 +57,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const CategoryByTabs(),
+                  builder: (context) => const CategoryByTabs(selectedIndex: 1),
                 ),
               );
             },
@@ -79,7 +81,8 @@ class MyDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const EditorsChoicePage(),
+                  builder: (context) => const NewAddedAndUpdatedApps(
+                      applicationType: "featured_apps"),
                 ),
               );
             },

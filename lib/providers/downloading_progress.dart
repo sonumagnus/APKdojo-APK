@@ -12,12 +12,15 @@ class DownloadingProgress extends ChangeNotifier {
   void setProgress(int updatedProgress) {
     _progress = updatedProgress;
 
-    if (_progress == 100) {
-      Timer(const Duration(seconds: 1), () {
-        _progress = 0;
-        notifyListeners();
-        return;
-      });
+    if (_progress >= 100) {
+      Timer(
+        const Duration(seconds: 1),
+        () {
+          _progress = 0;
+          notifyListeners();
+          return;
+        },
+      );
     }
     notifyListeners();
   }

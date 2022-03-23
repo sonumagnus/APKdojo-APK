@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppType extends StatelessWidget {
   final String mainHeading;
   final String followUpText;
-  final String seeAllUrl;
+  final Widget seeAllUrl;
   final bool showSeeAll;
   const AppType(
       {Key? key,
@@ -33,7 +33,17 @@ class AppType extends StatelessWidget {
                   followUpText,
                   style: const TextStyle(fontSize: 15),
                 ),
-                if (showSeeAll) const Text('See All') else const Text(''),
+                if (showSeeAll)
+                  GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => seeAllUrl),
+                        );
+                      },
+                      child: const Text('See All'))
+                else
+                  const Text(''),
               ],
             ),
           )

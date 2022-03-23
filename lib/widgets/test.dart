@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,13 +28,27 @@ class _TestState extends State<Test> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  // _downloadProgress.setProgress(_downloadProgress.progress + 1);
+                  _downloadProgress.setProgress(_downloadProgress.progress + 1);
+                  _downloadProgress.setAppName("whatsapp");
                   // context.read<DownloadingProgress>().setProgress(
                   //     context.read<DownloadingProgress>().progress + 1);
-                  Timer(
-                      const Duration(seconds: 3), () => print("Timer running"));
+                  Timer.periodic(const Duration(seconds: 1), (timer) {
+                    _downloadProgress
+                        .setProgress(_downloadProgress.progress + 4);
+                    _downloadProgress.setAppName("whatsapp");
+                  });
                 },
-                child: const Icon(Icons.refresh),
+                child: const Icon(Icons.add),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _downloadProgress
+                      .setProgress(_downloadProgress.progress - 10);
+                  _downloadProgress.setAppName("whatsapp");
+                  // context.read<DownloadingProgress>().setProgress(
+                  //     context.read<DownloadingProgress>().progress + 1);
+                },
+                child: const Icon(Icons.remove),
               ),
             ],
           );

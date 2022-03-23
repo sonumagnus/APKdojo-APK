@@ -34,6 +34,7 @@ class SlugIconNameDownloadButton extends StatefulWidget {
 class _SlugIconNameDownloadButtonState
     extends State<SlugIconNameDownloadButton> {
   final ReceivePort _port = ReceivePort();
+  int progress = 0;
 
   @override
   void initState() {
@@ -46,7 +47,7 @@ class _SlugIconNameDownloadButtonState
       String id = data[0];
       // ignore: unused_local_variable
       DownloadTaskStatus status = data[1];
-      // progress = data[2];
+      progress = data[2];
       context.read<DownloadingProgress>().setProgress(data[2]);
       setState(() {});
     });
@@ -96,7 +97,7 @@ class _SlugIconNameDownloadButtonState
       final String _appName = widget.name;
 
       if (File(externalDir.path + "/" + name + ".jpg").existsSync()) {
-        for (int i = 1; i < 20; i++) {
+        for (int i = 1; i < 100; i++) {
           name = _appName + "(" + "$i" + ")";
           if (!File(externalDir.path + "/" + name + ".jpg").existsSync()) {
             break;
@@ -192,54 +193,47 @@ class _SlugIconNameDownloadButtonState
                         //     .read<DownloadingProgress>()
                         //     .setAppName(widget.name);
                       },
-                      child: Consumer<DownloadingProgress>(
-                          builder: (context, _downloadProgress, child) {
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              height: 35,
-                              width: 100,
-                              decoration: const BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    offset: Offset(4.0, 4.0),
-                                    blurRadius: 8.0,
-                                  )
-                                ],
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            height: 35,
+                            width: 100,
+                            decoration: const BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey,
+                                  offset: Offset(4.0, 4.0),
+                                  blurRadius: 8.0,
+                                )
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(6),
                               ),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(6),
-                                ),
-                                child: LinearProgressIndicator(
-                                  value: double.parse(
-                                          "${_downloadProgress.progress}") /
-                                      100,
-                                  backgroundColor: Colors.green,
-                                  valueColor:
-                                      const AlwaysStoppedAnimation<Color>(
-                                          Colors.blue),
-                                ),
+                              child: LinearProgressIndicator(
+                                value: double.parse("$progress") / 100,
+                                backgroundColor: Colors.green,
+                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                    Colors.blue),
                               ),
                             ),
-                            Align(
-                              child: Text(
-                                _downloadProgress.progress == 0
-                                    ? "Download"
-                                    : _downloadProgress.progress < 100 &&
-                                            _downloadProgress.progress > 0
-                                        ? "Downloading"
-                                        : _downloadProgress.progress == 100
-                                            ? "Downloaded"
-                                            : "Download",
-                                style: const TextStyle(color: Colors.white),
-                              ),
+                          ),
+                          Align(
+                            child: Text(
+                              progress == 0
+                                  ? "Download"
+                                  : progress < 100 && progress > 0
+                                      ? "Downloading"
+                                      : progress == 100
+                                          ? "Downloaded"
+                                          : "Download",
+                              style: const TextStyle(color: Colors.white),
                             ),
-                          ],
-                        );
-                      }),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Container(

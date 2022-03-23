@@ -2,11 +2,14 @@ import 'package:apkdojo/widgets/category_list.dart';
 import 'package:flutter/material.dart';
 
 class CategoryByTabs extends StatelessWidget {
-  const CategoryByTabs({Key? key}) : super(key: key);
+  final int selectedIndex;
+  const CategoryByTabs({Key? key, required this.selectedIndex})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      initialIndex: selectedIndex,
       length: 2,
       child: Scaffold(
         appBar: AppBar(
