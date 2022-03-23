@@ -64,7 +64,7 @@ class _DownloadManagerState extends State<DownloadManager> {
   Future<void> _deleteConfirmationAlertBox(String file) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Do You Really Want to Delete ${_fileName(file)} ?'),

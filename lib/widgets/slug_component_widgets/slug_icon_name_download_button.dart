@@ -91,10 +91,25 @@ class _SlugIconNameDownloadButtonState
         await externalDir.create(recursive: true);
       }
 
+      // download file name sequence generator logic
+
+      final String _appName = widget.name;
+
+      if (File(externalDir.path + "/" + name + ".jpg").existsSync()) {
+        for (int i = 1; i < 20; i++) {
+          name = _appName + "(" + "$i" + ")";
+          if (!File(externalDir.path + "/" + name + ".jpg").existsSync()) {
+            break;
+          }
+        }
+      }
+
+      // download file name sequence logic ends here
+
       // ignore: unused_local_variable
       final taskId = await FlutterDownloader.enqueue(
         url: url,
-        fileName: name,
+        fileName: name + '.jpg',
         savedDir: externalDir.path + "/",
         showNotification: true,
         openFileFromNotification: true,
@@ -170,12 +185,12 @@ class _SlugIconNameDownloadButtonState
                       onTap: () {
                         // _download(widget.apkurl, "${widget.name}.apk");
                         _download(
-                            "https://images.unsplash.com/photo-1647784012071-4f85352a3d8a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw3fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=600&q=60",
-                            "${widget.name}.jpg");
+                            "https://images.unsplash.com/photo-1647937627312-e4f6589db6fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw2OHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=60",
+                            widget.name);
 
-                        context
-                            .read<DownloadingProgress>()
-                            .setAppName(widget.name);
+                        // context
+                        //     .read<DownloadingProgress>()
+                        //     .setAppName(widget.name);
                       },
                       child: Consumer<DownloadingProgress>(
                           builder: (context, _downloadProgress, child) {
@@ -213,7 +228,8 @@ class _SlugIconNameDownloadButtonState
                               child: Text(
                                 _downloadProgress.progress == 0
                                     ? "Download"
-                                    : _downloadProgress.progress < 100
+                                    : _downloadProgress.progress < 100 &&
+                                            _downloadProgress.progress > 0
                                         ? "Downloading"
                                         : _downloadProgress.progress == 100
                                             ? "Downloaded"
