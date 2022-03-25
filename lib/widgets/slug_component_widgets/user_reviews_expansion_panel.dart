@@ -1,3 +1,4 @@
+import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/screens/all_reviews.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/reviews_list.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,9 @@ ExpansionPanel userReviewsExpansionPanel(
             ListView.builder(
               shrinkWrap: true,
               physics: const ScrollPhysics(),
-              itemCount: snapshot.data!['reviews'].length,
+              itemCount: snapshot.data!['reviews'] != null
+                  ? snapshot.data!['reviews'].length
+                  : 0,
               itemBuilder: (BuildContext context, int index) {
                 return ReviewsList(
                   rating: snapshot.data!['reviews'][index]['rating'],
@@ -35,11 +38,9 @@ ExpansionPanel userReviewsExpansionPanel(
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AllReviews(seourl: snapshot.data!['seourl']),
+                Navigator.of(context).push(
+                  createRouteRightToLeft(
+                    targetRoute: AllReviews(seourl: snapshot.data!['seourl']),
                   ),
                 );
               },

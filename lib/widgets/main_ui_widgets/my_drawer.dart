@@ -24,6 +24,14 @@ class MyDrawer extends StatelessWidget {
             ),
             decoration: BoxDecoration(color: Colors.cyan),
           ),
+          // Consumer<DarkThemeToggler>(builder: (context, provider, child) {
+          //   return Switch(
+          //     value: provider.isTrue,
+          //     onChanged: (value) {
+          //       provider.mutateBool();
+          //     },
+          //   );
+          // }),
           ListTile(
             leading: const Icon(Icons.home, size: size),
             title: const Text("Home", style: textStyle),

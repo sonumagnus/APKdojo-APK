@@ -49,7 +49,9 @@ class AllReviewsState extends State<AllReviews> {
                     child: ListView.builder(
                       physics: const ScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: snapshot.data!['reviews'].length,
+                      itemCount: snapshot.data!['reviews'] != null
+                          ? snapshot.data!['reviews'].length
+                          : 0,
                       itemBuilder: (BuildContext context, int index) {
                         return ReviewsList(
                           rating: snapshot.data!['reviews'][index]['rating']

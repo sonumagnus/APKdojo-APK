@@ -1,3 +1,4 @@
+import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/screens/slug.dart';
 import 'package:apkdojo/widgets/star_rating.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +20,9 @@ class SingleVerticalApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Slug(seourl: seourl),
+        Navigator.of(context).push(
+          createRouteRightToLeft(
+            targetRoute: Slug(seourl: seourl),
           ),
         );
       },

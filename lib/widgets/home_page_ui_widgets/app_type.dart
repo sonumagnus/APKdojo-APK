@@ -1,3 +1,4 @@
+import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:flutter/material.dart';
 
 class AppType extends StatelessWidget {
@@ -36,9 +37,8 @@ class AppType extends StatelessWidget {
                 if (showSeeAll)
                   GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => seeAllUrl),
+                        Navigator.of(context).push(
+                          createRouteRightToLeft(targetRoute: seeAllUrl),
                         );
                       },
                       child: const Text('See All'))

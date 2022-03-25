@@ -1,3 +1,4 @@
+import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/widgets/category_app_listing.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/category_list_animation.dart';
 import 'package:flutter/material.dart';
@@ -44,10 +45,9 @@ class _CategoryListState extends State<CategoryList> {
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CategoryAppListing(
+                  Navigator.of(context).push(
+                    createRouteRightToLeft(
+                      targetRoute: CategoryAppListing(
                         applicationType: widget.type,
                         categoryName: snapshot.data![index]['caturl'],
                       ),

@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:apkdojo/page_route_animation/bottom_to_top.dart';
 import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:apkdojo/screens/devprofile.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/share_model_fixed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
@@ -243,10 +245,19 @@ class _SlugIconNameDownloadButtonState
                       border: Border.all(color: Colors.green.shade100),
                       color: Colors.grey.shade100,
                     ),
-                    child: const Icon(
-                      Icons.share,
-                      size: 18,
-                      color: Colors.green,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          createRouteBottomToTop(
+                            targetRoute: const ShareModelFixed(),
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.share,
+                        size: 18,
+                        color: Colors.green,
+                      ),
                     ),
                   )
                 ],

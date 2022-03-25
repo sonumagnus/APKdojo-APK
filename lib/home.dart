@@ -15,15 +15,14 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool isSearching = false;
-
   int _selectedIndex = 0;
+
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     CategoryByTabs(
       selectedIndex: 0,
     ),
-    DownloadManager()
+    DownloadManager(),
   ];
 
   void _onItemTapped(int index) {

@@ -1,4 +1,5 @@
 import 'package:apkdojo/home.dart';
+import 'package:apkdojo/providers/dark_theme_toggle.dart';
 import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -12,8 +13,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(debug: false);
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => DownloadingProgress(),
+    MultiProvider(
+      providers: [
+        Provider<DownloadingProgress>(create: (_) => DownloadingProgress()),
+        Provider<DarkThemeToggler>(create: (_) => DarkThemeToggler()),
+      ],
       child: const ApkDojo(),
     ),
   );

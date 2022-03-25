@@ -1,3 +1,4 @@
+import 'package:apkdojo/main.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/category_app_listing_animation.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_horizonatal_app_tile.dart';
 import 'package:dio/dio.dart';
@@ -50,13 +51,19 @@ class NewAddedAndUpdatedApps extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(applicationType == "new_apps"
-            ? "New Added and Updated Apps"
-            : applicationType == "new_games"
-                ? "New Added and Updated Games"
-                : applicationType == "featured_apps"
-                    ? "Editor's Choice"
-                    : ""),
+        backgroundColor: primaryColor,
+        elevation: 1,
+        iconTheme: IconThemeData(color: iconThemeColor),
+        title: Text(
+          applicationType == "new_apps"
+              ? "New Added and Updated Apps"
+              : applicationType == "new_games"
+                  ? "New Added and Updated Games"
+                  : applicationType == "featured_apps"
+                      ? "Editor's Choice"
+                      : "",
+          style: TextStyle(color: appBarTitleColor),
+        ),
       ),
       body: _appsList.value.isEmpty
           ? const CategoryAppListingAnimation(animatedTileCount: 9)
