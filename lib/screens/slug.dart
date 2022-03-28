@@ -10,6 +10,7 @@ import 'package:apkdojo/widgets/slug_component_widgets/slug_icon_name_download_b
 import 'package:apkdojo/widgets/slug_component_widgets/slug_screenshot.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/user_reviews_expansion_panel.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/whatsnew_expansion_panel.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
@@ -24,11 +25,21 @@ class Slug extends StatefulWidget {
 class _SlugState extends State<Slug> {
   late Future<Map> app;
   final List<bool> _isOpen = [true, false, false, false];
+  late DioCacheManager _dioCacheManager;
 
   Future<Map> fetchApp() async {
-    var response = await Dio()
-        .get('https://api.apkdojo.com/app.php?id=${widget.seourl}&lang=en');
-    return response.data;
+    try {
+      _dioCacheManager = DioCacheManager(CacheConfig());
+      Options _cacheOptions = buildCacheOptions(const Duration(days: 3));
+      Dio _dio = Dio();
+      _dio.interceptors.add(_dioCacheManager.interceptor);
+      Response response = await _dio.get(
+          'https://api.apkdojo.com/app.php?id=${widget.seourl}&lang=en',
+          options: _cacheOptions);
+      return response.data;
+    } catch (e) {
+      return {};
+    }
   }
 
   @override

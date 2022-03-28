@@ -1,6 +1,7 @@
 import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/screens/slug.dart';
 import 'package:apkdojo/widgets/star_rating.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class SingleGridApp extends StatelessWidget {
@@ -35,7 +36,9 @@ class SingleGridApp extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(5.0),
-              child: Image.network(icon),
+              child: CachedNetworkImage(
+                imageUrl: icon,
+              ),
             ),
             Text(
               name,

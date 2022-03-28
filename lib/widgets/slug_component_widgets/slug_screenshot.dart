@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class SlugScreenshot extends StatelessWidget {
@@ -18,8 +19,8 @@ class SlugScreenshot extends StatelessWidget {
         itemBuilder: (_, int index) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 3),
-            child: Image.network(
-              screenshots[index],
+            child: CachedNetworkImage(
+              imageUrl: screenshots[index],
             ),
           );
         },

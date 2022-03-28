@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -19,14 +20,14 @@ class WriteReviews extends StatelessWidget {
           subtitle: Text(name),
           trailing: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(5)),
-            child: Image.network(
-              icon,
+            child: CachedNetworkImage(
+              imageUrl: icon,
               width: 40,
             ),
           ),
         ),
         RatingBar.builder(
-          initialRating: 3,
+          initialRating: 0,
           minRating: 1,
           direction: Axis.horizontal,
           allowHalfRating: false,

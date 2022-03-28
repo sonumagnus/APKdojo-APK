@@ -1,6 +1,7 @@
 import 'package:apkdojo/widgets/main_ui_widgets/write_reviews.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/reviews_list.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 
 class AllReviews extends StatefulWidget {
@@ -13,10 +14,17 @@ class AllReviews extends StatefulWidget {
 
 class AllReviewsState extends State<AllReviews> {
   late Future<Map> reviews;
+  late DioCacheManager _dioCacheManager;
 
   Future<Map> getReviews() async {
-    var response = await Dio()
-        .get('https://api.apkdojo.com/reviews.php?app=${widget.seourl}');
+    _dioCacheManager = DioCacheManager(CacheConfig());
+
+    Options _cacheOptions = buildCacheOptions(const Duration(days: 7));
+    Dio _dio = Dio();
+    _dio.interceptors.add(_dioCacheManager.interceptor);
+    var response = await _dio.get(
+        'https://api.apkdojo.com/reviews.php?app=${widget.seourl}',
+        options: _cacheOptions);
     return response.data;
   }
 

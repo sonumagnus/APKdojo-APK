@@ -1,5 +1,6 @@
 import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/screens/slug.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class SingleHorizontalAppTile extends StatelessWidget {
@@ -23,17 +24,18 @@ class SingleHorizontalAppTile extends StatelessWidget {
           );
         },
         child: ListTile(
-            leading: Image.network(
-              icon,
-              height: 45,
-            ),
-            title: Text(name),
-            trailing: const Icon(
-              Icons.download,
-              size: 30,
-            ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 8, vertical: 5)),
+          leading: Image(
+            image: CachedNetworkImageProvider(icon),
+            height: 45,
+          ),
+          title: Text(name),
+          trailing: const Icon(
+            Icons.download,
+            size: 30,
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
@@ -5,6 +6,7 @@ import 'package:apkdojo/page_route_animation/bottom_to_top.dart';
 import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:apkdojo/screens/devprofile.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/share_model_fixed.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
@@ -35,8 +37,9 @@ class SlugIconNameDownloadButton extends StatefulWidget {
 
 class _SlugIconNameDownloadButtonState
     extends State<SlugIconNameDownloadButton> {
-  final ReceivePort _port = ReceivePort();
   int progress = 0;
+
+  final ReceivePort _port = ReceivePort();
 
   @override
   void initState() {
@@ -45,12 +48,18 @@ class _SlugIconNameDownloadButtonState
     IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');
     _port.listen((dynamic data) {
-      // ignore: unused_local_variable
-      String id = data[0];
-      // ignore: unused_local_variable
-      DownloadTaskStatus status = data[1];
-      progress = data[2];
+      // String id = data[0];
+      // DownloadTaskStatus status = data[1];
       context.read<DownloadingProgress>().setProgress(data[2]);
+      progress = data[2];
+      if (progress == 100) {
+        Timer(
+          const Duration(seconds: 1),
+          () => setState(() {
+            progress = 0;
+          }),
+        );
+      }
       setState(() {});
     });
 
@@ -96,7 +105,7 @@ class _SlugIconNameDownloadButtonState
 
       // download file name sequence generator logic
 
-      final String _appName = widget.name;
+      final String _appName = name;
 
       if (File(externalDir.path + "/" + name + ".jpg").existsSync()) {
         for (int i = 1; i < 100; i++) {
@@ -119,8 +128,7 @@ class _SlugIconNameDownloadButtonState
         saveInPublicStorage: false,
       );
     } else {
-      // ignore: avoid_print
-      print('Permission Denied');
+      debugPrint('Permission Denied');
     }
   }
 
@@ -133,8 +141,8 @@ class _SlugIconNameDownloadButtonState
           padding: const EdgeInsets.only(right: 20),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(6),
-            child: Image.network(
-              widget.icon,
+            child: CachedNetworkImage(
+              imageUrl: widget.icon,
               width: 80,
               height: 80,
             ),
@@ -187,9 +195,7 @@ class _SlugIconNameDownloadButtonState
                     child: GestureDetector(
                       onTap: () {
                         // _download(widget.apkurl, "${widget.name}.apk");
-                        _download(
-                            "https://images.unsplash.com/photo-1647937627312-e4f6589db6fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw2OHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=60",
-                            widget.name);
+                        _download(widget.icon, widget.name);
 
                         // context
                         //     .read<DownloadingProgress>()

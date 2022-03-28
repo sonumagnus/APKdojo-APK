@@ -2,6 +2,7 @@ import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/screens/slug.dart';
 import 'package:apkdojo/widgets/star_rating.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class SingleVerticalApp extends StatelessWidget {
   final String seourl;
@@ -40,8 +41,8 @@ class SingleVerticalApp extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(4),
-              child: Image.network(
-                icon,
+              child: CachedNetworkImage(
+                imageUrl: icon,
                 width: 80,
               ),
             ),

@@ -1,3 +1,5 @@
+// Unused page
+
 import 'package:apkdojo/widgets/download_page_app_suggestions.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';

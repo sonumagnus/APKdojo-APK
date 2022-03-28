@@ -1,3 +1,4 @@
+import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/screens/search_page.dart';
 import 'package:flutter/material.dart';
 
@@ -8,10 +9,9 @@ class SearchIconWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const SearchPage(),
+        Navigator.of(context).push(
+          createRouteRightToLeft(
+            targetRoute: const SearchPage(),
           ),
         );
       },

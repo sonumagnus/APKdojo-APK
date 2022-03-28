@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'package:apkdojo/providers/downloading_progress.dart';
+import 'package:apkdojo/screens/custom_download_progress_bar.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/my_appbar.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
@@ -36,10 +39,13 @@ class _DownloadManagerState extends State<DownloadManager> {
     String apkDirectory = '$dir/';
     final myDir = Directory(apkDirectory);
     _allFiles = myDir.listSync(recursive: true, followLinks: true);
-    setState(() {
-      _apkFiles =
-          _allFiles.where((element) => element.path.endsWith('.apk')).toList();
-    });
+    setState(
+      () {
+        _apkFiles = _allFiles
+            .where((element) => element.path.endsWith('.apk'))
+            .toList();
+      },
+    );
   }
 
   _fileName(String filePath) {
@@ -50,6 +56,7 @@ class _DownloadManagerState extends State<DownloadManager> {
     return _apkNameWithoutExtension;
   }
 
+// delete file logic
   Future<void> _deleteFile(File file) async {
     try {
       if (await file.exists()) {
@@ -99,80 +106,71 @@ class _DownloadManagerState extends State<DownloadManager> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment:
-          context.read<DownloadingProgress>().progress == 0 && _apkFiles.isEmpty
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.start,
-      children: [
-        Consumer<DownloadingProgress>(
-          builder: (context, provider, child) {
-            return provider.progress > 0
-                ? Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(
-                        height: 65,
-                        child: Card(
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(5)),
-                            child: LinearProgressIndicator(
-                              value: provider.progress.toDouble() / 100,
-                              backgroundColor: Colors.white,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.green.shade300),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        "${provider.progress < 100 ? "Downloading" : "Downloaded"} : ${provider.appName} (${provider.progress}%)",
-                        style: TextStyle(
-                            fontSize: 18, color: Colors.grey.shade700),
-                      )
-                    ],
-                  )
-                : const SizedBox();
-          },
-        ),
-        _apkFiles.isEmpty
-            ? Center(
-                child: Text(
-                  "No Downloads",
-                  style: TextStyle(
-                      fontSize: 20,
+    return Scaffold(
+      appBar: const MyAppBar(
+        appBarTitle: "Downloads",
+      ),
+      drawer: const MyDrawer(),
+      body: Consumer<DownloadingProgress>(
+        builder: (context, provider, child) {
+          return _apkFiles.isEmpty && provider.progress == 0
+              ? Center(
+                  child: Text(
+                    "No Downloads",
+                    style: TextStyle(
+                      fontSize: 25,
                       fontWeight: FontWeight.w500,
-                      color: Colors.grey.shade600),
-                ),
-              )
-            : ListView.builder(
-                shrinkWrap: true,
-                itemCount: _apkFiles.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    elevation: 1,
-                    child: GestureDetector(
-                      onTap: () {
-                        OpenFile.open(_apkFiles[index].path);
-                      },
-                      child: ListTile(
-                        title: Text(
-                          _fileName(
-                            _apkFiles[index].path,
-                          ),
-                        ),
-                        trailing: GestureDetector(
-                          onTap: () => _deleteConfirmationAlertBox(
-                              _apkFiles[index].path),
-                          child: const Icon(Icons.delete),
-                        ),
-                      ),
+                      color: Colors.grey.shade500,
                     ),
-                  );
-                },
-              ),
-      ],
+                  ),
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      provider.progress > 0
+                          ? const CustomDownloadProgressBar()
+                          : const SizedBox(),
+                      ListView.builder(
+                        physics: const ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: _apkFiles.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Card(
+                            elevation: 1,
+                            child: GestureDetector(
+                              onTap: () {
+                                OpenFile.open(_apkFiles[index].path);
+                              },
+                              child: ListTile(
+                                leading: Image.file(
+                                  File(
+                                    _apkFiles[index]
+                                        .path
+                                        .replaceAll(".apk", ".jpg"),
+                                  ),
+                                ), // leading: Text(_apkFiles[index]
+                                //     .path
+                                //     .replaceAll(".apk", ".jpg")),
+                                title: Text(
+                                  _fileName(
+                                    _apkFiles[index].path,
+                                  ),
+                                ),
+                                trailing: GestureDetector(
+                                  onTap: () => _deleteConfirmationAlertBox(
+                                      _apkFiles[index].path),
+                                  child: const Icon(Icons.delete),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                );
+        },
+      ),
     );
   }
 }

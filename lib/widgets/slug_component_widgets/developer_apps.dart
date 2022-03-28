@@ -1,5 +1,6 @@
 import 'package:apkdojo/widgets/main_ui_widgets/single_vertical_app.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 
 class DeveloperApps extends StatefulWidget {
@@ -12,10 +13,17 @@ class DeveloperApps extends StatefulWidget {
 
 class _DeveloperAppsState extends State<DeveloperApps> {
   late Future<List> developerApps;
+  late DioCacheManager _dioCacheManager;
 
   Future<List> getDeveloperApps() async {
-    var response = await Dio()
-        .get('https://api.apkdojo.com/app-developer.php?id=${widget.seourl}');
+    _dioCacheManager = DioCacheManager(CacheConfig());
+
+    Options _cacheOptions = buildCacheOptions(const Duration(days: 7));
+    Dio _dio = Dio();
+    _dio.interceptors.add(_dioCacheManager.interceptor);
+    Response response = await _dio.get(
+        'https://api.apkdojo.com/app-developer.php?id=${widget.seourl}',
+        options: _cacheOptions);
     return response.data['developer_apps'];
   }
 

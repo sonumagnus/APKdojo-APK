@@ -1,6 +1,7 @@
-import 'package:apkdojo/main.dart';
+// Unused page
+
 import 'package:apkdojo/widgets/loading_animation_widgets/category_app_listing_animation.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/search_icon_widget.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/my_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_horizonatal_app_tile.dart';
@@ -30,15 +31,8 @@ class _EditorsChoicePageState extends State<EditorsChoicePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 1,
-        title: Text(
-          "Editor's Choice",
-          style: TextStyle(color: iconThemeColor),
-        ),
-        backgroundColor: primaryColor,
-        iconTheme: IconThemeData(color: iconThemeColor),
-        actions: const [SearchIconWidget()],
+      appBar: const MyAppBar(
+        appBarTitle: "APKdojo",
       ),
       body: FutureBuilder<Map>(
         future: editorsChoiceApps,
