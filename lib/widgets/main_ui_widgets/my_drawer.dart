@@ -59,7 +59,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.games, size: size),
+            leading: const Icon(Icons.sports_esports, size: size),
             title: const Text("Games", style: textStyle),
             onTap: () {
               Navigator.push(
@@ -71,7 +71,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.developer_board, size: size),
+            leading: const Icon(Icons.developer_mode, size: size),
             title: const Text("Developers", style: textStyle),
             onTap: () {
               Navigator.push(
@@ -108,8 +108,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading:
-                const Icon(Icons.control_point_duplicate_outlined, size: size),
+            leading: const Icon(Icons.assignment, size: size),
             title: const Text("Terms of Use", style: textStyle),
             onTap: () {
               Navigator.push(

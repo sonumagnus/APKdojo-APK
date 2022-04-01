@@ -24,7 +24,8 @@ class _CategoryListState extends State<CategoryList> {
   Future<List> getCategories() async {
     _dioCacheManager = DioCacheManager(CacheConfig());
 
-    Options _cacheOptions = buildCacheOptions(const Duration(days: 7));
+    Options _cacheOptions =
+        buildCacheOptions(const Duration(days: 7), forceRefresh: true);
     Dio _dio = Dio();
     _dio.interceptors.add(_dioCacheManager.interceptor);
     Response response = await _dio.get(

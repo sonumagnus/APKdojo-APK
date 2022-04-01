@@ -131,6 +131,8 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
                                     ['seourl'],
                                 name: snapshot.data!['results'][index]['name'],
                                 icon: snapshot.data!['results'][index]['icon'],
+                                rating: snapshot.data!['results'][index]
+                                    ['rating'],
                                 starRating:
                                     "${snapshot.data!['results'][index]['star_rating']}")
                           ],

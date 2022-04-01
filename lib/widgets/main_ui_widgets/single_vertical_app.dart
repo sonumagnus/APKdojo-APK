@@ -9,12 +9,14 @@ class SingleVerticalApp extends StatelessWidget {
   final String name;
   final String icon;
   final String starRating;
+  final String rating;
   const SingleVerticalApp({
     Key? key,
     required this.seourl,
     required this.name,
     required this.icon,
     required this.starRating,
+    required this.rating,
   }) : super(key: key);
 
   @override
@@ -52,9 +54,18 @@ class SingleVerticalApp extends StatelessWidget {
               style: TextStyle(
                   color: Colors.grey[800], overflow: TextOverflow.ellipsis),
             ),
-            StarRating(
-              rating: starRating,
-              starSize: '14',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                StarRating(
+                  rating: starRating,
+                  starSize: '12',
+                ),
+                Text(
+                  rating,
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade800),
+                )
+              ],
             ),
           ],
         ),

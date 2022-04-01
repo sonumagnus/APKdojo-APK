@@ -29,7 +29,8 @@ class _SlugState extends State<Slug> {
 
   Future<Map> fetchApp() async {
     _dioCacheManager = DioCacheManager(CacheConfig());
-    Options _cacheOptions = buildCacheOptions(const Duration(days: 3));
+    Options _cacheOptions =
+        buildCacheOptions(const Duration(days: 3), forceRefresh: true);
     Dio _dio = Dio();
     _dio.interceptors.add(_dioCacheManager.interceptor);
     Response response = await _dio.get(

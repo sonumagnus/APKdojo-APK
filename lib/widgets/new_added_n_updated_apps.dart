@@ -28,12 +28,16 @@ class NewAddedAndUpdatedApps extends HookWidget {
       if (_nextPage.value == apps.value['total_pages']) return;
 
       try {
-        Options _cacheOptions = buildCacheOptions(const Duration(days: 7));
+        Options _cacheOptions = buildCacheOptions(
+          const Duration(days: 7),
+          forceRefresh: true,
+        );
         Dio _dio = Dio();
         _dio.interceptors.add(_dioCacheManager.value.interceptor);
         Response _res = await _dio.get(
-            'https://api.apkdojo.com/v-apps.php?type=$applicationType&lang=en&page=$pageNum',
-            options: _cacheOptions);
+          'https://api.apkdojo.com/v-apps.php?type=$applicationType&lang=en&page=$pageNum',
+          options: _cacheOptions,
+        );
         apps.value = _res.data;
         _appsList.value.addAll(apps.value[applicationType]);
         _nextPage.value = _nextPage.value + 1;

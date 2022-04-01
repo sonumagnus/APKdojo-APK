@@ -21,12 +21,16 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
   Future<List> getGridApps() async {
     _dioCacheManager = DioCacheManager(CacheConfig());
 
-    Options _cacheOptions = buildCacheOptions(const Duration(days: 7));
+    Options _cacheOptions = buildCacheOptions(
+      const Duration(days: 7),
+      forceRefresh: true,
+    );
     Dio _dio = Dio();
     _dio.interceptors.add(_dioCacheManager.interceptor);
     Response response = await _dio.get(
-        'https://api.apkdojo.com/v-apps.php?type=${widget.type}&lang=en',
-        options: _cacheOptions);
+      'https://api.apkdojo.com/v-apps.php?type=${widget.type}&lang=en',
+      options: _cacheOptions,
+    );
     return response.data[widget.type];
   }
 
