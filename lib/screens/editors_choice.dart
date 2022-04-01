@@ -48,7 +48,12 @@ class _EditorsChoicePageState extends State<EditorsChoicePage> {
                   );
                 });
           } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
+            return const Center(
+              child: Text(
+                'fetching error ! Check Internet Connection',
+                style: TextStyle(fontSize: 16),
+              ),
+            );
           }
           return const CategoryAppListingAnimation(
             animatedTileCount: 9,

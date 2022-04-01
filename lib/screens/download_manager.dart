@@ -56,7 +56,7 @@ class _DownloadManagerState extends State<DownloadManager> {
     return _apkNameWithoutExtension;
   }
 
-// delete file logic
+// delete a file
   Future<void> _deleteFile(File file) async {
     try {
       if (await file.exists()) {

@@ -38,6 +38,8 @@ class SlugIconNameDownloadButton extends StatefulWidget {
 class _SlugIconNameDownloadButtonState
     extends State<SlugIconNameDownloadButton> {
   int progress = 0;
+  String id = '';
+  late DownloadTaskStatus status = DownloadTaskStatus.undefined;
 
   final ReceivePort _port = ReceivePort();
 
@@ -48,10 +50,12 @@ class _SlugIconNameDownloadButtonState
     IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');
     _port.listen((dynamic data) {
-      // String id = data[0];
-      // DownloadTaskStatus status = data[1];
-      context.read<DownloadingProgress>().setProgress(data[2]);
+      id = data[0];
+      context.read<DownloadingProgress>().setId(data[0]);
+      status = data[1];
+      context.read<DownloadingProgress>().setDownloadTaskStatus(data[1]);
       progress = data[2];
+      context.read<DownloadingProgress>().setProgress(data[2]);
       if (progress == 100) {
         Timer(
           const Duration(seconds: 1),
@@ -107,10 +111,10 @@ class _SlugIconNameDownloadButtonState
 
       final String _appName = name;
 
-      if (File(externalDir.path + "/" + name + ".jpg").existsSync()) {
+      if (File(externalDir.path + "/" + name + ".mp4").existsSync()) {
         for (int i = 1; i < 100; i++) {
           name = _appName + "(" + "$i" + ")";
-          if (!File(externalDir.path + "/" + name + ".jpg").existsSync()) {
+          if (!File(externalDir.path + "/" + name + ".mp4").existsSync()) {
             break;
           }
         }
@@ -121,7 +125,7 @@ class _SlugIconNameDownloadButtonState
       // ignore: unused_local_variable
       final taskId = await FlutterDownloader.enqueue(
         url: url,
-        fileName: name + '.jpg',
+        fileName: name + '.mp4',
         savedDir: externalDir.path + "/",
         showNotification: true,
         openFileFromNotification: true,
@@ -132,8 +136,27 @@ class _SlugIconNameDownloadButtonState
     }
   }
 
+  _downloadnCancelTask() {
+    if (status == DownloadTaskStatus.undefined) {
+      _download(
+          "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+          widget.name);
+
+      // _download(widget.icon, widget.name);
+      // _download(widget.apkurl, "${widget.name}.apk");
+      context.read<DownloadingProgress>().setAppName(widget.name);
+    } else if (status == DownloadTaskStatus.running) {
+      FlutterDownloader.cancel(taskId: id);
+      context.read<DownloadingProgress>().setAppName("");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // download button styling fon inside text
+    const _downloadButtonTextStyling = TextStyle(
+      color: Colors.white,
+    );
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -161,7 +184,6 @@ class _SlugIconNameDownloadButtonState
                 ),
               ),
               GestureDetector(
-                onDoubleTap: null,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -193,20 +215,13 @@ class _SlugIconNameDownloadButtonState
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 6.0),
                     child: GestureDetector(
-                      onTap: () {
-                        // _download(widget.apkurl, "${widget.name}.apk");
-                        _download(widget.icon, widget.name);
-
-                        // context
-                        //     .read<DownloadingProgress>()
-                        //     .setAppName(widget.name);
-                      },
+                      onTap: _downloadnCancelTask,
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
                           Container(
                             height: 35,
-                            width: 100,
+                            width: 125,
                             decoration: const BoxDecoration(
                               boxShadow: [
                                 BoxShadow(
@@ -229,17 +244,47 @@ class _SlugIconNameDownloadButtonState
                             ),
                           ),
                           Align(
-                            child: Text(
-                              progress == 0
-                                  ? "Download"
-                                  : progress < 100 && progress > 0
-                                      ? "Downloading"
-                                      : progress == 100
-                                          ? "Downloaded"
-                                          : "Download",
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ),
+                              child: status == DownloadTaskStatus.undefined
+                                  ? const Text(
+                                      "Download",
+                                      style: _downloadButtonTextStyling,
+                                    )
+                                  : status == DownloadTaskStatus.running
+                                      ? Row(
+                                          children: [
+                                            const Text("Downloading",
+                                                style:
+                                                    _downloadButtonTextStyling),
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 4),
+                                              decoration: const BoxDecoration(
+                                                color: Colors.green,
+                                                border: Border(
+                                                  left: BorderSide(
+                                                    color: Colors.white,
+                                                    width: 0.5,
+                                                  ),
+                                                ),
+                                              ),
+                                              padding: const EdgeInsets.all(6),
+                                              child: const Text(
+                                                "X",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : status == DownloadTaskStatus.complete
+                                          ? const Text("Downloaded",
+                                              style: _downloadButtonTextStyling)
+                                          : const Text("Download",
+                                              style:
+                                                  _downloadButtonTextStyling)),
                         ],
                       ),
                     ),

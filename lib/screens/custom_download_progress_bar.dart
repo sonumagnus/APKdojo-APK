@@ -1,12 +1,19 @@
 import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:provider/provider.dart';
 
-class CustomDownloadProgressBar extends StatelessWidget {
+class CustomDownloadProgressBar extends StatefulWidget {
   const CustomDownloadProgressBar({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<CustomDownloadProgressBar> createState() =>
+      _CustomDownloadProgressBarState();
+}
+
+class _CustomDownloadProgressBarState extends State<CustomDownloadProgressBar> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DownloadingProgress>(
@@ -28,10 +35,24 @@ class CustomDownloadProgressBar extends StatelessWidget {
                 ),
               ),
             ),
-            Text(
-              "${provider.progress < 100 ? "Downloading" : "Downloaded"} : ${provider.appName} (${provider.progress}%)",
-              style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
-            )
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  "${provider.progress < 100 ? "Downloading" : "Downloaded"} : ${provider.appName} (${provider.progress}%)",
+                  style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+                ),
+                GestureDetector(
+                  child: const Text("Cancel"),
+                  onTap: () {
+                    FlutterDownloader.cancel(taskId: provider.id);
+                    setState(() {
+                      provider.setProgress(0);
+                    });
+                  },
+                )
+              ],
+            ),
           ],
         );
       },

@@ -1,3 +1,4 @@
+import 'package:apkdojo/widgets/main_ui_widgets/my_appbar.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/write_reviews.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/reviews_list.dart';
 import 'package:dio/dio.dart';
@@ -37,21 +38,21 @@ class AllReviewsState extends State<AllReviews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.seourl),
-      ),
-      body: SingleChildScrollView(
-        child: FutureBuilder<Map>(
-          future: reviews,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView(
-                physics: const ScrollPhysics(),
-                shrinkWrap: true,
+      appBar: MyAppBar(appBarTitle: widget.seourl),
+      body: FutureBuilder<Map>(
+        future: reviews,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return SingleChildScrollView(
+              child: Column(
                 children: [
                   WriteReviews(
-                      name: snapshot.data!['name'],
-                      icon: snapshot.data!['icon']),
+                    name: snapshot.data!['name'],
+                    icon: snapshot.data!['icon'],
+                    appid: snapshot.data!['app_id'],
+                    appurl: snapshot.data!['app_url'],
+                    type: snapshot.data!['type'],
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(12),
                     child: ListView.builder(
@@ -73,13 +74,18 @@ class AllReviewsState extends State<AllReviews> {
                     ),
                   ),
                 ],
-              );
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
-            return const Center(child: CircularProgressIndicator());
-          },
-        ),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return const Center(
+              child: Text(
+                'fetching error ! Check Internet Connection',
+                style: TextStyle(fontSize: 16),
+              ),
+            );
+          }
+          return const Center(child: CircularProgressIndicator());
+        },
       ),
     );
   }

@@ -26,7 +26,7 @@ class CategoryAppListing extends HookWidget {
     ScrollController _scrollController = useScrollController();
 
     void _fetchApps(int pageNum) async {
-      if (_nextPage.value == apps.value['total_pages']) return;
+      if (_nextPage.value - 1 == apps.value['total_pages']) return;
       try {
         Options _cacheOptions = buildCacheOptions(const Duration(days: 7));
         Dio _dio = Dio();
@@ -85,7 +85,7 @@ class CategoryAppListing extends HookWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _nextPage.value != apps.value['total_pages']
+                    child: _nextPage.value != apps.value['total_pages'] + 1
                         ? const Center(child: CircularProgressIndicator())
                         : const Center(
                             child: Chip(
