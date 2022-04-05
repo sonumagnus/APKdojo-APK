@@ -25,6 +25,7 @@ class SearchPage extends HookWidget {
 
     useEffect(() {
       _getApps();
+      return null;
     }, [_searchKeyword.value]);
 
     return Scaffold(
@@ -68,13 +69,30 @@ class SearchPage extends HookWidget {
                       ),
                     );
                   },
-                  child: Card(
-                    child: ListTile(
-                      leading:
-                          Image.network(_searchResult.value[index]['icon']),
-                      title: Text(_searchResult.value[index]['name']),
-                      subtitle: Text(_searchResult.value[index]['developer']),
-                    ),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: Image.network(
+                          _searchResult.value[index]['icon'],
+                          height: 48,
+                          width: 48,
+                        ),
+                        title: Text(
+                          _searchResult.value[index]['name'],
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        subtitle: Text(
+                          _searchResult.value[index]['developer'],
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
+                      const Divider(
+                        height: 1,
+                      )
+                    ],
                   ),
                 );
               },

@@ -45,10 +45,11 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
     return Column(
       children: [
         AppType(
-            mainHeading: widget.type == 'new_apps' ? "New Apps" : "New Games",
-            followUpText: "New Added & Updated",
-            seeAllUrl: NewAddedAndUpdatedApps(applicationType: widget.type),
-            showSeeAll: true),
+          mainHeading: widget.type == 'new_apps' ? "New Apps" : "New Games",
+          followUpText: "New Added & Updated",
+          seeAllUrl: NewAddedAndUpdatedApps(applicationType: widget.type),
+          showSeeAll: true,
+        ),
         FutureBuilder<List>(
           future: gridApps,
           builder: (context, snapshot) {
@@ -58,7 +59,7 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
-                  childAspectRatio: 10 / 16.8,
+                  childAspectRatio: 10 / 15,
                 ),
                 itemCount: 8,
                 itemBuilder: (BuildContext context, int index) {

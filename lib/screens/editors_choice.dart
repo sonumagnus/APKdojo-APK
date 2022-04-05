@@ -45,6 +45,8 @@ class _EditorsChoicePageState extends State<EditorsChoicePage> {
                     seourl: snapshot.data!['featured_apps'][index]['seourl'],
                     icon: snapshot.data!['featured_apps'][index]['icon'],
                     name: snapshot.data!['featured_apps'][index]['name'],
+                    developer: snapshot.data!['featured_apps'][index]
+                        ['developer'],
                   );
                 });
           } else if (snapshot.hasError) {

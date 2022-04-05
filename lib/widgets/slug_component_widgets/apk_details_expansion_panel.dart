@@ -4,17 +4,19 @@ ExpansionPanel apkDetailsExpansionPanel(
     AsyncSnapshot<Map<dynamic, dynamic>> snapshot, List<bool> _isOpen) {
   return ExpansionPanel(
       headerBuilder: (BuildContext context, isOpen) {
-        return const Text(
-          "APK Details",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          alignment: Alignment.centerLeft,
+          child: const Text(
+            "APK Details",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         );
       },
-      body: ListView(
-        physics: const ScrollPhysics(),
-        shrinkWrap: true,
+      body: Column(
         children: [
           ListTile(
             leading: const Text("Name"),

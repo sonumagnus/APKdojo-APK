@@ -51,6 +51,7 @@ class Developers extends HookWidget {
 
     useEffect(() {
       _fetchApps(_nextPage.value);
+      return null;
     }, []);
 
     return Scaffold(

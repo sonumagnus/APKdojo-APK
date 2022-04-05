@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:apkdojo/page_route_animation/bottom_to_top.dart';
 import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:apkdojo/screens/devprofile.dart';
+import 'package:apkdojo/styling_refrence/style.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/share_model_fixed.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -156,98 +157,111 @@ class _SlugIconNameDownloadButtonState
     // download button styling fon inside text
     const _downloadButtonTextStyling = TextStyle(
       color: Colors.white,
+      fontWeight: FontWeight.w700,
+      fontSize: 14,
     );
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 20),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: CachedNetworkImage(
-              imageUrl: widget.icon,
-              width: 80,
-              height: 80,
+    return Padding(
+      padding: EdgeInsets.only(left: p20, right: p20, top: p20, bottom: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: CachedNetworkImage(
+                imageUrl: widget.icon,
+                width: 90,
+                height: 90,
+              ),
             ),
           ),
-        ),
-        Expanded(
-          child: ListView(
-            shrinkWrap: true,
-            physics: const ScrollPhysics(),
-            children: [
-              Text(
-                widget.name,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+          Expanded(
+            child: ListView(
+              shrinkWrap: true,
+              physics: const ScrollPhysics(),
+              children: [
+                Text(
+                  widget.name,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DevProfileAndApps(
-                        devURL: widget.developerUrl,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DevProfileAndApps(
+                          devURL: widget.developerUrl,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                child: Row(
-                  children: [
-                    const Text(
-                      "• ",
-                      style: TextStyle(color: Colors.green, fontSize: 18),
-                    ),
-                    Expanded(
-                      child: Text(
-                        widget.developer,
-                        style: TextStyle(color: Colors.grey.shade800),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 6.0),
-                    child: GestureDetector(
-                      onTap: _downloadnCancelTask,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            height: 35,
-                            width: 125,
-                            decoration: const BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  offset: Offset(4.0, 4.0),
-                                  blurRadius: 8.0,
-                                )
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(6),
-                              ),
-                              child: LinearProgressIndicator(
-                                value: double.parse("$progress") / 100,
-                                backgroundColor: Colors.green,
-                                valueColor: const AlwaysStoppedAnimation<Color>(
-                                    Colors.blue),
-                              ),
-                            ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 1.5),
+                    child: Row(
+                      children: [
+                        const Text(
+                          "• ",
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 18,
                           ),
-                          Align(
+                        ),
+                        Expanded(
+                          child: Text(
+                            widget.developer,
+                            style: TextStyle(
+                                color: Colors.grey.shade700,
+                                height: 1.25,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: GestureDetector(
+                        onTap: _downloadnCancelTask,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox(
+                              height: 35,
+                              width: 120,
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                                child: LinearProgressIndicator(
+                                  value: double.parse("$progress") / 100,
+                                  backgroundColor: const Color(0xFF34D399),
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                    Colors.blue,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Align(
                               child: status == DownloadTaskStatus.undefined
-                                  ? const Text(
-                                      "Download",
-                                      style: _downloadButtonTextStyling,
+                                  ? TextButton.icon(
+                                      onPressed: null,
+                                      icon: const Icon(
+                                        Icons.file_download_outlined,
+                                        color: Colors.white,
+                                      ),
+                                      label: const Text(
+                                        "download",
+                                        style: _downloadButtonTextStyling,
+                                      ),
                                     )
                                   : status == DownloadTaskStatus.running
                                       ? Row(
@@ -284,39 +298,41 @@ class _SlugIconNameDownloadButtonState
                                               style: _downloadButtonTextStyling)
                                           : const Text("Download",
                                               style:
-                                                  _downloadButtonTextStyling)),
-                        ],
+                                                  _downloadButtonTextStyling),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.green.shade100),
-                      color: Colors.grey.shade100,
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          createRouteBottomToTop(
-                            targetRoute: const ShareModelFixed(),
-                          ),
-                        );
-                      },
-                      child: const Icon(
-                        Icons.share,
-                        size: 18,
-                        color: Colors.green,
+                    Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.green.shade100),
+                        color: Colors.grey.shade100,
                       ),
-                    ),
-                  )
-                ],
-              ),
-            ],
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            createRouteBottomToTop(
+                              targetRoute: const ShareModelFixed(),
+                            ),
+                          );
+                        },
+                        child: const Icon(
+                          Icons.share,
+                          size: 22,
+                          color: Colors.green,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

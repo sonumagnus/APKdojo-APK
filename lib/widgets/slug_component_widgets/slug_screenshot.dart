@@ -10,10 +10,10 @@ class SlugScreenshot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 250,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      height: 144,
       child: ListView.builder(
-        // itemCount: snapshot.data!['screenshots'].length,
         itemCount: screenshotCount,
         scrollDirection: Axis.horizontal,
         itemBuilder: (_, int index) {

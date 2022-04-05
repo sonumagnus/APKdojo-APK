@@ -39,12 +39,14 @@ class _DeveloperAppsState extends State<DeveloperApps> {
       future: developerApps,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return ListView(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom: 10, top: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 child: Text(
                   snapshot.data![0]['developer'],
                   style: const TextStyle(
@@ -54,13 +56,13 @@ class _DeveloperAppsState extends State<DeveloperApps> {
                 ),
               ),
               SizedBox(
-                height: 180,
+                height: 170,
                 child: ListView.builder(
                   itemCount: snapshot.data!.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
-                      padding: const EdgeInsets.only(right: 10),
+                      padding: const EdgeInsets.only(left: 10),
                       width: 125,
                       child: SingleVerticalApp(
                         seourl: snapshot.data![index]['seourl'],

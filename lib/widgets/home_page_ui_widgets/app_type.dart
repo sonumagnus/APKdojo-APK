@@ -17,15 +17,18 @@ class AppType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 10.0),
+      padding: const EdgeInsets.only(
+        top: 22,
+        bottom: 10,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             mainHeading,
             style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
                 color: Colors.black87),
           ),
           Padding(
@@ -37,7 +40,7 @@ class AppType extends StatelessWidget {
                   followUpText,
                   style: TextStyle(
                     fontSize: 15,
-                    color: Colors.grey.shade700,
+                    color: Colors.grey.shade600,
                   ),
                 ),
                 if (showSeeAll)
@@ -48,26 +51,31 @@ class AppType extends StatelessWidget {
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.only(left: 5),
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                        top: 3,
+                        bottom: 3,
+                        right: 3,
+                      ),
                       child: Row(
-                        children: const [
+                        children: [
                           Text(
                             'See All',
-                            style:
-                                TextStyle(fontSize: 12, color: Colors.black87),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                            ),
                           ),
-                          Icon(
+                          const Icon(
                             Icons.navigate_next,
                             size: 16,
                           )
                         ],
                       ),
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey.shade300,
-                        ),
+                        color: Colors.cyan.shade50,
                         borderRadius: const BorderRadius.all(
-                          Radius.circular(10),
+                          Radius.circular(8),
                         ),
                       ),
                     ),

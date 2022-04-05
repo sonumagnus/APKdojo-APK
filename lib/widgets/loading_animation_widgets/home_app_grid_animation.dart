@@ -38,7 +38,7 @@ class SingleApp extends StatelessWidget {
     return Column(
       children: [
         Container(
-          height: 120,
+          height: 118,
           decoration: const BoxDecoration(
             color: Colors.cyan,
             borderRadius: BorderRadius.all(

@@ -67,17 +67,28 @@ class _CategoryListState extends State<CategoryList> {
                 child: Column(
                   children: [
                     ListTile(
+                      visualDensity: VisualDensity.compact,
+                      dense: true,
+                      horizontalTitleGap: 12,
+                      contentPadding: const EdgeInsets.all(0),
                       leading: Image(
                         image: AssetImage(
-                            'assets/images/category_icons/${snapshot.data![index]["caticon"]}.png'),
-                        width: 38,
-                        height: 38,
+                          'assets/images/category_icons/${snapshot.data![index]["caticon"]}.png',
+                        ),
+                        width: 26,
+                        height: 26,
                       ),
                       title: Text(
                         snapshot.data![index]['catname'],
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                    const Divider(),
+                    const Divider(
+                      height: 7,
+                    )
                   ],
                 ),
               );

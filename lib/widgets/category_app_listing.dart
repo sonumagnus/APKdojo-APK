@@ -59,6 +59,7 @@ class CategoryAppListing extends HookWidget {
 
     useEffect(() {
       _fetchApps(_nextPage.value);
+      return null;
     }, []);
 
     return Scaffold(
@@ -82,6 +83,7 @@ class CategoryAppListing extends HookWidget {
                             icon: _appsList.value[index]['icon'],
                             name: _appsList.value[index]['name'],
                             seourl: _appsList.value[index]['seourl'],
+                            developer: _appsList.value[index]['developer'],
                           )
                         ],
                       );

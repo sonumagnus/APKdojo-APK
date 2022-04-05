@@ -59,6 +59,7 @@ class NewAddedAndUpdatedApps extends HookWidget {
 
     useEffect(() {
       _fetchApps(_nextPage.value);
+      return null;
     }, []);
 
     return Scaffold(
@@ -98,6 +99,7 @@ class NewAddedAndUpdatedApps extends HookWidget {
                             icon: _appsList.value[index]['icon'],
                             name: _appsList.value[index]['name'],
                             seourl: _appsList.value[index]['seourl'],
+                            developer: _appsList.value[index]['developer'],
                           )
                         ],
                       );
@@ -111,7 +113,9 @@ class NewAddedAndUpdatedApps extends HookWidget {
                             child: Chip(
                               label: Text(
                                 "No More Data",
-                                style: TextStyle(fontWeight: FontWeight.w500),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),

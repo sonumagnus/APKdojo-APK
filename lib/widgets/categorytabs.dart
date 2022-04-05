@@ -32,11 +32,16 @@ class CategoryByTabs extends StatelessWidget {
               ],
             ),
           ),
-          body: const TabBarView(
-            children: [
-              CategoryList(type: "apps", cateListCount: "categoryLength"),
-              CategoryList(type: "games", cateListCount: "categoryLength"),
-            ],
+          body: const Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 20,
+            ),
+            child: TabBarView(
+              children: [
+                CategoryList(type: "apps", cateListCount: "categoryLength"),
+                CategoryList(type: "games", cateListCount: "categoryLength"),
+              ],
+            ),
           ),
         ),
       ),

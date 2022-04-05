@@ -44,7 +44,7 @@ class _FeaturedAppsState extends State<FeaturedApps> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return SizedBox(
-            height: 180,
+            height: 170,
             child: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,

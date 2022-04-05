@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
       ),
       drawer: const MyDrawer(),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: SingleChildScrollView(
           child: Column(
             children: const [
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
               HomePageAppsGrid(type: "new_apps"),
               AppType(
                   mainHeading: "Top Categories",
-                  followUpText: "Apps",
+                  followUpText: "Applications",
                   seeAllUrl: CategoryByTabs(
                     selectedIndex: 0,
                   ),

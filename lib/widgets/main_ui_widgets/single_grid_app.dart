@@ -10,14 +10,14 @@ class SingleGridApp extends StatelessWidget {
   final String seourl;
   final String starRating;
   final String rating;
-  const SingleGridApp(
-      {Key? key,
-      required this.name,
-      required this.icon,
-      required this.seourl,
-      required this.starRating,
-      required this.rating})
-      : super(key: key);
+  const SingleGridApp({
+    Key? key,
+    required this.name,
+    required this.icon,
+    required this.seourl,
+    required this.starRating,
+    required this.rating,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +32,25 @@ class SingleGridApp extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(7.8),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(5.0),
+              borderRadius: BorderRadius.circular(8.0),
               child: CachedNetworkImage(
                 imageUrl: icon,
+                height: 68.33,
+                width: 68.33,
               ),
             ),
             Text(
               name,
               maxLines: 2,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,11 +58,11 @@ class SingleGridApp extends StatelessWidget {
               children: [
                 StarRating(
                   rating: starRating,
-                  starSize: '11',
+                  starSize: '9',
                 ),
                 Text(
                   rating == "null" ? "0.0" : rating,
-                  style: const TextStyle(fontSize: 10),
+                  style: const TextStyle(fontSize: 9),
                 )
               ],
             )

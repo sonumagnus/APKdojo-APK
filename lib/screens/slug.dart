@@ -60,66 +60,62 @@ class _SlugState extends State<Slug> {
         iconTheme: IconThemeData(color: iconThemeColor),
         actions: const [SearchIconWidget()],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: FutureBuilder<Map>(
-          future: app,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SlugIconNameDownloadButton(
-                      icon: snapshot.data!['icon'],
-                      developer: snapshot.data!['developer'],
-                      developerUrl: snapshot.data!['developer_url'],
-                      name: snapshot.data!['name'],
-                      seourl: snapshot.data!['seourl'],
-                      apkurl: snapshot.data!['apkurl'],
-                    ),
-                    RatingSizeVersionTable(
-                      rating: snapshot.data!['rating'].toString(),
-                      size: snapshot.data!['size'],
-                      version: snapshot.data!['version'],
-                    ),
-                    SlugDescription(
-                      description: snapshot.data!['des'],
-                    ),
-                    SlugScreenshot(
-                        screenshotCount: snapshot.data!['screenshots'].length,
-                        screenshots: snapshot.data!['screenshots']),
-                    Container(
-                      color: null,
-                      child: ExpansionPanelList(
-                        children: [
-                          userReviewsExpansionPanel(snapshot, _isOpen),
-                          apkDetailsExpansionPanel(snapshot, _isOpen),
-                          whatsNewExpansionPanel(snapshot, _isOpen),
-                        ],
-                        expansionCallback: (i, isOpen) => setState(() {
-                          _isOpen[i] = !isOpen;
-                        }),
-                      ),
-                    ),
-                    DeveloperApps(seourl: snapshot.data!['seourl']),
-                    RelatedApps(relatedApps: snapshot.data!['related'])
-                  ],
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return const Center(
-                child: Text(
-                  'fetching error ! Check Internet Connection',
-                  style: TextStyle(fontSize: 16),
-                ),
-              );
-            }
-            return const Center(
-              child: SlugLoadingAnimation(),
+      body: FutureBuilder<Map>(
+        future: app,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SlugIconNameDownloadButton(
+                    icon: snapshot.data!['icon'],
+                    developer: snapshot.data!['developer'],
+                    developerUrl: snapshot.data!['developer_url'],
+                    name: snapshot.data!['name'],
+                    seourl: snapshot.data!['seourl'],
+                    apkurl: snapshot.data!['apkurl'],
+                  ),
+                  RatingSizeVersionTable(
+                    rating: snapshot.data!['rating'].toString(),
+                    size: snapshot.data!['size'],
+                    version: snapshot.data!['version'],
+                  ),
+                  SlugDescription(
+                    description: snapshot.data!['des'],
+                  ),
+                  SlugScreenshot(
+                      screenshotCount: snapshot.data!['screenshots'].length,
+                      screenshots: snapshot.data!['screenshots']),
+                  ExpansionPanelList(
+                    dividerColor: Colors.grey.shade100,
+                    elevation: 0,
+                    children: [
+                      userReviewsExpansionPanel(snapshot, _isOpen),
+                      apkDetailsExpansionPanel(snapshot, _isOpen),
+                      whatsNewExpansionPanel(snapshot, _isOpen),
+                    ],
+                    expansionCallback: (i, isOpen) => setState(() {
+                      _isOpen[i] = !isOpen;
+                    }),
+                  ),
+                  DeveloperApps(seourl: snapshot.data!['seourl']),
+                  RelatedApps(relatedApps: snapshot.data!['related'])
+                ],
+              ),
             );
-          },
-        ),
+          } else if (snapshot.hasError) {
+            return const Center(
+              child: Text(
+                'fetching error ! Check Internet Connection',
+                style: TextStyle(fontSize: 16),
+              ),
+            );
+          }
+          return const Center(
+            child: SlugLoadingAnimation(),
+          );
+        },
       ),
     );
   }

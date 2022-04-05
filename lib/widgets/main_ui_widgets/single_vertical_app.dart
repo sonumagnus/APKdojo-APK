@@ -35,7 +35,7 @@ class SingleVerticalApp extends StatelessWidget {
           gradient: LinearGradient(
             colors: [Colors.lightGreen, Colors.lightBlueAccent],
           ),
-          borderRadius: BorderRadius.all(Radius.circular(6)),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
         ),
         padding: const EdgeInsets.all(15.0),
         child: Column(
@@ -45,25 +45,32 @@ class SingleVerticalApp extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
               child: CachedNetworkImage(
                 imageUrl: icon,
-                width: 80,
+                width: 85,
               ),
             ),
             Text(
               name,
               maxLines: 2,
               style: TextStyle(
-                  color: Colors.grey[800], overflow: TextOverflow.ellipsis),
+                color: Colors.grey.shade700,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 StarRating(
                   rating: starRating,
-                  starSize: '12',
+                  starSize: '9',
                 ),
                 Text(
                   rating,
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade800),
+                  style: TextStyle(
+                    fontSize: 9,
+                    color: Colors.grey.shade800,
+                  ),
                 )
               ],
             ),
