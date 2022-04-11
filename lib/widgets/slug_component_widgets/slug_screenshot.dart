@@ -4,16 +4,37 @@ import 'package:flutter/material.dart';
 class SlugScreenshot extends StatelessWidget {
   final int screenshotCount;
   final List screenshots;
-  const SlugScreenshot(
-      {Key? key, required this.screenshotCount, required this.screenshots})
-      : super(key: key);
+  const SlugScreenshot({
+    Key? key,
+    required this.screenshotCount,
+    required this.screenshots,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      height: 144,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      height: 164,
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 5,
+            spreadRadius: 1,
+            color: Colors.black12,
+            offset: Offset(0, 1),
+          ),
+          BoxShadow(
+            blurRadius: 5,
+            spreadRadius: 1,
+            color: Colors.white,
+            offset: Offset(0, -5),
+          ),
+        ],
+      ),
       child: ListView.builder(
+        clipBehavior: Clip.none,
         itemCount: screenshotCount,
         scrollDirection: Axis.horizontal,
         itemBuilder: (_, int index) {

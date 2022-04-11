@@ -31,11 +31,11 @@ class SingleVerticalApp extends StatelessWidget {
       },
       child: Container(
         height: 180,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.lightGreen, Colors.lightBlueAccent],
+            colors: [Colors.lightGreen.shade200, Colors.blue.shade100],
           ),
-          borderRadius: BorderRadius.all(Radius.circular(4)),
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
         ),
         padding: const EdgeInsets.all(15.0),
         child: Column(

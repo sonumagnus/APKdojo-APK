@@ -34,10 +34,13 @@ class SingleHorizontalAppTile extends StatelessWidget {
               dense: true,
               visualDensity: VisualDensity.compact,
               minVerticalPadding: 0,
-              leading: Image(
-                image: CachedNetworkImageProvider(icon),
-                height: 44,
-                width: 44,
+              leading: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(6)),
+                child: Image(
+                  image: CachedNetworkImageProvider(icon),
+                  height: 44,
+                  width: 44,
+                ),
               ),
               title: Text(
                 name,
@@ -57,21 +60,32 @@ class SingleHorizontalAppTile extends StatelessWidget {
               ),
               trailing: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 7,
-                  vertical: 7,
+                  horizontal: 6,
+                  vertical: 4,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.green.shade500,
                   borderRadius: const BorderRadius.all(
-                    Radius.circular(5),
+                    Radius.circular(4),
                   ),
                 ),
-                child: const Text(
-                  "Download",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Text(
+                      "Download",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Icon(
+                      Icons.download,
+                      size: 15,
+                      color: Colors.white,
+                    )
+                  ],
                 ),
               ),
               contentPadding: const EdgeInsets.symmetric(

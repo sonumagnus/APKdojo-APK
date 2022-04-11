@@ -1,4 +1,5 @@
 import 'package:apkdojo/widgets/loading_animation_widgets/category_app_listing_animation.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/my_appbar.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_horizonatal_app_tile.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
@@ -63,8 +64,8 @@ class CategoryAppListing extends HookWidget {
     }, []);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(categoryName),
+      appBar: MyAppBar(
+        appBarTitle: categoryName,
       ),
       body: _appsList.value.isEmpty
           ? const CategoryAppListingAnimation(animatedTileCount: 9)

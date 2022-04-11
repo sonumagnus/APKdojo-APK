@@ -42,7 +42,9 @@ class _DownloadManagerState extends State<DownloadManager> {
     setState(
       () {
         _apkFiles = _allFiles
-            .where((element) => element.path.endsWith('.apk'))
+            .where(
+              (element) => element.path.endsWith('.apk'),
+            )
             .toList();
       },
     );

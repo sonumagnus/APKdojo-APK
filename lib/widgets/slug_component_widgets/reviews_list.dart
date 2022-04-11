@@ -28,35 +28,59 @@ class ReviewsList extends StatelessWidget {
                 Container(
                   margin: const EdgeInsets.only(right: 8),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: const BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.all(Radius.circular(3)),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade300,
+                    borderRadius: const BorderRadius.all(Radius.circular(3)),
                   ),
                   child: Row(
                     children: [
                       Text(
                         rating,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                      const Icon(Icons.star, size: 15, color: Colors.white),
+                      const Icon(
+                        Icons.star,
+                        size: 12,
+                        color: Colors.white,
+                      ),
                     ],
                   ),
                 ),
                 Text(
                   name,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
                 ),
               ],
             ),
-            if (showDate == true) Text(date),
+            if (showDate == true)
+              Text(
+                date,
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
           ],
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
-          child: Text(comment),
+          padding: const EdgeInsets.only(top: 8),
+          child: Text(
+            comment,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ),
-        const Divider()
+        const Divider(
+          height: 15,
+        )
       ],
     );
   }

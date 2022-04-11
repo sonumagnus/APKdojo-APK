@@ -39,13 +39,26 @@ class _WriteReviewsState extends State<WriteReviews> {
     return Column(
       children: [
         ListTile(
-          title: const Text("Rate & Write Reviews for"),
-          subtitle: Text(widget.name),
+          visualDensity: const VisualDensity(vertical: 2.0),
+          title: Text(
+            "Rate & Write Reviews for",
+            style: TextStyle(
+              color: Colors.grey.shade600,
+            ),
+          ),
+          subtitle: Text(
+            widget.name,
+            style: TextStyle(
+              color: Colors.grey.shade900,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           trailing: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(5)),
             child: CachedNetworkImage(
               imageUrl: widget.icon,
-              width: 40,
+              width: 44,
             ),
           ),
         ),
@@ -53,12 +66,13 @@ class _WriteReviewsState extends State<WriteReviews> {
           initialRating: 0,
           minRating: 1,
           direction: Axis.horizontal,
+          itemSize: 28,
           allowHalfRating: false,
           itemCount: 5,
+          unratedColor: Colors.grey.shade800,
           itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
           itemBuilder: (context, _) => const Icon(
-            Icons.star,
-            color: Colors.amber,
+            Icons.star_border_sharp,
           ),
           onRatingUpdate: (rating) {
             reviewDetails["rating"] = rating;
@@ -74,28 +88,43 @@ class _WriteReviewsState extends State<WriteReviews> {
               onChanged: (value) {
                 reviewDetails["name"] = value;
               },
-              decoration: const InputDecoration(
-                  border: UnderlineInputBorder(), hintText: "Your Name"),
+              decoration: InputDecoration(
+                border: const UnderlineInputBorder(),
+                hintText: "Your Name",
+                hintStyle: TextStyle(color: Colors.grey.shade600),
+              ),
             ),
             TextField(
               onChanged: (value) {
                 reviewDetails["comment"] = value;
               },
-              decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  hintText: "Write Your Review Here"),
+              decoration: InputDecoration(
+                border: const UnderlineInputBorder(),
+                hintText: "Write Your Review Here",
+                hintStyle: TextStyle(color: Colors.grey.shade600),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: ElevatedButton(
-                  onPressed: () {
-                    reviewDetails["appid"] = widget.appid;
-                    reviewDetails["appurl"] = widget.appurl;
-                    reviewDetails["type"] = widget.type;
-                    reviewDetails["email"] = "abc@gamil.com";
-                    _postReview();
-                  },
-                  child: const Text("Post Reviews")),
+                onPressed: () {
+                  reviewDetails["appid"] = widget.appid;
+                  reviewDetails["appurl"] = widget.appurl;
+                  reviewDetails["type"] = widget.type;
+                  reviewDetails["email"] = "abc@gamil.com";
+                  _postReview();
+                },
+                child: Text(
+                  "Post Reviews",
+                  style: TextStyle(color: Colors.green.shade500),
+                ),
+                style: ButtonStyle(
+                  elevation: MaterialStateProperty.all(0),
+                  backgroundColor: MaterialStateProperty.all(
+                    Colors.cyan.shade50,
+                  ),
+                ),
+              ),
             ),
             const Divider()
           ],

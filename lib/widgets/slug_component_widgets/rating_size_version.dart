@@ -4,12 +4,14 @@ class RatingSizeVersionTable extends StatelessWidget {
   final String rating;
   final String size;
   final String version;
-  const RatingSizeVersionTable(
-      {Key? key,
-      required this.rating,
-      required this.size,
-      required this.version})
-      : super(key: key);
+  final String totalRating;
+  const RatingSizeVersionTable({
+    Key? key,
+    required this.rating,
+    required this.size,
+    required this.version,
+    required this.totalRating,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class RatingSizeVersionTable extends StatelessWidget {
       ),
       child: GridView(
         padding: const EdgeInsets.symmetric(vertical: 4),
+        physics: const ScrollPhysics(),
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
@@ -44,9 +47,30 @@ class RatingSizeVersionTable extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: Column(
               children: [
-                Text(rating != "null" ? rating : 0.0.toString(),
-                    style: _keyDataStyling),
-                Text('Rating', style: _keyOptionStyling),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      rating != "null" ? rating : 0.0.toString(),
+                      style: _keyDataStyling,
+                    ),
+                    const Icon(
+                      Icons.star,
+                      size: 14,
+                      color: Colors.amber,
+                    )
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      totalRating != "null" ? "$totalRating " : "0",
+                      style: _keyOptionStyling,
+                    ),
+                    Text('Rating', style: _keyOptionStyling),
+                  ],
+                ),
               ],
             ),
           ),
@@ -68,8 +92,16 @@ class RatingSizeVersionTable extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: Column(children: [
-              Text(version, style: _keyDataStyling),
-              Text("Version", style: _keyOptionStyling),
+              Text(
+                version,
+                style: _keyDataStyling,
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+              ),
+              Text(
+                "Version",
+                style: _keyOptionStyling,
+              ),
             ]),
           ),
         ],

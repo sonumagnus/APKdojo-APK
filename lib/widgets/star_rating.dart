@@ -23,7 +23,7 @@ class _StarRatingState extends State<StarRating> {
       direction: Axis.horizontal,
       itemBuilder: (context, _) => const Icon(
         Icons.star,
-        color: Colors.amber,
+        color: Colors.green,
       ),
       onRatingUpdate: (newRating) {
         // print(newRating);

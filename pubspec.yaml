@@ -48,6 +48,9 @@ dependencies:
   provider: ^6.0.2
   open_file: ^3.2.1
   cached_network_image: ^3.2.0
+  flutter_svg: ^0.23.0+1
+  url_launcher: ^6.0.20
+  expansion_widget: ^0.0.3
   
 dev_dependencies:
   flutter_test:

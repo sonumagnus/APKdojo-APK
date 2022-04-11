@@ -3,8 +3,10 @@ import 'package:shimmer/shimmer.dart';
 
 class CategoryAppListingAnimation extends StatelessWidget {
   final int animatedTileCount;
-  const CategoryAppListingAnimation({Key? key, required this.animatedTileCount})
-      : super(key: key);
+  const CategoryAppListingAnimation({
+    Key? key,
+    this.animatedTileCount = 1,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,27 +30,25 @@ class SingleAnimatedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const _boxDecoration = BoxDecoration(
+      color: Colors.grey,
+      borderRadius: BorderRadius.all(
+        Radius.circular(6),
+      ),
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: ListTile(
         leading: Container(
-          width: 50,
-          height: 50,
-          decoration: const BoxDecoration(
-            color: Colors.grey,
-            shape: BoxShape.circle,
-          ),
+          width: 44,
+          height: 44,
+          decoration: _boxDecoration,
         ),
-        title: Container(
+        title: Container(height: 20, decoration: _boxDecoration),
+        trailing: Container(
           height: 20,
-          decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: const BorderRadius.all(Radius.circular(6))),
-        ),
-        trailing: const Icon(
-          Icons.download,
-          size: 32,
-          color: Colors.grey,
+          width: 80,
+          decoration: _boxDecoration,
         ),
       ),
     );

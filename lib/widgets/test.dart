@@ -1,62 +1,92 @@
-import 'dart:async';
-import 'package:apkdojo/providers/downloading_progress.dart';
+import 'package:apkdojo/widgets/loading_animation_widgets/featured_apps_animation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class Test extends StatefulWidget {
+class Test extends StatelessWidget {
   const Test({Key? key}) : super(key: key);
 
   @override
-  State<Test> createState() => _TestState();
-}
-
-class _TestState extends State<Test> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Hello World"),
-      ),
-      body: Consumer<DownloadingProgress>(
-        builder: (context, _downloadProgress, child) {
-          return ListView(
-            children: [
-              Text(context.read<DownloadingProgress>().progress.toString()),
-              Text("${_downloadProgress.progress}"),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _downloadProgress.setProgress(_downloadProgress.progress + 1);
-                  _downloadProgress.setAppName("whatsapp");
-                  // context.read<DownloadingProgress>().setProgress(
-                  //     context.read<DownloadingProgress>().progress + 1);
-                  Timer.periodic(const Duration(seconds: 1), (timer) {
-                    _downloadProgress
-                        .setProgress(_downloadProgress.progress + 4);
-                    _downloadProgress.setAppName("whatsapp");
-                  });
-                },
-                child: const Icon(Icons.add),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _downloadProgress
-                      .setProgress(_downloadProgress.progress - 10);
-                  _downloadProgress.setAppName("whatsapp");
-                  // context.read<DownloadingProgress>().setProgress(
-                  //     context.read<DownloadingProgress>().progress + 1);
-                },
-                child: const Icon(Icons.remove),
-              ),
-            ],
-          );
-        },
+      appBar: AppBar(),
+      body: const SizedBox(
+        child: FeaturedAppAnimation(animatedItemCount: 3),
       ),
     );
   }
 }
+
+
+// import 'dart:async';
+// import 'package:apkdojo/providers/downloading_progress.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:provider/provider.dart';
+
+// class Test extends StatefulWidget {
+//   const Test({Key? key}) : super(key: key);
+
+//   @override
+//   State<Test> createState() => _TestState();
+// }
+
+// class _TestState extends State<Test> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text("Hello World"),
+//       ),
+//       body: Consumer<DownloadingProgress>(
+//         builder: (context, _downloadProgress, child) {
+//           return ListView(
+//             children: [
+//               // const Accordion(title: "hello world", content: "by"),
+
+//               TextButton.icon(
+//                 onPressed: null,
+//                 icon: const Icon(Icons.abc),
+//                 label: const Text("data"),
+//               ),
+//               SvgPicture.asset(
+//                 'assets/images/playstore.svg',
+//                 height: 15,
+//               ),
+//               Text(context.read<DownloadingProgress>().progress.toString()),
+//               Text("${_downloadProgress.progress}"),
+//               const SizedBox(
+//                 height: 20,
+//               ),
+//               ElevatedButton(
+//                 onPressed: () {
+//                   _downloadProgress.setProgress(_downloadProgress.progress + 1);
+//                   _downloadProgress.setAppName("whatsapp");
+//                   // context.read<DownloadingProgress>().setProgress(
+//                   //     context.read<DownloadingProgress>().progress + 1);
+//                   Timer.periodic(const Duration(seconds: 1), (timer) {
+//                     _downloadProgress
+//                         .setProgress(_downloadProgress.progress + 4);
+//                     _downloadProgress.setAppName("whatsapp");
+//                   });
+//                 },
+//                 child: const Icon(Icons.add),
+//               ),
+//               ElevatedButton(
+//                 onPressed: () {
+//                   _downloadProgress
+//                       .setProgress(_downloadProgress.progress - 10);
+//                   _downloadProgress.setAppName("whatsapp");
+//                   // context.read<DownloadingProgress>().setProgress(
+//                   //     context.read<DownloadingProgress>().progress + 1);
+//                 },
+//                 child: const Icon(Icons.remove),
+//               ),
+//             ],
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
 
 // import 'dart:io';
 // import 'package:flutter/material.dart';

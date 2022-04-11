@@ -12,12 +12,17 @@ class FeaturedAppAnimation extends StatelessWidget {
       baseColor: Colors.cyan.shade100,
       highlightColor: Colors.grey.shade100,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 60,
+        ),
         child: GridView.count(
           shrinkWrap: true,
+          clipBehavior: Clip.none,
           crossAxisSpacing: 10,
           crossAxisCount: 3,
-          childAspectRatio: 4 / 8,
+          childAspectRatio: 1 / 2,
           children: <Widget>[
             for (var i = 0; i < animatedItemCount; i++) const SingleApp()
           ],

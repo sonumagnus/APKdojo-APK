@@ -49,13 +49,8 @@ class DownloadingProgress extends ChangeNotifier {
   }
 
   void setAppName(String _currentDownloadingAppName) {
-    if (_progress != 100) {
-      _appName = _currentDownloadingAppName;
-    } else {
-      _appName = "";
-      notifyListeners();
-      return;
-    }
+    _appName = _currentDownloadingAppName;
+
     notifyListeners();
   }
 }

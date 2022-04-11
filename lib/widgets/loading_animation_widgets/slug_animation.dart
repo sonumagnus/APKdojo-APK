@@ -10,7 +10,7 @@ class SlugLoadingAnimation extends StatelessWidget {
       baseColor: Colors.cyan.shade100,
       highlightColor: Colors.grey.shade100,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(20),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -39,16 +39,20 @@ class SlugLoadingAnimation extends StatelessWidget {
                   height: 16,
                   decoration: BoxDecoration(
                     color: Colors.blueGrey.shade100,
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(5),
+                    ),
                   ),
                 ),
                 Container(
-                  width: 100,
-                  height: 35,
+                  width: 120,
+                  height: 34,
                   decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(12))),
+                    color: Colors.grey.shade300,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
                 )
               ],
             )

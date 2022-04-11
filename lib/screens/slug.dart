@@ -1,15 +1,17 @@
 import 'package:apkdojo/main.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/slug_animation.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/search_icon_widget.dart';
-import 'package:apkdojo/widgets/slug_component_widgets/apk_details_expansion_panel.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/apk_datail_expansion_panel.dart';
+
 import 'package:apkdojo/widgets/slug_component_widgets/developer_apps.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/rating_size_version.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/related_apps.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/slug_custom_card_shadow.dart';
+
 import 'package:apkdojo/widgets/slug_component_widgets/slug_description.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/slug_icon_name_download_button.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/slug_screenshot.dart';
-import 'package:apkdojo/widgets/slug_component_widgets/user_reviews_expansion_panel.dart';
-import 'package:apkdojo/widgets/slug_component_widgets/whatsnew_expansion_panel.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/user_review_expansion_panel.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/whats_new_expansion_panel.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -24,7 +26,6 @@ class Slug extends StatefulWidget {
 
 class _SlugState extends State<Slug> {
   late Future<Map> app;
-  final List<bool> _isOpen = [true, false, false, false];
   late DioCacheManager _dioCacheManager;
 
   Future<Map> fetchApp() async {
@@ -51,14 +52,9 @@ class _SlugState extends State<Slug> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 1,
-        title: Text(
-          widget.seourl,
-          style: TextStyle(color: appBarTitleColor),
-        ),
-        backgroundColor: primaryColor,
+        elevation: 0,
+        backgroundColor: Colors.white12,
         iconTheme: IconThemeData(color: iconThemeColor),
-        actions: const [SearchIconWidget()],
       ),
       body: FutureBuilder<Map>(
         future: app,
@@ -68,6 +64,17 @@ class _SlugState extends State<Slug> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Consumer<DownloadingProgress>(
+                  //     builder: (context, provider, child) {
+                  //   return Column(
+                  //     children: [
+                  //       Text("${provider.progress}"),
+                  //       Text("${provider.downloadTaskStatus}"),
+                  //       Text(provider.id),
+                  //       Text(provider.appName),
+                  //     ],
+                  //   );
+                  // }),
                   SlugIconNameDownloadButton(
                     icon: snapshot.data!['icon'],
                     developer: snapshot.data!['developer'],
@@ -75,29 +82,29 @@ class _SlugState extends State<Slug> {
                     name: snapshot.data!['name'],
                     seourl: snapshot.data!['seourl'],
                     apkurl: snapshot.data!['apkurl'],
+                    playStoreUrl: snapshot.data!['playstore'],
                   ),
                   RatingSizeVersionTable(
                     rating: snapshot.data!['rating'].toString(),
                     size: snapshot.data!['size'],
                     version: snapshot.data!['version'],
+                    totalRating: snapshot.data!['total_ratings'].toString(),
                   ),
                   SlugDescription(
                     description: snapshot.data!['des'],
                   ),
                   SlugScreenshot(
-                      screenshotCount: snapshot.data!['screenshots'].length,
-                      screenshots: snapshot.data!['screenshots']),
-                  ExpansionPanelList(
-                    dividerColor: Colors.grey.shade100,
-                    elevation: 0,
-                    children: [
-                      userReviewsExpansionPanel(snapshot, _isOpen),
-                      apkDetailsExpansionPanel(snapshot, _isOpen),
-                      whatsNewExpansionPanel(snapshot, _isOpen),
-                    ],
-                    expansionCallback: (i, isOpen) => setState(() {
-                      _isOpen[i] = !isOpen;
-                    }),
+                    screenshotCount: snapshot.data!['screenshots'].length,
+                    screenshots: snapshot.data!['screenshots'],
+                  ),
+                  SlugCustomCardShadow(
+                    child: Column(
+                      children: [
+                        UserReviewsExpansionPanel(appData: snapshot.data),
+                        ApkDetailsExpansionPanel(appData: snapshot.data),
+                        WhatsNewExpansionPanel(appData: snapshot.data),
+                      ],
+                    ),
                   ),
                   DeveloperApps(seourl: snapshot.data!['seourl']),
                   RelatedApps(relatedApps: snapshot.data!['related'])

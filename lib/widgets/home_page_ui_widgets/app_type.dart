@@ -1,4 +1,5 @@
 import 'package:apkdojo/page_route_animation/right_to_left.dart';
+import 'package:apkdojo/styling_refrence/style.dart';
 import 'package:flutter/material.dart';
 
 class AppType extends StatelessWidget {
@@ -6,19 +7,21 @@ class AppType extends StatelessWidget {
   final String followUpText;
   final Widget seeAllUrl;
   final bool showSeeAll;
-  const AppType(
-      {Key? key,
-      required this.mainHeading,
-      required this.followUpText,
-      required this.seeAllUrl,
-      required this.showSeeAll})
-      : super(key: key);
+  const AppType({
+    Key? key,
+    required this.mainHeading,
+    required this.followUpText,
+    this.seeAllUrl = const SizedBox.shrink(),
+    required this.showSeeAll,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
+      padding: EdgeInsets.only(
         top: 22,
+        left: p20,
+        right: p20,
         bottom: 10,
       ),
       child: Column(
@@ -27,9 +30,10 @@ class AppType extends StatelessWidget {
           Text(
             mainHeading,
             style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-                color: Colors.black87),
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              color: Colors.black87,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 4.0),

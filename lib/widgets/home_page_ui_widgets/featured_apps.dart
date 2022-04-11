@@ -1,5 +1,7 @@
+import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_vertical_app.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/featured_apps_animation.dart';
+import 'package:apkdojo/widgets/new_added_n_updated_apps.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
@@ -43,27 +45,41 @@ class _FeaturedAppsState extends State<FeaturedApps> {
       future: featuredApps,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return SizedBox(
-            height: 170,
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              // itemCount: snapshot.data!.length,
-              itemCount: 8,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  width: 125,
-                  padding: const EdgeInsets.only(right: 10),
-                  child: SingleVerticalApp(
-                    seourl: snapshot.data![index]['seourl'],
-                    name: snapshot.data![index]['name'],
-                    icon: snapshot.data![index]['icon'],
-                    starRating: snapshot.data![index]['star_rating'].toString(),
-                    rating: snapshot.data![index]['rating'],
-                  ),
-                );
-              },
-            ),
+          return Column(
+            children: [
+              const AppType(
+                mainHeading: "Editor's Choice",
+                followUpText: "Features By Apkdojo",
+                seeAllUrl:
+                    NewAddedAndUpdatedApps(applicationType: "featured_apps"),
+                showSeeAll: true,
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                height: 170,
+                child: ListView.builder(
+                  clipBehavior: Clip.none,
+                  itemExtent: 125,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  // itemCount: snapshot.data!.length,
+                  itemCount: 8,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: SingleVerticalApp(
+                        seourl: snapshot.data![index]['seourl'],
+                        name: snapshot.data![index]['name'],
+                        icon: snapshot.data![index]['icon'],
+                        starRating:
+                            snapshot.data![index]['star_rating'].toString(),
+                        rating: snapshot.data![index]['rating'],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           );
         } else if (snapshot.hasError) {
           return const Center(

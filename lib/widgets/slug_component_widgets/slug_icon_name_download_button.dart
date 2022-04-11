@@ -10,9 +10,11 @@ import 'package:apkdojo/widgets/slug_component_widgets/share_model_fixed.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SlugIconNameDownloadButton extends StatefulWidget {
   final String icon;
@@ -21,6 +23,7 @@ class SlugIconNameDownloadButton extends StatefulWidget {
   final String developerUrl;
   final String seourl;
   final String apkurl;
+  final String playStoreUrl;
   const SlugIconNameDownloadButton({
     Key? key,
     required this.icon,
@@ -29,6 +32,7 @@ class SlugIconNameDownloadButton extends StatefulWidget {
     required this.developerUrl,
     required this.seourl,
     required this.apkurl,
+    this.playStoreUrl = "",
   }) : super(key: key);
 
   @override
@@ -57,12 +61,18 @@ class _SlugIconNameDownloadButtonState
       context.read<DownloadingProgress>().setDownloadTaskStatus(data[1]);
       progress = data[2];
       context.read<DownloadingProgress>().setProgress(data[2]);
-      if (progress == 100) {
+      if (status == DownloadTaskStatus.complete ||
+          status == DownloadTaskStatus.canceled) {
         Timer(
           const Duration(seconds: 1),
-          () => setState(() {
-            progress = 0;
-          }),
+          () => setState(
+            () {
+              progress = 0;
+              status = DownloadTaskStatus.undefined;
+              id = '';
+              context.read<DownloadingProgress>().setAppName("");
+            },
+          ),
         );
       }
       setState(() {});
@@ -140,26 +150,20 @@ class _SlugIconNameDownloadButtonState
   _downloadnCancelTask() {
     if (status == DownloadTaskStatus.undefined) {
       _download(
-          "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-          widget.name);
+        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+        widget.name,
+      );
 
       // _download(widget.icon, widget.name);
       // _download(widget.apkurl, "${widget.name}.apk");
       context.read<DownloadingProgress>().setAppName(widget.name);
     } else if (status == DownloadTaskStatus.running) {
       FlutterDownloader.cancel(taskId: id);
-      context.read<DownloadingProgress>().setAppName("");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // download button styling fon inside text
-    const _downloadButtonTextStyling = TextStyle(
-      color: Colors.white,
-      fontWeight: FontWeight.w700,
-      fontSize: 14,
-    );
     return Padding(
       padding: EdgeInsets.only(left: p20, right: p20, top: p20, bottom: 10),
       child: Row(
@@ -200,7 +204,7 @@ class _SlugIconNameDownloadButtonState
                     );
                   },
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 1.5),
+                    padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Row(
                       children: [
                         const Text(
@@ -224,6 +228,7 @@ class _SlugIconNameDownloadButtonState
                   ),
                 ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
@@ -231,75 +236,56 @@ class _SlugIconNameDownloadButtonState
                       child: GestureDetector(
                         onTap: _downloadnCancelTask,
                         child: Stack(
-                          alignment: Alignment.center,
+                          alignment: Alignment.centerLeft,
                           children: [
-                            SizedBox(
-                              height: 35,
-                              width: 120,
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(20),
-                                ),
-                                child: LinearProgressIndicator(
-                                  value: double.parse("$progress") / 100,
-                                  backgroundColor: const Color(0xFF34D399),
-                                  valueColor:
-                                      const AlwaysStoppedAnimation<Color>(
-                                    Colors.blue,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Align(
-                              child: status == DownloadTaskStatus.undefined
-                                  ? TextButton.icon(
-                                      onPressed: null,
-                                      icon: const Icon(
-                                        Icons.file_download_outlined,
-                                        color: Colors.white,
-                                      ),
-                                      label: const Text(
-                                        "download",
-                                        style: _downloadButtonTextStyling,
-                                      ),
-                                    )
-                                  : status == DownloadTaskStatus.running
-                                      ? Row(
-                                          children: [
-                                            const Text("Downloading",
-                                                style:
-                                                    _downloadButtonTextStyling),
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 4),
-                                              decoration: const BoxDecoration(
-                                                color: Colors.green,
-                                                border: Border(
-                                                  left: BorderSide(
-                                                    color: Colors.white,
-                                                    width: 0.5,
-                                                  ),
-                                                ),
-                                              ),
-                                              padding: const EdgeInsets.all(6),
-                                              child: const Text(
-                                                "X",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w300),
+                            widget.apkurl == ""
+                                ? GetFromPlayStore(
+                                    playStoreUrl: widget.playStoreUrl,
+                                  )
+                                : status == DownloadTaskStatus.undefined
+                                    ? const DownloadButton(
+                                        buttonText: "Download")
+                                    : status == DownloadTaskStatus.running
+                                        ? Container(
+                                            alignment: Alignment.centerLeft,
+                                            width: 120,
+                                            child: SizedBox(
+                                              height: 32,
+                                              width: 32,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                color: Colors.grey.shade600,
+                                                value:
+                                                    double.parse("$progress") /
+                                                        100,
                                               ),
                                             ),
-                                          ],
-                                        )
-                                      : status == DownloadTaskStatus.complete
-                                          ? const Text("Downloaded",
-                                              style: _downloadButtonTextStyling)
-                                          : const Text("Download",
-                                              style:
-                                                  _downloadButtonTextStyling),
-                            ),
+                                          )
+                                        : status == DownloadTaskStatus.complete
+                                            ? const DownloadButton(
+                                                buttonText: "Downloaded",
+                                              )
+                                            : status ==
+                                                    DownloadTaskStatus.canceled
+                                                ? const DownloadButton(
+                                                    buttonText: "Canceled",
+                                                  )
+                                                : const DownloadButton(
+                                                    buttonText: "Wait",
+                                                  ),
+                            // following code is for progress in percentage
+                            if (status == DownloadTaskStatus.running)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 9),
+                                child: Text(
+                                  "$progress%",
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              )
+                            else
+                              const SizedBox.shrink()
                           ],
                         ),
                       ),
@@ -321,7 +307,7 @@ class _SlugIconNameDownloadButtonState
                         },
                         child: const Icon(
                           Icons.share,
-                          size: 22,
+                          size: 20,
                           color: Colors.green,
                         ),
                       ),
@@ -336,3 +322,152 @@ class _SlugIconNameDownloadButtonState
     );
   }
 }
+
+class DownloadButton extends StatelessWidget {
+  final String buttonText;
+  const DownloadButton({Key? key, required this.buttonText}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 7),
+      width: 120,
+      height: 34,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+        color: Color(0xFF34D399),
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
+        ),
+      ),
+      child: Text(
+        buttonText,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
+}
+
+class GetFromPlayStore extends StatelessWidget {
+  final String playStoreUrl;
+  const GetFromPlayStore({
+    Key? key,
+    required this.playStoreUrl,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        if (await canLaunch(playStoreUrl)) {
+          await launch(playStoreUrl);
+        } else {
+          // can lauch url
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 6,
+        ),
+        decoration: const BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.all(
+            Radius.circular(16),
+          ),
+        ),
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              'assets/images/playstore.svg',
+              height: 20,
+            ),
+            const SizedBox(
+              width: 6,
+            ),
+            const Text(
+              "Get From PlayStore",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// SizedBox(
+//                               height: 35,
+//                               width: 120,
+//                               child: ClipRRect(
+//                                 borderRadius: const BorderRadius.all(
+//                                   Radius.circular(20),
+//                                 ),
+//                                 child: LinearProgressIndicator(
+//                                   value: double.parse("$progress") / 100,
+//                                   backgroundColor: const Color(0xFF34D399),
+//                                   valueColor:
+//                                       const AlwaysStoppedAnimation<Color>(
+//                                     Colors.blue,
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                             Align(
+//                               child: status == DownloadTaskStatus.undefined
+//                                   ? TextButton.icon(
+//                                       onPressed: null,
+//                                       icon: const Icon(
+//                                         Icons.file_download_outlined,
+//                                         color: Colors.white,
+//                                       ),
+//                                       label: const Text(
+//                                         "download",
+//                                         style: _downloadButtonTextStyling,
+//                                       ),
+//                                     )
+//                                   : status == DownloadTaskStatus.running
+//                                       ? Row(
+//                                           children: [
+//                                             const Text("Downloading",
+//                                                 style:
+//                                                     _downloadButtonTextStyling),
+//                                             Container(
+//                                               margin: const EdgeInsets.only(
+//                                                   left: 4),
+//                                               decoration: const BoxDecoration(
+//                                                 color: Colors.green,
+//                                                 border: Border(
+//                                                   left: BorderSide(
+//                                                     color: Colors.white,
+//                                                     width: 0.5,
+//                                                   ),
+//                                                 ),
+//                                               ),
+//                                               padding: const EdgeInsets.all(6),
+//                                               child: const Text(
+//                                                 "X",
+//                                                 style: TextStyle(
+//                                                     color: Colors.white,
+//                                                     fontSize: 20,
+//                                                     fontWeight:
+//                                                         FontWeight.w300),
+//                                               ),
+//                                             ),
+//                                           ],
+//                                         )
+//                                       : status == DownloadTaskStatus.complete
+//                                           ? const Text("Downloaded",
+//                                               style: _downloadButtonTextStyling)
+//                                           : const Text("Download",
+//                                               style:
+//                                                   _downloadButtonTextStyling),
+//                             ),

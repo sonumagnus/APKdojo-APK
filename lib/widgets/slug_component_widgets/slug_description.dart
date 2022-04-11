@@ -30,10 +30,10 @@ class _SlugDescriptionState extends State<SlugDescription> {
             child: Html(
               data: widget.description,
               style: {
-                "p": Style(
+                "*": Style(
                   fontSize: const FontSize(12),
                   color: Colors.grey.shade600,
-                )
+                ),
               },
             ),
           ),
