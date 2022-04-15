@@ -30,25 +30,24 @@ class SingleAnimatedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const _boxDecoration = BoxDecoration(
-      color: Colors.grey,
-      borderRadius: BorderRadius.all(
-        Radius.circular(6),
-      ),
-    );
+    const _boxDecoration =
+        BoxDecoration(color: Colors.grey, shape: BoxShape.circle);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 7),
       child: ListTile(
         leading: Container(
           width: 44,
           height: 44,
           decoration: _boxDecoration,
         ),
-        title: Container(height: 20, decoration: _boxDecoration),
-        trailing: Container(
+        title: Container(
           height: 20,
-          width: 80,
-          decoration: _boxDecoration,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(12),
+            ),
+            color: Colors.grey,
+          ),
         ),
       ),
     );

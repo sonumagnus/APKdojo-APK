@@ -144,15 +144,6 @@ class _DownloadManagerState extends State<DownloadManager> {
                                 OpenFile.open(_apkFiles[index].path);
                               },
                               child: ListTile(
-                                leading: Image.file(
-                                  File(
-                                    _apkFiles[index]
-                                        .path
-                                        .replaceAll(".apk", ".jpg"),
-                                  ),
-                                ), // leading: Text(_apkFiles[index]
-                                //     .path
-                                //     .replaceAll(".apk", ".jpg")),
                                 title: Text(
                                   _fileName(
                                     _apkFiles[index].path,

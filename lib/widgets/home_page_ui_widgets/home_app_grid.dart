@@ -69,20 +69,24 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
                     itemCount: 8,
                     itemBuilder: (BuildContext context, int index) {
                       return SingleGridApp(
-                          name: snapshot.data![index]['name'],
-                          seourl: snapshot.data![index]['seourl'],
-                          icon: snapshot.data![index]['icon'],
-                          starRating:
-                              snapshot.data![index]['star_rating'].toString(),
-                          rating: snapshot.data![index]['rating'].toString());
+                        name: snapshot.data![index]['name'],
+                        seourl: snapshot.data![index]['seourl'],
+                        icon: snapshot.data![index]['icon'],
+                        starRating:
+                            snapshot.data![index]['star_rating'].toString(),
+                        rating: snapshot.data![index]['rating'].toString(),
+                      );
                     },
                   ),
                 );
               } else if (snapshot.hasError) {
-                return const Center(
+                return Center(
                   child: Text(
                     'fetching error ! Check Internet Connection',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey.shade600,
+                    ),
                   ),
                 );
               }
@@ -99,7 +103,10 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
 
 class TopRoundedBorder extends StatelessWidget {
   final Widget child;
-  const TopRoundedBorder({Key? key, required this.child}) : super(key: key);
+  const TopRoundedBorder({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

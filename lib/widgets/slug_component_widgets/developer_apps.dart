@@ -1,5 +1,5 @@
 import 'package:apkdojo/styling_refrence/style.dart';
-import 'package:apkdojo/widgets/loading_animation_widgets/featured_apps_animation.dart';
+import 'package:apkdojo/widgets/loading_animation_widgets/developer_apps_animation.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_vertical_app.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/slug_custom_card_shadow.dart';
 import 'package:dio/dio.dart';
@@ -99,53 +99,9 @@ class _DeveloperAppsState extends State<DeveloperApps> {
               ),
             );
           }
-          return const Center(
-            child: FeaturedAppAnimation(
-              animatedItemCount: 3,
-            ),
-          );
+          return const DeveloperAppsLoadingAnimation();
         },
       ),
     );
   }
 }
-
-
-
-// Padding(
-//             padding: const EdgeInsets.symmetric(vertical: 12),
-//             child: ListView(
-//               physics: const ScrollPhysics(),
-//               shrinkWrap: true,
-//               children: [
-//                 Padding(
-//                   padding: const EdgeInsets.only(bottom: 10),
-//                   child: Text(
-//                     snapshot.data![0]['developer'],
-//                     style: const TextStyle(
-//                         fontSize: 18, fontWeight: FontWeight.bold),
-//                   ),
-//                 ),
-//                 GridView.builder(
-//                   physics: const ScrollPhysics(),
-//                   scrollDirection: Axis.horizontal,
-//                   shrinkWrap: true,
-//                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-//                       crossAxisCount: 3,
-//                       childAspectRatio: 10 / 14,
-//                       mainAxisSpacing: 10,
-//                       crossAxisSpacing: 10),
-//                   itemCount: snapshot.data!.length,
-//                   itemBuilder: (BuildContext context, int index) {
-//                     return SingleVerticalApp(
-//                       seourl: snapshot.data![index]['seourl'],
-//                       name: snapshot.data![index]['name'],
-//                       icon: snapshot.data![index]['icon'],
-//                       starRating:
-//                           snapshot.data![index]['star_rating'].toString(),
-//                     );
-//                   },
-//                 ),
-//               ],
-//             ),
-//           );

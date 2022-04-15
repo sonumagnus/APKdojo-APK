@@ -66,7 +66,7 @@ class SingleVerticalApp extends StatelessWidget {
                   starSize: '9',
                 ),
                 Text(
-                  rating,
+                  rating == "null" ? "0.0" : rating,
                   style: TextStyle(
                     fontSize: 9,
                     color: Colors.grey.shade800,

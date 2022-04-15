@@ -132,7 +132,8 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
                                 name: snapshot.data!['results'][index]['name'],
                                 icon: snapshot.data!['results'][index]['icon'],
                                 rating: snapshot.data!['results'][index]
-                                    ['rating'],
+                                        ['rating']
+                                    .toString(),
                                 starRating:
                                     "${snapshot.data!['results'][index]['star_rating']}")
                           ],

@@ -68,7 +68,9 @@ class CategoryAppListing extends HookWidget {
         appBarTitle: categoryName,
       ),
       body: _appsList.value.isEmpty
-          ? const CategoryAppListingAnimation(animatedTileCount: 9)
+          ? const CategoryAppListingAnimation(
+              animatedTileCount: 9,
+            )
           : SingleChildScrollView(
               controller: _scrollController,
               child: Column(

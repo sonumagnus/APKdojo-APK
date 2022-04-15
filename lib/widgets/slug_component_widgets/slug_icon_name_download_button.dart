@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:apkdojo/page_route_animation/bottom_to_top.dart';
 import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:apkdojo/screens/devprofile.dart';
 import 'package:apkdojo/styling_refrence/style.dart';
-import 'package:apkdojo/widgets/slug_component_widgets/share_model_fixed.dart';
+import 'package:apkdojo/widgets/share_modal.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -299,10 +298,14 @@ class _SlugIconNameDownloadButtonState
                       ),
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(
-                            createRouteBottomToTop(
-                              targetRoute: const ShareModelFixed(),
+                          showModalBottomSheet(
+                            context: context,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(15),
+                              ),
                             ),
+                            builder: (context) => buildSheet(),
                           );
                         },
                         child: const Icon(
@@ -325,7 +328,10 @@ class _SlugIconNameDownloadButtonState
 
 class DownloadButton extends StatelessWidget {
   final String buttonText;
-  const DownloadButton({Key? key, required this.buttonText}) : super(key: key);
+  const DownloadButton({
+    Key? key,
+    required this.buttonText,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

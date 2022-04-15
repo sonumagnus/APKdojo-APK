@@ -1,12 +1,10 @@
 import 'package:apkdojo/main.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/slug_animation.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/apk_datail_expansion_panel.dart';
-
 import 'package:apkdojo/widgets/slug_component_widgets/developer_apps.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/rating_size_version.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/related_apps.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/slug_custom_card_shadow.dart';
-
 import 'package:apkdojo/widgets/slug_component_widgets/slug_description.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/slug_icon_name_download_button.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/slug_screenshot.dart';
@@ -30,13 +28,16 @@ class _SlugState extends State<Slug> {
 
   Future<Map> fetchApp() async {
     _dioCacheManager = DioCacheManager(CacheConfig());
-    Options _cacheOptions =
-        buildCacheOptions(const Duration(days: 3), forceRefresh: true);
+    Options _cacheOptions = buildCacheOptions(
+      const Duration(days: 3),
+      forceRefresh: true,
+    );
     Dio _dio = Dio();
     _dio.interceptors.add(_dioCacheManager.interceptor);
     Response response = await _dio.get(
-        'https://api.apkdojo.com/app.php?id=${widget.seourl}&lang=en',
-        options: _cacheOptions);
+      'https://api.apkdojo.com/app.php?id=${widget.seourl}&lang=en',
+      options: _cacheOptions,
+    );
     return response.data;
   }
 
@@ -64,17 +65,6 @@ class _SlugState extends State<Slug> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Consumer<DownloadingProgress>(
-                  //     builder: (context, provider, child) {
-                  //   return Column(
-                  //     children: [
-                  //       Text("${provider.progress}"),
-                  //       Text("${provider.downloadTaskStatus}"),
-                  //       Text(provider.id),
-                  //       Text(provider.appName),
-                  //     ],
-                  //   );
-                  // }),
                   SlugIconNameDownloadButton(
                     icon: snapshot.data!['icon'],
                     developer: snapshot.data!['developer'],

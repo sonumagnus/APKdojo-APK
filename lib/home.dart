@@ -15,7 +15,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
+  static const List<Widget> _widgetOptions = [
     HomePage(),
     CategoryByTabs(
       selectedIndex: 0,
@@ -24,9 +24,11 @@ class _HomeState extends State<Home> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    setState(
+      () {
+        _selectedIndex = index;
+      },
+    );
   }
 
   @override
@@ -48,7 +50,9 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(
+              Icons.home,
+            ),
             label: 'Home',
           ),
           BottomNavigationBarItem(
@@ -61,7 +65,7 @@ class _HomeState extends State<Home> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green[300],
+        selectedItemColor: Colors.green.shade300,
         onTap: _onItemTapped,
       ),
     );

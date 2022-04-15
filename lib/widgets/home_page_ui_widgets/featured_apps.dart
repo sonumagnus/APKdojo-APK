@@ -1,7 +1,5 @@
-import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_vertical_app.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/featured_apps_animation.dart';
-import 'package:apkdojo/widgets/new_added_n_updated_apps.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
@@ -47,13 +45,6 @@ class _FeaturedAppsState extends State<FeaturedApps> {
         if (snapshot.hasData) {
           return Column(
             children: [
-              const AppType(
-                mainHeading: "Editor's Choice",
-                followUpText: "Features By Apkdojo",
-                seeAllUrl:
-                    NewAddedAndUpdatedApps(applicationType: "featured_apps"),
-                showSeeAll: true,
-              ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 height: 170,

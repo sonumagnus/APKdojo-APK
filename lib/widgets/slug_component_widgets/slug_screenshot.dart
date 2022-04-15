@@ -38,10 +38,12 @@ class SlugScreenshot extends StatelessWidget {
         itemCount: screenshotCount,
         scrollDirection: Axis.horizontal,
         itemBuilder: (_, int index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 3),
-            child: CachedNetworkImage(
-              imageUrl: screenshots[index],
+          return GestureDetector(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3),
+              child: CachedNetworkImage(
+                imageUrl: screenshots[index],
+              ),
             ),
           );
         },

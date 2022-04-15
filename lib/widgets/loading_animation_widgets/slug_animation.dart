@@ -15,12 +15,13 @@ class SlugLoadingAnimation extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              // margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
               margin: const EdgeInsets.only(right: 16),
               height: 80,
               width: 80,
               decoration: BoxDecoration(
-                  color: Colors.grey.shade300, shape: BoxShape.circle),
+                color: Colors.grey.shade300,
+                shape: BoxShape.circle,
+              ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,7 +31,9 @@ class SlugLoadingAnimation extends StatelessWidget {
                   width: 250,
                   decoration: BoxDecoration(
                     color: Colors.grey.shade300,
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(5),
+                    ),
                   ),
                 ),
                 Container(

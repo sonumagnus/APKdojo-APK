@@ -8,9 +8,7 @@ class Test extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: const SizedBox(
-        child: FeaturedAppAnimation(animatedItemCount: 3),
-      ),
+      body: const FeaturedAppAnimation(animatedItemCount: 3),
     );
   }
 }
