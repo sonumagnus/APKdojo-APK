@@ -42,6 +42,9 @@ class SlugScreenshot extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 3),
               child: CachedNetworkImage(
+                placeholder: (context, url) => Image.asset(
+                  "assets/images/lazy_images/lazy-screen.jpg",
+                ),
                 imageUrl: screenshots[index],
               ),
             ),

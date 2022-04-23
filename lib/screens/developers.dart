@@ -2,7 +2,6 @@ import 'package:apkdojo/screens/devprofile.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/category_list_animation.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/my_appbar.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -14,22 +13,16 @@ class Developers extends HookWidget {
     final _devList = useRef<List>([]);
     final _devs = useState<Map>({});
     final _nextPage = useRef<int>(1);
-    final _dioCacheManager = useRef<DioCacheManager>(
-      DioCacheManager(CacheConfig()),
-    );
 
     ScrollController _scrollController = useScrollController();
 
     void _fetchApps(int pageNum) async {
-      if (_nextPage.value == _devs.value['total_pages']) return;
+      if (_nextPage.value - 1 == _devs.value['total_pages']) return;
 
       try {
-        Options _cacheOptions = buildCacheOptions(const Duration(days: 7));
-        Dio _dio = Dio();
-        _dio.interceptors.add(_dioCacheManager.value.interceptor);
-        Response _res = await _dio.get(
-            'https://api.apkdojo.com/developers.php?page=$pageNum',
-            options: _cacheOptions);
+        Response _res = await Dio().get(
+          'https://api.apkdojo.com/developers.php?page=$pageNum',
+        );
         _devs.value = _res.data;
         _devList.value.addAll(_devs.value['results']);
         _nextPage.value = _nextPage.value + 1;

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 
@@ -16,41 +14,21 @@ class DownloadingProgress extends ChangeNotifier {
 
   void setProgress(int updatedProgress) {
     _progress = updatedProgress;
-
-    if (_progress >= 100) {
-      Timer(
-        const Duration(seconds: 1),
-        () {
-          _progress = 0;
-          notifyListeners();
-          return;
-        },
-      );
-    }
     notifyListeners();
   }
 
   void setDownloadTaskStatus(DownloadTaskStatus currentDownloadTaskStatus) {
     _downloadTaskStatus = currentDownloadTaskStatus;
-    if (currentDownloadTaskStatus == DownloadTaskStatus.complete) {
-      _downloadTaskStatus = DownloadTaskStatus.undefined;
-    }
     notifyListeners();
   }
 
   void setId(String newId) {
     _id = newId;
-    if (progress >= 100) {
-      _id = "";
-      notifyListeners();
-      return;
-    }
     notifyListeners();
   }
 
   void setAppName(String _currentDownloadingAppName) {
     _appName = _currentDownloadingAppName;
-
     notifyListeners();
   }
 }

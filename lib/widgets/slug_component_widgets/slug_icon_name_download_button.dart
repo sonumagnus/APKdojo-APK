@@ -60,15 +60,25 @@ class _SlugIconNameDownloadButtonState
       context.read<DownloadingProgress>().setDownloadTaskStatus(data[1]);
       progress = data[2];
       context.read<DownloadingProgress>().setProgress(data[2]);
+
+      // resetting state on download complete or cancel
       if (status == DownloadTaskStatus.complete ||
           status == DownloadTaskStatus.canceled) {
         Timer(
-          const Duration(seconds: 1),
+          const Duration(milliseconds: 200),
           () => setState(
             () {
               progress = 0;
+              context.read<DownloadingProgress>().setProgress(0);
+
               status = DownloadTaskStatus.undefined;
+              context
+                  .read<DownloadingProgress>()
+                  .setDownloadTaskStatus(DownloadTaskStatus.undefined);
+
               id = '';
+              context.read<DownloadingProgress>().setId("");
+
               context.read<DownloadingProgress>().setAppName("");
             },
           ),
@@ -173,6 +183,9 @@ class _SlugIconNameDownloadButtonState
             child: ClipRRect(
               borderRadius: BorderRadius.circular(6),
               child: CachedNetworkImage(
+                placeholder: (context, url) => Image.asset(
+                  "assets/images/lazy_images/lazy-image.jpg",
+                ),
                 imageUrl: widget.icon,
                 width: 90,
                 height: 90,
@@ -350,7 +363,7 @@ class DownloadButton extends StatelessWidget {
         buttonText,
         style: const TextStyle(
           color: Colors.white,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.bold,
           fontSize: 14,
         ),
       ),

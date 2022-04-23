@@ -67,6 +67,8 @@ class RatingSizeVersionTable extends StatelessWidget {
                     Text(
                       totalRating != "null" ? "$totalRating " : "0",
                       style: _keyOptionStyling,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text('Rating', style: _keyOptionStyling),
                   ],
@@ -84,7 +86,12 @@ class RatingSizeVersionTable extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: Column(
               children: [
-                Text(size, style: _keyDataStyling),
+                Text(
+                  size,
+                  style: _keyDataStyling,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 Text('Size', style: _keyOptionStyling),
               ],
             ),
@@ -96,7 +103,7 @@ class RatingSizeVersionTable extends StatelessWidget {
                 version,
                 style: _keyDataStyling,
                 maxLines: 1,
-                overflow: TextOverflow.fade,
+                overflow: TextOverflow.ellipsis,
               ),
               Text(
                 "Version",

@@ -4,7 +4,6 @@ import 'package:apkdojo/widgets/loading_animation_widgets/home_app_grid_animatio
 import 'package:apkdojo/widgets/main_ui_widgets/single_grid_app.dart';
 import 'package:apkdojo/widgets/new_added_n_updated_apps.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 
 class HomePageAppsGrid extends StatefulWidget {
@@ -17,20 +16,10 @@ class HomePageAppsGrid extends StatefulWidget {
 
 class _HomePageAppsGridState extends State<HomePageAppsGrid> {
   late Future<List> gridApps;
-  late DioCacheManager _dioCacheManager;
 
   Future<List> getGridApps() async {
-    _dioCacheManager = DioCacheManager(CacheConfig());
-
-    Options _cacheOptions = buildCacheOptions(
-      const Duration(days: 7),
-      forceRefresh: true,
-    );
-    Dio _dio = Dio();
-    _dio.interceptors.add(_dioCacheManager.interceptor);
-    Response response = await _dio.get(
+    Response response = await Dio().get(
       'https://api.apkdojo.com/v-apps.php?type=${widget.type}&lang=en',
-      options: _cacheOptions,
     );
     return response.data[widget.type];
   }

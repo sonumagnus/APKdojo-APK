@@ -10,13 +10,15 @@ import 'package:apkdojo/widgets/slug_component_widgets/slug_icon_name_download_b
 import 'package:apkdojo/widgets/slug_component_widgets/slug_screenshot.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/user_review_expansion_panel.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/whats_new_expansion_panel.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 class Slug extends StatefulWidget {
   final String seourl;
-  const Slug({Key? key, required this.seourl}) : super(key: key);
+  const Slug({
+    Key? key,
+    required this.seourl,
+  }) : super(key: key);
 
   @override
   State<Slug> createState() => _SlugState();
@@ -24,19 +26,10 @@ class Slug extends StatefulWidget {
 
 class _SlugState extends State<Slug> {
   late Future<Map> app;
-  late DioCacheManager _dioCacheManager;
 
   Future<Map> fetchApp() async {
-    _dioCacheManager = DioCacheManager(CacheConfig());
-    Options _cacheOptions = buildCacheOptions(
-      const Duration(days: 3),
-      forceRefresh: true,
-    );
-    Dio _dio = Dio();
-    _dio.interceptors.add(_dioCacheManager.interceptor);
-    Response response = await _dio.get(
+    Response response = await Dio().get(
       'https://api.apkdojo.com/app.php?id=${widget.seourl}&lang=en',
-      options: _cacheOptions,
     );
     return response.data;
   }

@@ -2,38 +2,35 @@ import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/styling_refrence/style.dart';
 import 'package:apkdojo/widgets/category_app_listing.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/category_list_animation.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 class CategoryList extends StatefulWidget {
   final String type;
   final String cateListCount;
-  const CategoryList(
-      {Key? key, required this.type, required this.cateListCount})
-      : super(key: key);
+  const CategoryList({
+    Key? key,
+    required this.type,
+    required this.cateListCount,
+  }) : super(key: key);
 
   @override
   State<CategoryList> createState() => _CategoryListState();
 }
 
-class _CategoryListState extends State<CategoryList> {
-  late DioCacheManager _dioCacheManager;
-
+class _CategoryListState extends State<CategoryList>
+    with AutomaticKeepAliveClientMixin<CategoryList> {
   late Future<List> categories;
 
   Future<List> getCategories() async {
-    _dioCacheManager = DioCacheManager(CacheConfig());
-
-    Options _cacheOptions =
-        buildCacheOptions(const Duration(days: 7), forceRefresh: true);
-    Dio _dio = Dio();
-    _dio.interceptors.add(_dioCacheManager.interceptor);
-    Response response = await _dio.get(
-        "https://api.apkdojo.com/categories.php?type=${widget.type}&lang=en",
-        options: _cacheOptions);
+    Response response = await Dio().get(
+      "https://api.apkdojo.com/categories.php?type=${widget.type}&lang=en",
+    );
     return response.data['results'];
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -43,6 +40,7 @@ class _CategoryListState extends State<CategoryList> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: p20),
       child: FutureBuilder<List>(

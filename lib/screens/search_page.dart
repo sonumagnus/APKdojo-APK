@@ -15,11 +15,11 @@ class SearchPage extends HookWidget {
     void _getApps() async {
       if (_searchKeyword.value == '') return;
       try {
-        var res = await Dio().get(
+        Response res = await Dio().get(
             "https://api.apkdojo.com/search.php?q=${_searchKeyword.value}");
         _searchResult.value = res.data;
       } catch (e) {
-        debugPrint(e.toString());
+        // debugPrint(e.toString());
       }
     }
 
@@ -44,12 +44,7 @@ class SearchPage extends HookWidget {
             hintStyle: TextStyle(
               color: Colors.black54,
             ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.black45),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.black45),
-            ),
+            focusedBorder: InputBorder.none,
           ),
         ),
       ),

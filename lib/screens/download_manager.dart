@@ -39,15 +39,10 @@ class _DownloadManagerState extends State<DownloadManager> {
     String apkDirectory = '$dir/';
     final myDir = Directory(apkDirectory);
     _allFiles = myDir.listSync(recursive: true, followLinks: true);
-    setState(
-      () {
-        _apkFiles = _allFiles
-            .where(
-              (element) => element.path.endsWith('.apk'),
-            )
-            .toList();
-      },
-    );
+    setState(() {
+      _apkFiles =
+          _allFiles.where((element) => element.path.endsWith('.apk')).toList();
+    });
   }
 
   _fileName(String filePath) {

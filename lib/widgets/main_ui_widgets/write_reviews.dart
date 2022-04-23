@@ -57,6 +57,9 @@ class _WriteReviewsState extends State<WriteReviews> {
           trailing: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(5)),
             child: CachedNetworkImage(
+              placeholder: (context, url) => Image.asset(
+                "assets/images/lazy_images/lazy-image.jpg",
+              ),
               imageUrl: widget.icon,
               width: 44,
             ),

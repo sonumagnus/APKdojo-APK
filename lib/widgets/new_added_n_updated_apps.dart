@@ -2,7 +2,6 @@ import 'package:apkdojo/main.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/category_app_listing_animation.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_horizonatal_app_tile.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -18,9 +17,6 @@ class NewAddedAndUpdatedApps extends HookWidget {
     final _appsList = useRef<List>([]);
     final apps = useState<Map>({});
     final _nextPage = useRef<int>(1);
-    final _dioCacheManager = useRef<DioCacheManager>(
-      DioCacheManager(CacheConfig()),
-    );
 
     ScrollController _scrollController = useScrollController();
 
@@ -28,15 +24,8 @@ class NewAddedAndUpdatedApps extends HookWidget {
       if (_nextPage.value == apps.value['total_pages']) return;
 
       try {
-        Options _cacheOptions = buildCacheOptions(
-          const Duration(days: 7),
-          forceRefresh: true,
-        );
-        Dio _dio = Dio();
-        _dio.interceptors.add(_dioCacheManager.value.interceptor);
-        Response _res = await _dio.get(
+        Response _res = await Dio().get(
           'https://api.apkdojo.com/v-apps.php?type=$applicationType&lang=en&page=$pageNum',
-          options: _cacheOptions,
         );
         apps.value = _res.data;
         _appsList.value.addAll(apps.value[applicationType]);

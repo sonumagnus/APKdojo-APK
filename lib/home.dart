@@ -14,8 +14,9 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _selectedIndex = 0;
+  late PageController pageController;
 
-  static const List<Widget> _widgetOptions = [
+  static const List<Widget> _pages = [
     HomePage(),
     CategoryByTabs(
       selectedIndex: 0,
@@ -24,11 +25,28 @@ class _HomeState extends State<Home> {
   ];
 
   void _onItemTapped(int index) {
-    setState(
-      () {
-        _selectedIndex = index;
-      },
-    );
+    setState(() {
+      _selectedIndex = index;
+    });
+    pageController.jumpToPage(index);
+  }
+
+  void onPageChanged(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -46,7 +64,12 @@ class _HomeState extends State<Home> {
         },
         child: const Icon(Icons.ac_unit),
       ),
-      body: _widgetOptions.elementAt(_selectedIndex),
+      body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        children: _pages,
+        controller: pageController,
+        onPageChanged: onPageChanged,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(

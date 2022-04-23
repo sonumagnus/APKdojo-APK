@@ -127,15 +127,16 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SingleVerticalApp(
-                                seourl: snapshot.data!['results'][index]
-                                    ['seourl'],
-                                name: snapshot.data!['results'][index]['name'],
-                                icon: snapshot.data!['results'][index]['icon'],
-                                rating: snapshot.data!['results'][index]
-                                        ['rating']
-                                    .toString(),
-                                starRating:
-                                    "${snapshot.data!['results'][index]['star_rating']}")
+                              seourl: snapshot.data!['results'][index]
+                                  ['seourl'],
+                              name: snapshot.data!['results'][index]['name'],
+                              icon: snapshot.data!['results'][index]['icon'],
+                              rating: snapshot.data!['results'][index]['rating']
+                                  .toString(),
+                              starRating: snapshot.data!['results'][index]
+                                      ['star_rating']
+                                  .toString(),
+                            )
                           ],
                         );
                       },

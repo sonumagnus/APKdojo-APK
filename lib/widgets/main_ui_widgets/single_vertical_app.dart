@@ -44,6 +44,9 @@ class SingleVerticalApp extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: CachedNetworkImage(
+                placeholder: (context, url) => Image.asset(
+                  'assets/images/lazy_images/lazy-image.jpg',
+                ),
                 imageUrl: icon,
                 width: 85,
               ),

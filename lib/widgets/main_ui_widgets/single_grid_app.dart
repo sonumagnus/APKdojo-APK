@@ -38,6 +38,9 @@ class SingleGridApp extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: CachedNetworkImage(
+                placeholder: (context, url) => Image.asset(
+                  "assets/images/lazy_images/lazy-image.jpg",
+                ),
                 imageUrl: icon,
                 height: 68.33,
                 width: 68.33,
