@@ -139,6 +139,7 @@ class _DownloadManagerState extends State<DownloadManager> {
                                 OpenFile.open(_apkFiles[index].path);
                               },
                               child: ListTile(
+                                leading: const Icon(Icons.touch_app),
                                 title: Text(
                                   _fileName(
                                     _apkFiles[index].path,

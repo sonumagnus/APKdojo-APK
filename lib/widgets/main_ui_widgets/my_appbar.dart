@@ -9,7 +9,7 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      elevation: 1,
+      elevation: 0,
       title: Text(
         appBarTitle,
         style: TextStyle(color: appBarTitleColor),

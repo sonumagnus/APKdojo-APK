@@ -1,90 +1,159 @@
-import 'package:apkdojo/widgets/loading_animation_widgets/featured_apps_animation.dart';
-import 'package:flutter/material.dart';
-
-class Test extends StatelessWidget {
-  const Test({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: const FeaturedAppAnimation(animatedItemCount: 3),
-    );
-  }
-}
-
-
-// import 'dart:async';
-// import 'package:apkdojo/providers/downloading_progress.dart';
+// import 'package:device_apps/device_apps.dart';
 // import 'package:flutter/material.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:provider/provider.dart';
 
-// class Test extends StatefulWidget {
+// class Test extends StatelessWidget {
 //   const Test({Key? key}) : super(key: key);
 
-//   @override
-//   State<Test> createState() => _TestState();
-// }
-
-// class _TestState extends State<Test> {
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: const Text("Hello World"),
+//         title: const Text('Installed Apps'),
 //       ),
-//       body: Consumer<DownloadingProgress>(
-//         builder: (context, _downloadProgress, child) {
-//           return ListView(
-//             children: [
-//               // const Accordion(title: "hello world", content: "by"),
-
-//               TextButton.icon(
-//                 onPressed: null,
-//                 icon: const Icon(Icons.abc),
-//                 label: const Text("data"),
-//               ),
-//               SvgPicture.asset(
-//                 'assets/images/playstore.svg',
-//                 height: 15,
-//               ),
-//               Text(context.read<DownloadingProgress>().progress.toString()),
-//               Text("${_downloadProgress.progress}"),
-//               const SizedBox(
-//                 height: 20,
-//               ),
-//               ElevatedButton(
-//                 onPressed: () {
-//                   _downloadProgress.setProgress(_downloadProgress.progress + 1);
-//                   _downloadProgress.setAppName("whatsapp");
-//                   // context.read<DownloadingProgress>().setProgress(
-//                   //     context.read<DownloadingProgress>().progress + 1);
-//                   Timer.periodic(const Duration(seconds: 1), (timer) {
-//                     _downloadProgress
-//                         .setProgress(_downloadProgress.progress + 4);
-//                     _downloadProgress.setAppName("whatsapp");
-//                   });
-//                 },
-//                 child: const Icon(Icons.add),
-//               ),
-//               ElevatedButton(
-//                 onPressed: () {
-//                   _downloadProgress
-//                       .setProgress(_downloadProgress.progress - 10);
-//                   _downloadProgress.setAppName("whatsapp");
-//                   // context.read<DownloadingProgress>().setProgress(
-//                   //     context.read<DownloadingProgress>().progress + 1);
-//                 },
-//                 child: const Icon(Icons.remove),
-//               ),
-//             ],
-//           );
+//       body: FutureBuilder<List<Application>>(
+//         future: DeviceApps.getInstalledApplications(
+//           onlyAppsWithLaunchIntent: true,
+//           includeSystemApps: true,
+//           includeAppIcons: true,
+//         ),
+//         builder: (context, snapshot) {
+//           if (snapshot.hasData) {
+//             List<Application>? data = snapshot.data;
+//             // Sort the App List on Alphabetical Order
+//             // ignore: avoid_single_cascade_in_expression_statements
+//             data!
+//               ..sort((app1, app2) => app1.appName
+//                   .toLowerCase()
+//                   .compareTo(app2.appName.toLowerCase()));
+//             return ListView.separated(
+//               padding: const EdgeInsets.only(left: 10),
+//               itemCount: data.length,
+//               itemBuilder: (BuildContext context, int index) {
+//                 Application app = data[index];
+//                 return ListTile(
+//                   leading: app is ApplicationWithIcon
+//                       ? Image.memory(app.icon, height: 40, width: 40)
+//                       : null,
+//                   title: Text(app.appName),
+//                   subtitle: Text(app.packageName),
+//                   onTap: () => DeviceApps.openApp(app.packageName),
+//                 );
+//               },
+//               separatorBuilder: (BuildContext context, int index) {
+//                 return const Divider();
+//               },
+//             );
+//           }
+//           return const CircularProgressIndicator();
 //         },
 //       ),
 //     );
 //   }
 // }
+
+import 'dart:async';
+import 'package:apkdojo/providers/downloading_progress.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+
+class Test extends StatefulWidget {
+  const Test({Key? key}) : super(key: key);
+
+  @override
+  State<Test> createState() => _TestState();
+}
+
+class _TestState extends State<Test> {
+  bool isContainsCar = false;
+
+  String _name = "manmohan";
+
+  final List<String> _carName = [
+    "maruti",
+    "suzuki",
+    "toyoto",
+    "tesla",
+    "mahindra",
+    "thar"
+  ];
+
+  isContains(element) {
+    if (_name.contains(element)) {
+      setState(() {
+        isContainsCar = true;
+      });
+    } else {
+      setState(() {
+        isContainsCar = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    isContains("manmo");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Hello World"),
+      ),
+      body: Consumer<DownloadingProgress>(
+        builder: (context, _downloadProgress, child) {
+          return ListView(
+            children: [
+              // const Accordion(title: "hello world", content: "by"),
+              Text(isContainsCar ? "Yes" : "No"),
+              TextButton.icon(
+                onPressed: null,
+                icon: const Icon(Icons.abc),
+                label: const Text("data"),
+              ),
+              SvgPicture.asset(
+                'assets/images/playstore.svg',
+                height: 15,
+              ),
+              Text(context.read<DownloadingProgress>().progress.toString()),
+              Text("${_downloadProgress.progress}"),
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _downloadProgress.setProgress(_downloadProgress.progress + 1);
+                  _downloadProgress.setAppName("whatsapp");
+                  // context.read<DownloadingProgress>().setProgress(
+                  //     context.read<DownloadingProgress>().progress + 1);
+                  Timer.periodic(const Duration(seconds: 1), (timer) {
+                    _downloadProgress.setProgress(
+                        _downloadProgress.progress < 100
+                            ? _downloadProgress.progress + 1
+                            : 0);
+                    _downloadProgress.setAppName(
+                        "whatsapp messager discord - duolingo netflix battleground mobile india");
+                  });
+                },
+                child: const Icon(Icons.add),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _downloadProgress.setProgress(0);
+                  // context.read<DownloadingProgress>().setProgress(
+                  //     context.read<DownloadingProgress>().progress + 1);
+                },
+                child: const Icon(Icons.remove),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
 
 // import 'dart:io';
 // import 'package:flutter/material.dart';

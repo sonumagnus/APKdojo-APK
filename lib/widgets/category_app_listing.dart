@@ -54,8 +54,8 @@ class CategoryAppListing extends HookWidget {
 
     return Scaffold(
       appBar: MyAppBar(
-        appBarTitle: categoryName,
-      ),
+          appBarTitle:
+              categoryName[0].toUpperCase() + categoryName.substring(1)),
       body: _appsList.value.isEmpty
           ? const CategoryAppListingAnimation(
               animatedTileCount: 9,

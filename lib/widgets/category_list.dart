@@ -4,6 +4,7 @@ import 'package:apkdojo/widgets/category_app_listing.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/category_list_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class CategoryList extends StatefulWidget {
   final String type;
@@ -79,16 +80,21 @@ class _CategoryListState extends State<CategoryList>
                           width: 26,
                           height: 26,
                         ),
-                        title: Text(
-                          snapshot.data![index]['catname'],
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        title: Html(
+                          data: snapshot.data![index]['catname'],
+                          style: {
+                            "*": Style(
+                              fontSize: const FontSize(20),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          },
                         ),
                       ),
-                      const Divider(
-                        height: 7,
+                      const Padding(
+                        padding: EdgeInsets.only(left: 50),
+                        child: Divider(
+                          height: 2,
+                        ),
                       )
                     ],
                   ),

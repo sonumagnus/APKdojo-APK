@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:apkdojo/common_methods/filepath_to_filename.dart';
 import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:apkdojo/screens/devprofile.dart';
 import 'package:apkdojo/styling_refrence/style.dart';
@@ -9,7 +10,9 @@ import 'package:apkdojo/widgets/share_modal.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +26,7 @@ class SlugIconNameDownloadButton extends StatefulWidget {
   final String seourl;
   final String apkurl;
   final String playStoreUrl;
+  final String version;
   const SlugIconNameDownloadButton({
     Key? key,
     required this.icon,
@@ -31,6 +35,7 @@ class SlugIconNameDownloadButton extends StatefulWidget {
     required this.developerUrl,
     required this.seourl,
     required this.apkurl,
+    required this.version,
     this.playStoreUrl = "",
   }) : super(key: key);
 
@@ -43,6 +48,11 @@ class _SlugIconNameDownloadButtonState
     extends State<SlugIconNameDownloadButton> {
   int progress = 0;
   String id = '';
+  bool _apkAlreadyDownloaded = false;
+  String _apkPath = ""; //in case app is already downloaded
+  late List<FileSystemEntity> _allFiles;
+  late List<FileSystemEntity> _apkFiles;
+  bool oldVersionAvailable = false;
   late DownloadTaskStatus status = DownloadTaskStatus.undefined;
 
   final ReceivePort _port = ReceivePort();
@@ -50,6 +60,8 @@ class _SlugIconNameDownloadButtonState
   @override
   void initState() {
     super.initState();
+
+    isAlreadyDownloaded(widget.name, widget.version);
 
     IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');
@@ -65,26 +77,33 @@ class _SlugIconNameDownloadButtonState
       if (status == DownloadTaskStatus.complete ||
           status == DownloadTaskStatus.canceled) {
         Timer(
-          const Duration(milliseconds: 200),
+          const Duration(milliseconds: 10),
           () => setState(
             () {
+              // Resetting local state after download complete or cancel
               progress = 0;
-              context.read<DownloadingProgress>().setProgress(0);
-
               status = DownloadTaskStatus.undefined;
+              id = '';
+
+              // resetting global state after download complete or cancel
+              context.read<DownloadingProgress>().setProgress(0);
               context
                   .read<DownloadingProgress>()
                   .setDownloadTaskStatus(DownloadTaskStatus.undefined);
-
-              id = '';
               context.read<DownloadingProgress>().setId("");
-
               context.read<DownloadingProgress>().setAppName("");
+
+              // Apk is now downloaded
             },
           ),
         );
       }
       setState(() {});
+      if (status == DownloadTaskStatus.complete) {
+        setState(() {
+          _apkAlreadyDownloaded = true;
+        });
+      }
     });
 
     FlutterDownloader.registerCallback(downloadCallback);
@@ -127,25 +146,10 @@ class _SlugIconNameDownloadButtonState
         await externalDir.create(recursive: true);
       }
 
-      // download file name sequence generator logic
-
-      final String _appName = name;
-
-      if (File(externalDir.path + "/" + name + ".mp4").existsSync()) {
-        for (int i = 1; i < 100; i++) {
-          name = _appName + "(" + "$i" + ")";
-          if (!File(externalDir.path + "/" + name + ".mp4").existsSync()) {
-            break;
-          }
-        }
-      }
-
-      // download file name sequence logic ends here
-
       // ignore: unused_local_variable
       final taskId = await FlutterDownloader.enqueue(
         url: url,
-        fileName: name + '.mp4',
+        fileName: name + '.apk',
         savedDir: externalDir.path + "/",
         showNotification: true,
         openFileFromNotification: true,
@@ -158,17 +162,67 @@ class _SlugIconNameDownloadButtonState
 
   _downloadnCancelTask() {
     if (status == DownloadTaskStatus.undefined) {
-      _download(
-        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-        widget.name,
-      );
-
-      // _download(widget.icon, widget.name);
-      // _download(widget.apkurl, "${widget.name}.apk");
+      _download(widget.apkurl, "${widget.name}${widget.version}");
       context.read<DownloadingProgress>().setAppName(widget.name);
     } else if (status == DownloadTaskStatus.running) {
       FlutterDownloader.cancel(taskId: id);
     }
+  }
+
+  _downloadButtonGesture() {
+    if (_apkAlreadyDownloaded) {
+      OpenFile.open(_apkPath);
+    } else {
+      _downloadnCancelTask();
+    }
+  }
+
+  void isAlreadyDownloaded(String name, String version) async {
+    Directory? directory = await getExternalStorageDirectory();
+
+    List<String> path = directory!.path.split("/");
+    for (int x = 1; x < path.length; x++) {
+      String folder = path[x];
+      if (folder != "Android") {
+        _apkPath += "/" + folder;
+      } else {
+        break;
+      }
+    }
+
+    String _apkListPath = _apkPath + "/APKdojo";
+    _apkPath = _apkPath + "/APKdojo" + "/" + name + version + ".apk";
+
+    directory = Directory(_apkListPath);
+
+    final dir = directory.path;
+    String apkDirectory = '$dir/';
+    final myDir = Directory(apkDirectory);
+    _allFiles = myDir.listSync(recursive: true, followLinks: true);
+    setState(() {
+      _apkFiles =
+          _allFiles.where((element) => element.path.endsWith('.apk')).toList();
+    });
+
+    if (File(_apkPath).existsSync()) {
+      setState(() {
+        _apkAlreadyDownloaded = true;
+      });
+      return;
+    }
+
+    for (int i = 0; i < _apkFiles.length; i++) {
+      String _apkNameWithVersion = fileName(_apkFiles[i].path);
+      bool _isContainsName = _apkNameWithVersion.contains(widget.name);
+      if (_isContainsName) {
+        oldVersionAvailable = _isContainsName;
+      }
+    }
+
+    setState(() {
+      _apkAlreadyDownloaded = false;
+    });
+    return;
   }
 
   @override
@@ -227,12 +281,15 @@ class _SlugIconNameDownloadButtonState
                           ),
                         ),
                         Expanded(
-                          child: Text(
-                            widget.developer,
-                            style: TextStyle(
+                          child: Html(
+                            data: widget.developer,
+                            style: {
+                              "*": Style(
+                                margin: EdgeInsets.zero,
                                 color: Colors.grey.shade700,
-                                height: 1.25,
-                                fontWeight: FontWeight.w600),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            },
                           ),
                         ),
                       ],
@@ -246,49 +303,64 @@ class _SlugIconNameDownloadButtonState
                     Container(
                       padding: const EdgeInsets.only(top: 2),
                       child: GestureDetector(
-                        onTap: _downloadnCancelTask,
+                        onTap: _downloadButtonGesture,
                         child: Stack(
                           alignment: Alignment.centerLeft,
                           children: [
-                            widget.apkurl == ""
-                                ? GetFromPlayStore(
-                                    playStoreUrl: widget.playStoreUrl,
-                                  )
-                                : status == DownloadTaskStatus.undefined
-                                    ? const DownloadButton(
-                                        buttonText: "Download")
-                                    : status == DownloadTaskStatus.running
-                                        ? Container(
-                                            alignment: Alignment.centerLeft,
-                                            width: 120,
-                                            child: SizedBox(
-                                              height: 32,
-                                              width: 32,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                color: Colors.grey.shade600,
-                                                value:
-                                                    double.parse("$progress") /
-                                                        100,
-                                              ),
-                                            ),
+                            _apkAlreadyDownloaded
+                                ? const DownloadButton(buttonText: "Open")
+                                : oldVersionAvailable &&
+                                        status == DownloadTaskStatus.undefined
+                                    ? const DownloadButton(buttonText: "Update")
+                                    : widget.apkurl == ""
+                                        ? GetFromPlayStore(
+                                            playStoreUrl: widget.playStoreUrl,
                                           )
-                                        : status == DownloadTaskStatus.complete
+                                        : status == DownloadTaskStatus.undefined
                                             ? const DownloadButton(
-                                                buttonText: "Downloaded",
+                                                buttonText: "Download",
                                               )
                                             : status ==
-                                                    DownloadTaskStatus.canceled
-                                                ? const DownloadButton(
-                                                    buttonText: "Canceled",
+                                                    DownloadTaskStatus.running
+                                                ? Container(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    width: 120,
+                                                    child: SizedBox(
+                                                      height: 32,
+                                                      width: 32,
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color: Colors
+                                                            .grey.shade600,
+                                                        value: double.parse(
+                                                                "$progress") /
+                                                            100,
+                                                      ),
+                                                    ),
                                                   )
-                                                : const DownloadButton(
-                                                    buttonText: "Wait",
-                                                  ),
+                                                : status ==
+                                                        DownloadTaskStatus
+                                                            .complete
+                                                    ? const DownloadButton(
+                                                        buttonText:
+                                                            "Downloaded",
+                                                      )
+                                                    : status ==
+                                                            DownloadTaskStatus
+                                                                .canceled
+                                                        ? const DownloadButton(
+                                                            buttonText:
+                                                                "Canceled",
+                                                          )
+                                                        : const DownloadButton(
+                                                            buttonText: "Wait",
+                                                          ),
                             // following code is for progress in percentage
                             if (status == DownloadTaskStatus.running)
                               Padding(
-                                padding: const EdgeInsets.only(left: 9),
+                                padding: const EdgeInsets.only(left: 5),
                                 child: Text(
                                   "$progress%",
                                   style: const TextStyle(
@@ -422,71 +494,3 @@ class GetFromPlayStore extends StatelessWidget {
     );
   }
 }
-
-// SizedBox(
-//                               height: 35,
-//                               width: 120,
-//                               child: ClipRRect(
-//                                 borderRadius: const BorderRadius.all(
-//                                   Radius.circular(20),
-//                                 ),
-//                                 child: LinearProgressIndicator(
-//                                   value: double.parse("$progress") / 100,
-//                                   backgroundColor: const Color(0xFF34D399),
-//                                   valueColor:
-//                                       const AlwaysStoppedAnimation<Color>(
-//                                     Colors.blue,
-//                                   ),
-//                                 ),
-//                               ),
-//                             ),
-//                             Align(
-//                               child: status == DownloadTaskStatus.undefined
-//                                   ? TextButton.icon(
-//                                       onPressed: null,
-//                                       icon: const Icon(
-//                                         Icons.file_download_outlined,
-//                                         color: Colors.white,
-//                                       ),
-//                                       label: const Text(
-//                                         "download",
-//                                         style: _downloadButtonTextStyling,
-//                                       ),
-//                                     )
-//                                   : status == DownloadTaskStatus.running
-//                                       ? Row(
-//                                           children: [
-//                                             const Text("Downloading",
-//                                                 style:
-//                                                     _downloadButtonTextStyling),
-//                                             Container(
-//                                               margin: const EdgeInsets.only(
-//                                                   left: 4),
-//                                               decoration: const BoxDecoration(
-//                                                 color: Colors.green,
-//                                                 border: Border(
-//                                                   left: BorderSide(
-//                                                     color: Colors.white,
-//                                                     width: 0.5,
-//                                                   ),
-//                                                 ),
-//                                               ),
-//                                               padding: const EdgeInsets.all(6),
-//                                               child: const Text(
-//                                                 "X",
-//                                                 style: TextStyle(
-//                                                     color: Colors.white,
-//                                                     fontSize: 20,
-//                                                     fontWeight:
-//                                                         FontWeight.w300),
-//                                               ),
-//                                             ),
-//                                           ],
-//                                         )
-//                                       : status == DownloadTaskStatus.complete
-//                                           ? const Text("Downloaded",
-//                                               style: _downloadButtonTextStyling)
-//                                           : const Text("Download",
-//                                               style:
-//                                                   _downloadButtonTextStyling),
-//                             ),
