@@ -55,10 +55,11 @@ class MyDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: Icon(
-                Icons.apps,
-                size: _size,
-                color: _iconColor,
+              leading: SvgPicture.asset(
+                "assets/images/drawer_icons/app_store_ios.svg",
+                height: 23,
+                width: 23,
+                color: Colors.grey.shade700,
               ),
               title: const Text("Apps", style: textStyle),
               onTap: () {
@@ -67,6 +68,7 @@ class MyDrawer extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => const CategoryByTabs(
                       selectedIndex: 0,
+                      mediaQueryHeightDivider: 4.7,
                     ),
                   ),
                 );
@@ -83,8 +85,10 @@ class MyDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const CategoryByTabs(selectedIndex: 1),
+                    builder: (context) => const CategoryByTabs(
+                      selectedIndex: 1,
+                      mediaQueryHeightDivider: 4.7,
+                    ),
                   ),
                 );
               },

@@ -81,6 +81,7 @@ flutter:
     - assets/images/
     - assets/images/category_icons/
     - assets/images/lazy_images/
+    - assets/images/drawer_icons/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

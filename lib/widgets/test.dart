@@ -65,35 +65,9 @@ class Test extends StatefulWidget {
 }
 
 class _TestState extends State<Test> {
-  bool isContainsCar = false;
-
-  String _name = "manmohan";
-
-  final List<String> _carName = [
-    "maruti",
-    "suzuki",
-    "toyoto",
-    "tesla",
-    "mahindra",
-    "thar"
-  ];
-
-  isContains(element) {
-    if (_name.contains(element)) {
-      setState(() {
-        isContainsCar = true;
-      });
-    } else {
-      setState(() {
-        isContainsCar = false;
-      });
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    isContains("manmo");
   }
 
   @override
@@ -107,7 +81,6 @@ class _TestState extends State<Test> {
           return ListView(
             children: [
               // const Accordion(title: "hello world", content: "by"),
-              Text(isContainsCar ? "Yes" : "No"),
               TextButton.icon(
                 onPressed: null,
                 icon: const Icon(Icons.abc),
@@ -125,9 +98,6 @@ class _TestState extends State<Test> {
               ElevatedButton(
                 onPressed: () {
                   _downloadProgress.setProgress(_downloadProgress.progress + 1);
-                  _downloadProgress.setAppName("whatsapp");
-                  // context.read<DownloadingProgress>().setProgress(
-                  //     context.read<DownloadingProgress>().progress + 1);
                   Timer.periodic(const Duration(seconds: 1), (timer) {
                     _downloadProgress.setProgress(
                         _downloadProgress.progress < 100

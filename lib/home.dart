@@ -2,8 +2,9 @@ import 'package:apkdojo/screens/download_manager.dart';
 import 'package:apkdojo/screens/homepage.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
 import 'package:apkdojo/widgets/categorytabs.dart';
-import 'package:apkdojo/widgets/test.dart';
+// import 'package:apkdojo/widgets/test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -53,17 +54,6 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const MyDrawer(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const Test(),
-            ),
-          );
-        },
-        child: const Icon(Icons.ac_unit),
-      ),
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
         children: _pages,
@@ -71,19 +61,23 @@ class _HomeState extends State<Home> {
         onPageChanged: onPageChanged,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-            ),
+        items: [
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.home_filled),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.category),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.grid_view_rounded),
             label: 'Category',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.download),
+            icon: SvgPicture.asset(
+              'assets/images/download.svg',
+              height: 18,
+              width: 18,
+              color: Colors.grey.shade700,
+              semanticsLabel: "download",
+            ),
             label: 'Downloads',
           ),
         ],

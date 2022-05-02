@@ -75,17 +75,17 @@ class SingleHorizontalAppTile extends StatelessWidget {
                   horizontal: 25,
                   vertical: 6,
                 ),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  borderRadius: const BorderRadius.all(
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 231, 231, 231),
+                  borderRadius: BorderRadius.all(
                     Radius.circular(50),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "GET",
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.green.shade600,
+                    color: Color.fromARGB(255, 89, 164, 4),
                     fontWeight: FontWeight.w800,
                   ),
                 ),

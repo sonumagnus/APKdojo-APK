@@ -1,4 +1,3 @@
-import 'package:apkdojo/widgets/main_ui_widgets/my_appbar.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/write_reviews.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/reviews_list.dart';
 import 'package:dio/dio.dart';
@@ -31,7 +30,6 @@ class AllReviewsState extends State<AllReviews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(appBarTitle: widget.seourl),
       body: FutureBuilder<Map>(
         future: reviews,
         builder: (context, snapshot) {

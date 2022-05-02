@@ -72,7 +72,6 @@ class _SlugIconNameDownloadButtonState
       context.read<DownloadingProgress>().setDownloadTaskStatus(data[1]);
       progress = data[2];
       context.read<DownloadingProgress>().setProgress(data[2]);
-
       // resetting state on download complete or cancel
       if (status == DownloadTaskStatus.complete ||
           status == DownloadTaskStatus.canceled) {
@@ -162,7 +161,7 @@ class _SlugIconNameDownloadButtonState
 
   _downloadnCancelTask() {
     if (status == DownloadTaskStatus.undefined) {
-      _download(widget.apkurl, "${widget.name}${widget.version}");
+      _download(widget.apkurl, "${widget.name}_${widget.version}");
       context.read<DownloadingProgress>().setAppName(widget.name);
     } else if (status == DownloadTaskStatus.running) {
       FlutterDownloader.cancel(taskId: id);
@@ -191,7 +190,7 @@ class _SlugIconNameDownloadButtonState
     }
 
     String _apkListPath = _apkPath + "/APKdojo";
-    _apkPath = _apkPath + "/APKdojo" + "/" + name + version + ".apk";
+    _apkPath = _apkPath + "/APKdojo" + "/" + name + "_" + version + ".apk";
 
     directory = Directory(_apkListPath);
 
@@ -288,6 +287,8 @@ class _SlugIconNameDownloadButtonState
                                 margin: EdgeInsets.zero,
                                 color: Colors.grey.shade700,
                                 fontWeight: FontWeight.w600,
+                                maxLines: 1,
+                                textOverflow: TextOverflow.ellipsis,
                               ),
                             },
                           ),
@@ -354,9 +355,16 @@ class _SlugIconNameDownloadButtonState
                                                             buttonText:
                                                                 "Canceled",
                                                           )
-                                                        : const DownloadButton(
-                                                            buttonText: "Wait",
-                                                          ),
+                                                        : status ==
+                                                                DownloadTaskStatus
+                                                                    .failed
+                                                            ? const DownloadButton(
+                                                                buttonText:
+                                                                    "Failed",
+                                                              )
+                                                            : const DownloadButton(
+                                                                buttonText:
+                                                                    "Download"),
                             // following code is for progress in percentage
                             if (status == DownloadTaskStatus.running)
                               Padding(

@@ -1,10 +1,9 @@
 import 'dart:io';
-
 import 'package:apkdojo/widgets/categorytabs.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/category_list.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/home_app_grid.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/my_appbar.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/custom_appbar.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
 import 'package:apkdojo/widgets/new_added_n_updated_apps.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +18,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
   bool isOnline = true;
 
   _checkInternetConnection() async {
@@ -48,10 +49,10 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     return Scaffold(
-      appBar: const MyAppBar(
-        appBarTitle: "APKdojo",
-      ),
+      key: _scaffoldKey,
+      appBar: appBar(AppBar().preferredSize.height, context, _scaffoldKey),
       drawer: const MyDrawer(),
       body: !isOnline
           ? Center(

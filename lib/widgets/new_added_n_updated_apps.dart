@@ -1,17 +1,25 @@
-import 'package:apkdojo/main.dart';
+import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/category_app_listing_animation.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/custom_appbar.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_horizonatal_app_tile.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class NewAddedAndUpdatedApps extends HookWidget {
+class NewAddedAndUpdatedApps extends StatefulHookWidget {
   final String applicationType;
   const NewAddedAndUpdatedApps({
     Key? key,
     required this.applicationType,
   }) : super(key: key);
 
+  @override
+  State<NewAddedAndUpdatedApps> createState() => _NewAddedAndUpdatedAppsState();
+}
+
+class _NewAddedAndUpdatedAppsState extends State<NewAddedAndUpdatedApps> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     final _appsList = useRef<List>([]);
@@ -25,10 +33,10 @@ class NewAddedAndUpdatedApps extends HookWidget {
 
       try {
         Response _res = await Dio().get(
-          'https://api.apkdojo.com/v-apps.php?type=$applicationType&lang=en&page=$pageNum',
+          'https://api.apkdojo.com/v-apps.php?type=${widget.applicationType}&lang=en&page=$pageNum',
         );
         apps.value = _res.data;
-        _appsList.value.addAll(apps.value[applicationType]);
+        _appsList.value.addAll(apps.value[widget.applicationType]);
         _nextPage.value = _nextPage.value + 1;
       } catch (e) {
         // debugPrint(e.toString());
@@ -52,21 +60,18 @@ class NewAddedAndUpdatedApps extends HookWidget {
     }, []);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        elevation: 1,
-        iconTheme: IconThemeData(color: iconThemeColor),
-        title: Text(
-          applicationType == "new_apps"
-              ? "New Added and Updated Apps"
-              : applicationType == "new_games"
-                  ? "New Added and Updated Games"
-                  : applicationType == "featured_apps"
-                      ? "Editor's Choice"
-                      : "",
-          style: TextStyle(color: appBarTitleColor),
-        ),
-      ),
+      key: _scaffoldKey,
+      appBar: appBar(AppBar().preferredSize.height, context, _scaffoldKey),
+      drawer: const MyDrawer(),
+      // appBar: AppBar(
+      //   backgroundColor: primaryColor,
+      //   elevation: 1,
+      //   iconTheme: IconThemeData(color: iconThemeColor),
+      //   title: Text(
+      //
+      //     style: TextStyle(color: appBarTitleColor),
+      //   ),
+      // ),
       body: _appsList.value.isEmpty
           ? const CategoryAppListingAnimation(animatedTileCount: 9)
           : SingleChildScrollView(
@@ -75,6 +80,19 @@ class NewAddedAndUpdatedApps extends HookWidget {
                 physics: const ScrollPhysics(),
                 shrinkWrap: true,
                 children: [
+                  AppType(
+                    mainHeading: widget.applicationType == "new_apps"
+                        ? "New Added and Updated Apps"
+                        : widget.applicationType == "new_games"
+                            ? "New Added and Updated Games"
+                            : widget.applicationType == "featured_apps"
+                                ? "Editor's Choice"
+                                : "",
+                    followUpText: widget.applicationType == "new_games"
+                        ? "Games"
+                        : "Applications",
+                    showSeeAll: false,
+                  ),
                   ListView.builder(
                     physics: const ScrollPhysics(),
                     shrinkWrap: true,

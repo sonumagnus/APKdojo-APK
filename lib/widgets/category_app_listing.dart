@@ -1,18 +1,28 @@
 import 'package:apkdojo/widgets/loading_animation_widgets/category_app_listing_animation.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/my_appbar.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/custom_appbar.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_horizonatal_app_tile.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class CategoryAppListing extends HookWidget {
+class CategoryAppListing extends StatefulHookWidget {
   final String categoryName;
   final String applicationType;
+  final String caturl;
   const CategoryAppListing({
     Key? key,
     required this.categoryName,
     required this.applicationType,
+    required this.caturl,
   }) : super(key: key);
+
+  @override
+  State<CategoryAppListing> createState() => _CategoryAppListingState();
+}
+
+class _CategoryAppListingState extends State<CategoryAppListing> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +36,7 @@ class CategoryAppListing extends HookWidget {
       if (_nextPage.value - 1 == apps.value['total_pages']) return;
       try {
         Response _res = await Dio().get(
-          'https://api.apkdojo.com/category.php?id=$categoryName&type=$applicationType&lang=en&page=$pageNum',
+          'https://api.apkdojo.com/category.php?id=${widget.caturl}&type=${widget.applicationType}&lang=en&page=$pageNum',
         );
         apps.value = _res.data;
         _appsList.value.addAll(apps.value['results']);
@@ -53,9 +63,9 @@ class CategoryAppListing extends HookWidget {
     }, []);
 
     return Scaffold(
-      appBar: MyAppBar(
-          appBarTitle:
-              categoryName[0].toUpperCase() + categoryName.substring(1)),
+      key: _scaffoldKey,
+      appBar: appBar(AppBar().preferredSize.height, context, _scaffoldKey),
+      drawer: const MyDrawer(),
       body: _appsList.value.isEmpty
           ? const CategoryAppListingAnimation(
               animatedTileCount: 9,

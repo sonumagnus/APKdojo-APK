@@ -1,4 +1,5 @@
-import 'package:apkdojo/widgets/main_ui_widgets/appbar_without_search.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/custom_appbar.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
 
 class About extends StatelessWidget {
@@ -6,13 +7,18 @@ class About extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
     return Scaffold(
-      appBar: const AppBarWithoutSearch(
-        appBarTitle: "About Us",
-      ),
+      key: _scaffoldKey,
+      appBar: appBar(AppBar().preferredSize.height, context, _scaffoldKey),
+      drawer: const MyDrawer(),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
+          const AboutSectionHeading(
+            heading: "/ About Us",
+            fontSize: 22,
+          ),
           Container(
             margin: const EdgeInsets.only(bottom: 25),
           ),
@@ -85,10 +91,12 @@ class AboutSectionTextContent extends StatelessWidget {
 class AboutSectionHeading extends StatelessWidget {
   final String heading;
   final Color textColor;
+  final double fontSize;
   const AboutSectionHeading({
     Key? key,
     required this.heading,
     this.textColor = Colors.black87,
+    this.fontSize = 17.0,
   }) : super(key: key);
 
   @override
@@ -98,7 +106,7 @@ class AboutSectionHeading extends StatelessWidget {
       child: Text(
         heading,
         style: TextStyle(
-          fontSize: 17,
+          fontSize: fontSize,
           fontWeight: FontWeight.bold,
           color: textColor,
         ),

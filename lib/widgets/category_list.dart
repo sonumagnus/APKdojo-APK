@@ -61,7 +61,8 @@ class _CategoryListState extends State<CategoryList>
                       createRouteRightToLeft(
                         targetRoute: CategoryAppListing(
                           applicationType: widget.type,
-                          categoryName: snapshot.data![index]['caturl'],
+                          categoryName: snapshot.data![index]['catname'],
+                          caturl: snapshot.data![index]['caturl'],
                         ),
                       ),
                     );
@@ -77,8 +78,8 @@ class _CategoryListState extends State<CategoryList>
                           image: AssetImage(
                             'assets/images/category_icons/${snapshot.data![index]["caticon"]}.png',
                           ),
-                          width: 26,
-                          height: 26,
+                          width: 28,
+                          height: 28,
                         ),
                         title: Html(
                           data: snapshot.data![index]['catname'],

@@ -8,8 +8,11 @@ class DownloadingProgress extends ChangeNotifier {
   String _appName = '';
 
   int get progress => _progress;
+
   DownloadTaskStatus get downloadTaskStatus => _downloadTaskStatus;
+
   String get id => _id;
+
   String get appName => _appName;
 
   void setProgress(int updatedProgress) {

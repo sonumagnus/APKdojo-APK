@@ -1,6 +1,7 @@
 import 'package:apkdojo/main.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/search_icon_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   final String appBarTitle;
@@ -10,9 +11,14 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
-      title: Text(
-        appBarTitle,
-        style: TextStyle(color: appBarTitleColor),
+      title: Html(
+        data: appBarTitle,
+        style: {
+          "*": Style(
+            fontSize: const FontSize(20),
+            fontWeight: FontWeight.w600,
+          )
+        },
       ),
       backgroundColor: primaryColor,
       iconTheme: IconThemeData(color: iconThemeColor),
