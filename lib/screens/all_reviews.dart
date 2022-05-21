@@ -1,7 +1,9 @@
+import 'package:apkdojo/widgets/main_ui_widgets/basic_app_bar.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/write_reviews.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/reviews_list.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class AllReviews extends StatefulWidget {
   final String seourl;
@@ -30,6 +32,7 @@ class AllReviewsState extends State<AllReviews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: basicAppBar(),
       body: FutureBuilder<Map>(
         future: reviews,
         builder: (context, snapshot) {
@@ -44,36 +47,25 @@ class AllReviewsState extends State<AllReviews> {
                     appurl: snapshot.data!['app_url'],
                     type: snapshot.data!['type'],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: ListView.builder(
-                      physics: const ScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: snapshot.data!['reviews'] != null
-                          ? snapshot.data!['reviews'].length
-                          : 0,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ReviewsList(
-                          rating: snapshot.data!['reviews'][index]['rating']
-                              .toString(),
-                          name: snapshot.data!['reviews'][index]['name'],
-                          comment: snapshot.data!['reviews'][index]['comment'],
-                          date: snapshot.data!['reviews'][index]['time'],
-                          showDate: true,
-                        );
-                      },
-                    ),
-                  ),
+                  ListView.builder(
+                    physics: const ScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: snapshot.data!['reviews'] != null ? snapshot.data!['reviews'].length : 0,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ReviewsList(
+                        rating: snapshot.data!['reviews'][index]['rating'].toString(),
+                        name: snapshot.data!['reviews'][index]['name'],
+                        comment: snapshot.data!['reviews'][index]['comment'],
+                        date: snapshot.data!['reviews'][index]['time'],
+                        showDate: true,
+                      );
+                    },
+                  ).p12(),
                 ],
               ),
             );
           } else if (snapshot.hasError) {
-            return const Center(
-              child: Text(
-                'fetching error ! Check Internet Connection',
-                style: TextStyle(fontSize: 16),
-              ),
-            );
+            return 'fetching error ! Check Internet Connection'.text.size(16).makeCentered();
           }
           return const Center(child: CircularProgressIndicator());
         },

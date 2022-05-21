@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 
 class ReviewsList extends StatelessWidget {
-  final String rating;
-  final String name;
-  final String comment;
-  final String date;
+  final String rating, name, comment, date;
   final bool showDate;
-  const ReviewsList(
-      {Key? key,
-      required this.rating,
-      required this.name,
-      required this.comment,
-      required this.date,
-      required this.showDate})
-      : super(key: key);
+  const ReviewsList({
+    Key? key,
+    required this.rating,
+    required this.name,
+    required this.comment,
+    required this.date,
+    required this.showDate,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +24,7 @@ class ReviewsList extends StatelessWidget {
               children: [
                 Container(
                   margin: const EdgeInsets.only(right: 8),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: Colors.green.shade300,
                     borderRadius: const BorderRadius.all(Radius.circular(3)),

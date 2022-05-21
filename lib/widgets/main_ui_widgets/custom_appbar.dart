@@ -1,58 +1,61 @@
-import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/screens/search_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:velocity_x/velocity_x.dart';
 
-appBar(height, context, _scaffoldKey) {
-  return PreferredSize(
-    preferredSize: Size(MediaQuery.of(context).size.width, height + 8),
-    child: Stack(
-      children: <Widget>[
-        Positioned(
-          // To take AppBar Size only
-          top: 40.0,
-          left: 20.0,
-          right: 20.0,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                createRouteRightToLeft(
-                  targetRoute: const SearchPage(),
-                ),
-              );
+class CustomAppBar extends StatelessWidget {
+  final Widget child;
+  const CustomAppBar({Key? key, this.child = const SizedBox()}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  elevation: 0,
+                  title: SvgPicture.asset("assets/images/apkdojoNameIcon.svg", width: 80.0).pSymmetric(h: 5),
+                  expandedHeight: 110,
+                  backgroundColor: Colors.white12,
+                  bottom: PreferredSize(
+                      preferredSize: Size(MediaQuery.of(context).size.width, kToolbarHeight),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SearchPage(),
+                            ),
+                          );
+                        },
+                        child: TextField(
+                          enabled: false,
+                          autofocus: false,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(vertical: 15),
+                            focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey.shade100,
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Colors.grey.shade500,
+                            ),
+                            hintText: "Search",
+                            hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 18),
+                          ),
+                        ).box.make().pSymmetric(h: 20),
+                      )),
+                )
+              ];
             },
-            child: AppBar(
-              elevation: 1,
-              backgroundColor: Colors.white,
-              leading: IconButton(
-                onPressed: () {
-                  _scaffoldKey.currentState!.openDrawer();
-                },
-                icon: Icon(
-                  Icons.menu,
-                  color: Colors.grey.shade700,
-                ),
-              ),
-              primary: false,
-              title: Text(
-                "Search for apps & games",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: Icon(
-                    Icons.search,
-                    color: Colors.grey.shade700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        )
-      ],
-    ),
-  );
+            body: child),
+      ),
+    ).box.white.make();
+  }
 }

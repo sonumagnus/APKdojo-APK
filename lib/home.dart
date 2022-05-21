@@ -1,10 +1,11 @@
 import 'package:apkdojo/screens/download_manager.dart';
 import 'package:apkdojo/screens/homepage.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
+import 'package:apkdojo/screens/search_page.dart';
 import 'package:apkdojo/widgets/categorytabs.dart';
-// import 'package:apkdojo/widgets/test.dart';
+import 'package:apkdojo/widgets/test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -14,14 +15,15 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
   int _selectedIndex = 0;
   late PageController pageController;
 
   static const List<Widget> _pages = [
     HomePage(),
-    CategoryByTabs(
-      selectedIndex: 0,
-    ),
+    CategoryByTabs(selectedIndex: 0),
+    SearchPage(),
     DownloadManager(),
   ];
 
@@ -53,7 +55,11 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MyDrawer(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const Test()));
+        },
+      ),
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
         children: _pages,
@@ -61,6 +67,7 @@ class _HomeState extends State<Home> {
         onPageChanged: onPageChanged,
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: [
           const BottomNavigationBarItem(
             icon: Icon(Icons.home_filled),
@@ -70,13 +77,21 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.grid_view_rounded),
             label: 'Category',
           ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.search_rounded),
+            label: 'Search',
+          ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              'assets/images/download.svg',
-              height: 18,
-              width: 18,
-              color: Colors.grey.shade700,
-              semanticsLabel: "download",
+            icon: Container(
+              margin: const EdgeInsets.symmetric(vertical: 3),
+              padding: const EdgeInsets.only(bottom: 1),
+              child: SvgPicture.asset(
+                'assets/images/download.svg',
+                height: 18,
+                width: 18,
+                color: _selectedIndex == 3 ? Colors.green.shade300 : Colors.grey.shade700,
+                semanticsLabel: "download",
+              ),
             ),
             label: 'Downloads',
           ),
@@ -85,6 +100,6 @@ class _HomeState extends State<Home> {
         selectedItemColor: Colors.green.shade300,
         onTap: _onItemTapped,
       ),
-    );
+    ).box.white.make();
   }
 }

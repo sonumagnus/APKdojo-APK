@@ -1,4 +1,5 @@
 import 'package:apkdojo/styling_refrence/style.dart';
+import 'package:apkdojo/widgets/dio_error_message.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/home_app_grid_animation.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_grid_app.dart';
@@ -50,8 +51,7 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
                   child: GridView.builder(
                     shrinkWrap: true,
                     physics: const ScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 4,
                       childAspectRatio: 2 / 3,
                     ),
@@ -61,23 +61,14 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
                         name: snapshot.data![index]['name'],
                         seourl: snapshot.data![index]['seourl'],
                         icon: snapshot.data![index]['icon'],
-                        starRating:
-                            snapshot.data![index]['star_rating'].toString(),
+                        starRating: snapshot.data![index]['star_rating'].toString(),
                         rating: snapshot.data![index]['rating'].toString(),
                       );
                     },
                   ),
                 );
               } else if (snapshot.hasError) {
-                return Center(
-                  child: Text(
-                    'fetching error ! Check Internet Connection',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                );
+                return const DioErrorMessage();
               }
               return const HomeAppGridAnimation(
                 animatedItemCount: 8,

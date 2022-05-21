@@ -11,7 +11,7 @@ class ApkDetailsExpansionPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Accordion(
-      title: "Apk Details",
+      title: "APK Details",
       contentWidget: Column(
         children: [
           ApkDetailsSingleKeyValue(

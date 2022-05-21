@@ -1,55 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class CategoryAppListingAnimation extends StatelessWidget {
   final int animatedTileCount;
-  const CategoryAppListingAnimation({
-    Key? key,
-    this.animatedTileCount = 1,
-  }) : super(key: key);
+  const CategoryAppListingAnimation({Key? key, this.animatedTileCount = 1}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
       baseColor: Colors.cyan.shade100,
       highlightColor: Colors.grey.shade100,
-      child: ListView(
+      child: ListView.builder(
         shrinkWrap: true,
-        children: [
-          for (var i = 0; i < animatedTileCount; i++) const SingleAnimatedTile()
-        ],
+        itemCount: animatedTileCount,
+        itemBuilder: (context, index) => const SingleAnimatedTile(),
       ),
     );
   }
 }
 
 class SingleAnimatedTile extends StatelessWidget {
-  const SingleAnimatedTile({
-    Key? key,
-  }) : super(key: key);
+  const SingleAnimatedTile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    const _boxDecoration =
-        BoxDecoration(color: Colors.grey, shape: BoxShape.circle);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 7),
-      child: ListTile(
-        leading: Container(
-          width: 44,
-          height: 44,
-          decoration: _boxDecoration,
-        ),
-        title: Container(
-          height: 20,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(12),
-            ),
-            color: Colors.grey,
-          ),
-        ),
-      ),
-    );
+    return ListTile(
+      leading: VxBox().square(44).gray500.roundedFull.make(),
+      title: VxBox().height(20).rounded.gray500.make(),
+    ).pSymmetric(v: 7);
   }
 }

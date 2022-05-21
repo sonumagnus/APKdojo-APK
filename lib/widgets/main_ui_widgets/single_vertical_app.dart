@@ -3,13 +3,10 @@ import 'package:apkdojo/screens/slug.dart';
 import 'package:apkdojo/widgets/star_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class SingleVerticalApp extends StatelessWidget {
-  final String seourl;
-  final String name;
-  final String icon;
-  final String starRating;
-  final String rating;
+  final String seourl, name, icon, starRating, rating;
   const SingleVerticalApp({
     Key? key,
     required this.seourl,
@@ -23,63 +20,31 @@ class SingleVerticalApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
-          createRouteRightToLeft(
-            targetRoute: Slug(seourl: seourl),
-          ),
-        );
+        Navigator.of(context).push(createRouteRightToLeft(targetRoute: Slug(seourl: seourl)));
       },
-      child: Container(
-        height: 180,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.lightGreen.shade200, Colors.blue.shade100],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: CachedNetworkImage(
+              placeholder: (context, url) => Image.asset(
+                'assets/images/lazy_images/lazy-image.jpg',
+              ),
+              imageUrl: icon,
+              width: 85,
+            ),
           ),
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
-        ),
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: CachedNetworkImage(
-                placeholder: (context, url) => Image.asset(
-                  'assets/images/lazy_images/lazy-image.jpg',
-                ),
-                imageUrl: icon,
-                width: 85,
-              ),
-            ),
-            Text(
-              name,
-              maxLines: 2,
-              style: TextStyle(
-                color: Colors.grey.shade700,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                StarRating(
-                  rating: starRating,
-                  starSize: '9',
-                ),
-                Text(
-                  rating == "null" ? "0.0" : rating,
-                  style: TextStyle(
-                    fontSize: 9,
-                    color: Colors.grey.shade800,
-                  ),
-                )
-              ],
-            ),
-          ],
-        ),
-      ),
+          name.text.size(12).medium.ellipsis.maxLines(2).gray500.make(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              StarRating(rating: starRating, starSize: '9'),
+              (rating == "null" ? "0.0" : rating).text.scale(0.6).make(),
+            ],
+          ),
+        ],
+      ).p(15).box.height(180).withRounded(value: 4).linearGradient([Colors.lightGreen.shade200, Colors.blue.shade100]).make(),
     );
   }
 }

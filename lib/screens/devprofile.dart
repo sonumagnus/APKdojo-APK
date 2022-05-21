@@ -1,4 +1,5 @@
-import 'package:apkdojo/main.dart';
+import 'package:apkdojo/styling_refrence/style.dart';
+import 'package:apkdojo/widgets/dio_error_message.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/search_icon_widget.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_vertical_app.dart';
 import 'package:dio/dio.dart';
@@ -16,8 +17,7 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
   late Future<Map> devInfo;
 
   Future<Map> getDevInfo() async {
-    var response = await Dio().get(
-        'https://api.apkdojo.com/developer.php?dev=${widget.devURL}&lang=en');
+    var response = await Dio().get('https://api.apkdojo.com/developer.php?dev=${widget.devURL}&lang=en');
     return response.data;
   }
 
@@ -64,8 +64,7 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
                           height: 100,
                           child: Text(
                             snapshot.data!['alpha'],
-                            style: const TextStyle(
-                                fontSize: 50, fontWeight: FontWeight.w400),
+                            style: const TextStyle(fontSize: 50, fontWeight: FontWeight.w400),
                           ),
                         ),
                         Row(
@@ -76,8 +75,7 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
                                 const Icon(Icons.mail, color: Colors.green),
                                 Text(
                                   snapshot.data!['apps_count'].toString(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 const Text(" Apps")
                               ],
@@ -87,8 +85,7 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
                                 const Icon(Icons.games, color: Colors.green),
                                 Text(
                                   snapshot.data!['games_count'].toString(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 const Text(" Games")
                               ],
@@ -107,16 +104,14 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
                       padding: EdgeInsets.symmetric(horizontal: 15),
                       child: Text(
                         "Application",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                       ),
                     ),
                     GridView.builder(
                       physics: const ScrollPhysics(),
                       padding: const EdgeInsets.all(12),
                       shrinkWrap: true,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                         crossAxisSpacing: 12,
                         childAspectRatio: 6 / 10,
@@ -127,15 +122,11 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SingleVerticalApp(
-                              seourl: snapshot.data!['results'][index]
-                                  ['seourl'],
+                              seourl: snapshot.data!['results'][index]['seourl'],
                               name: snapshot.data!['results'][index]['name'],
                               icon: snapshot.data!['results'][index]['icon'],
-                              rating: snapshot.data!['results'][index]['rating']
-                                  .toString(),
-                              starRating: snapshot.data!['results'][index]
-                                      ['star_rating']
-                                  .toString(),
+                              rating: snapshot.data!['results'][index]['rating'].toString(),
+                              starRating: snapshot.data!['results'][index]['star_rating'].toString(),
                             )
                           ],
                         );
@@ -146,12 +137,7 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
               ],
             );
           } else if (snapshot.hasError) {
-            return const Center(
-              child: Text(
-                'fetching error ! Check Internet Connection',
-                style: TextStyle(fontSize: 16),
-              ),
-            );
+            return const DioErrorMessage();
           }
           return const Center(
             child: CircularProgressIndicator(),

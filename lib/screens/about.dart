@@ -1,5 +1,3 @@
-import 'package:apkdojo/widgets/main_ui_widgets/custom_appbar.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
 
 class About extends StatelessWidget {
@@ -7,11 +5,7 @@ class About extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: appBar(AppBar().preferredSize.height, context, _scaffoldKey),
-      drawer: const MyDrawer(),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
@@ -36,8 +30,7 @@ class About extends StatelessWidget {
           ),
           const AboutSectionHeading(heading: "Priority to Data Security"),
           const AboutSectionTextContent(
-            content:
-                "All the applications are virus and malware-free on APKdojo. Our technical team scans all the apps with multiple antivirus software before uploading them on the website.",
+            content: "All the applications are virus and malware-free on APKdojo. Our technical team scans all the apps with multiple antivirus software before uploading them on the website.",
           ),
           Container(
             color: Colors.blue,

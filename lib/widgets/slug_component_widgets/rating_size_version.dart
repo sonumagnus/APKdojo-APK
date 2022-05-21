@@ -54,11 +54,7 @@ class RatingSizeVersionTable extends StatelessWidget {
                       rating != "null" ? rating : 0.0.toString(),
                       style: _keyDataStyling,
                     ),
-                    const Icon(
-                      Icons.star,
-                      size: 14,
-                      color: Colors.amber,
-                    )
+                    const Icon(Icons.star, size: 14, color: Colors.amber)
                   ],
                 ),
                 Row(

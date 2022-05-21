@@ -1,5 +1,5 @@
-import 'package:apkdojo/main.dart';
 import 'package:apkdojo/screens/slug.dart';
+import 'package:apkdojo/styling_refrence/style.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -15,8 +15,7 @@ class SearchPage extends HookWidget {
     void _getApps() async {
       if (_searchKeyword.value == '') return;
       try {
-        Response res = await Dio().get(
-            "https://api.apkdojo.com/search.php?q=${_searchKeyword.value}");
+        Response res = await Dio().get("https://api.apkdojo.com/search.php?q=${_searchKeyword.value}");
         _searchResult.value = res.data;
       } catch (e) {
         // debugPrint(e.toString());
@@ -31,19 +30,15 @@ class SearchPage extends HookWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
-        elevation: 1,
+        elevation: 0,
         iconTheme: IconThemeData(color: iconThemeColor),
         title: TextField(
           cursorColor: Colors.black54,
-          onChanged: (text) {
-            _searchKeyword.value = text;
-          },
+          onChanged: (text) => _searchKeyword.value = text,
           autofocus: true,
           decoration: const InputDecoration(
             hintText: "Search Apps & Games",
-            hintStyle: TextStyle(
-              color: Colors.black54,
-            ),
+            hintStyle: TextStyle(color: Colors.black54),
             focusedBorder: InputBorder.none,
           ),
         ),

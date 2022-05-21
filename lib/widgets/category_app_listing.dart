@@ -1,31 +1,91 @@
 import 'package:apkdojo/widgets/loading_animation_widgets/category_app_listing_animation.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/custom_appbar.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/single_horizonatal_app_tile.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:velocity_x/velocity_x.dart';
 
-class CategoryAppListing extends StatefulHookWidget {
-  final String categoryName;
-  final String applicationType;
-  final String caturl;
+import 'main_ui_widgets/single_horizonatal_app_tile.dart';
+
+class CategoryAppListing extends HookWidget {
+  final String categoryName, applicationType, caturl;
+  final AsyncSnapshot<List> categoryList;
+  final int intitalIndex;
   const CategoryAppListing({
     Key? key,
     required this.categoryName,
     required this.applicationType,
     required this.caturl,
+    required this.categoryList,
+    required this.intitalIndex,
   }) : super(key: key);
 
   @override
-  State<CategoryAppListing> createState() => _CategoryAppListingState();
+  Widget build(BuildContext context) {
+    TabController _tabController = useTabController(initialLength: categoryList.data!.length, initialIndex: intitalIndex);
+    final _tabIndex = useState(true);
+
+    _tabCallback() {
+      _tabIndex.value = !_tabIndex.value;
+    }
+
+    useEffect(() {
+      _tabController.addListener(_tabCallback);
+      return () => _tabController.removeListener(_tabCallback);
+    });
+
+    useEffect(() {
+      debugPrint(">>>>>> $applicationType");
+      return null;
+    }, []);
+
+    return Scaffold(
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverAppBar(
+            pinned: true,
+            // floating: true,
+            elevation: 0,
+            expandedHeight: 100,
+            backgroundColor: Colors.white,
+            iconTheme: const IconThemeData(color: Colors.black),
+            title: Html(data: categoryList.data![_tabController.index]['catname']),
+            bottom: TabBar(
+              indicatorSize: TabBarIndicatorSize.label,
+              isScrollable: true,
+              labelColor: Colors.grey.shade600,
+              unselectedLabelColor: Colors.grey.shade400,
+              controller: _tabController,
+              tabs: categoryList.data!.map((e) => Tab(child: Text(e['catname']))).toList(),
+            ),
+          ),
+        ],
+        body: TabBarView(controller: _tabController, children: categoryList.data!.map((e) => CategoryBodyAppList(caturl: e['caturl'], applicationType: applicationType)).toList()),
+      ),
+    );
+  }
 }
 
-class _CategoryAppListingState extends State<CategoryAppListing> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+class CategoryBodyAppList extends StatefulHookWidget {
+  final String caturl, applicationType;
+  const CategoryBodyAppList({
+    Key? key,
+    required this.caturl,
+    required this.applicationType,
+  }) : super(key: key);
+
+  @override
+  State<CategoryBodyAppList> createState() => _CategoryBodyAppListState();
+}
+
+class _CategoryBodyAppListState extends State<CategoryBodyAppList> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final _appsList = useRef<List>([]);
     final apps = useState<Map>({});
     final _nextPage = useRef<int>(1);
@@ -47,8 +107,7 @@ class _CategoryAppListingState extends State<CategoryAppListing> {
     }
 
     void _scrollerCallback() {
-      if (_scrollController.position.pixels !=
-          _scrollController.position.maxScrollExtent) return;
+      if (_scrollController.position.pixels != _scrollController.position.maxScrollExtent) return;
       _fetchApps(_nextPage.value);
     }
 
@@ -62,51 +121,41 @@ class _CategoryAppListingState extends State<CategoryAppListing> {
       return null;
     }, []);
 
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: appBar(AppBar().preferredSize.height, context, _scaffoldKey),
-      drawer: const MyDrawer(),
-      body: _appsList.value.isEmpty
-          ? const CategoryAppListingAnimation(
-              animatedTileCount: 9,
-            )
-          : SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                children: [
-                  ListView.builder(
-                    physics: const ScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: _appsList.value.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          SingleHorizontalAppTile(
-                            icon: _appsList.value[index]['icon'],
-                            name: _appsList.value[index]['name'],
-                            seourl: _appsList.value[index]['seourl'],
-                            developer: _appsList.value[index]['developer'],
-                          )
-                        ],
-                      );
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _nextPage.value != apps.value['total_pages'] + 1
-                        ? const Center(child: CircularProgressIndicator())
-                        : const Center(
-                            child: Chip(
-                              label: Text(
-                                "No More Data",
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ),
-                  )
-                ],
-              ),
+    return _appsList.value.isEmpty
+        ? const CategoryAppListingAnimation(
+            animatedTileCount: 9,
+          )
+        : SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              children: [
+                ListView.builder(
+                  physics: const ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: _appsList.value.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        SingleHorizontalAppTile(
+                          icon: _appsList.value[index]['icon'],
+                          name: _appsList.value[index]['name'],
+                          seourl: _appsList.value[index]['seourl'],
+                          developer: _appsList.value[index]['developer'],
+                        )
+                      ],
+                    );
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: _nextPage.value != apps.value['total_pages'] + 1
+                      ? const Center(child: CircularProgressIndicator())
+                      : Center(
+                          child: Chip(label: "No More Apps".text.medium.make()),
+                        ),
+                )
+              ],
             ),
-    );
+          );
   }
 }

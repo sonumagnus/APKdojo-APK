@@ -1,15 +1,10 @@
 import 'dart:io';
-import 'package:apkdojo/common_methods/filepath_to_filename.dart';
+import 'package:apkdojo/common_methods/download_methods/apkpath_to_apkname.dart';
+import 'package:apkdojo/common_methods/download_methods/get_app_list_in_directory.dart';
 import 'package:apkdojo/page_route_animation/right_to_left.dart';
-// import 'package:apkdojo/providers/downloading_progress.dart';
-// import 'package:apkdojo/screens/custom_download_progress_bar.dart';
 import 'package:apkdojo/screens/slug.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/custom_appbar.dart';
-import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-// import 'package:provider/provider.dart';
 
 class DownloadManager extends StatefulWidget {
   const DownloadManager({Key? key}) : super(key: key);
@@ -19,49 +14,18 @@ class DownloadManager extends StatefulWidget {
 }
 
 class _DownloadManagerState extends State<DownloadManager> {
-  late List<FileSystemEntity> _allFiles;
   late List<FileSystemEntity> _apkFiles;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  Future<void> getDir() async {
-    Directory? directory = await getExternalStorageDirectory();
-    String _newPath = "";
-
-    List<String> paths = directory!.path.split("/");
-    for (int x = 1; x < paths.length; x++) {
-      String folder = paths[x];
-      if (folder != "Android") {
-        _newPath += "/" + folder;
-      } else {
-        break;
-      }
-    }
-    _newPath = _newPath + "/APKdojo";
-    directory = Directory(_newPath);
-
-    final dir = directory.path;
-    String apkDirectory = '$dir/';
-    final myDir = Directory(apkDirectory);
-    _allFiles = myDir.listSync(recursive: true, followLinks: true);
-    setState(() {
-      _apkFiles =
-          _allFiles.where((element) => element.path.endsWith('.apk')).toList();
-    });
-  }
-
-  _apkName(String filePath) {
-    final String _apkNameWithoutExtension = fileName(filePath);
-    final List<String> _splitedListofNameAndVersion =
-        _apkNameWithoutExtension.split("_");
-    final String _realAppName = _splitedListofNameAndVersion[0];
-    return _realAppName;
+  Future<void> getApplicationList() async {
+    _apkFiles = await getListOfApplicationsFromDirectory();
+    setState(() {});
   }
 
   Future<List<String>> getApkIcon(String apkPath) async {
     String apkIconURL = "";
     String apkSeoUrl = "";
     String apkDeveloper = "";
-    String _appName = _apkName(apkPath);
+    String _appName = apkName(apkPath);
 
     if (_appName.contains(":")) {
       _appName = _appName.split(":")[0];
@@ -90,7 +54,7 @@ class _DownloadManagerState extends State<DownloadManager> {
       if (await file.exists()) {
         await file.delete();
         setState(() {
-          getDir();
+          getApplicationList();
         });
       }
     } catch (e) {
@@ -104,7 +68,7 @@ class _DownloadManagerState extends State<DownloadManager> {
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Do You Really Want to Delete ${_apkName(file)} ?'),
+          title: Text('Do You Really Want to Delete ${apkName(file)} ?'),
           actions: [
             TextButton(
               child: const Text('Confirm'),
@@ -129,15 +93,12 @@ class _DownloadManagerState extends State<DownloadManager> {
   void initState() {
     super.initState();
     _apkFiles = [];
-    getDir();
+    getApplicationList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: appBar(AppBar().preferredSize.height, context, _scaffoldKey),
-      drawer: const MyDrawer(),
       body: _apkFiles.isEmpty
           ? Center(
               child: Text(
@@ -176,14 +137,13 @@ class _DownloadManagerState extends State<DownloadManager> {
                                   },
                                   child: ListTile(
                                     leading: ClipRRect(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(12)),
+                                      borderRadius: const BorderRadius.all(Radius.circular(12)),
                                       child: Image.network(
                                         "${snapshot.data![0]}",
                                       ),
                                     ),
                                     title: Text(
-                                      _apkName(
+                                      apkName(
                                         _apkFiles[index].path,
                                       ),
                                       style: TextStyle(
@@ -196,12 +156,9 @@ class _DownloadManagerState extends State<DownloadManager> {
                                       style: const TextStyle(fontSize: 14),
                                     ),
                                     trailing: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8, top: 8, bottom: 8),
+                                      padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
                                       child: GestureDetector(
-                                        onTap: () =>
-                                            _deleteConfirmationAlertBox(
-                                                _apkFiles[index].path),
+                                        onTap: () => _deleteConfirmationAlertBox(_apkFiles[index].path),
                                         child: Icon(
                                           Icons.delete_outline_rounded,
                                           color: Colors.grey.shade700,
@@ -237,7 +194,7 @@ class _DownloadManagerState extends State<DownloadManager> {
         "assets/images/lazy_images/lazy-image.jpg",
       ),
       title: Text(
-        _apkName(
+        apkName(
           _apkFiles[index].path,
         ),
         style: TextStyle(
