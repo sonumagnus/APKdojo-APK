@@ -1,10 +1,12 @@
 import 'dart:io';
-import 'package:apkdojo/common_methods/download_methods/apkpath_to_apkname.dart';
-import 'package:apkdojo/common_methods/download_methods/get_app_list_in_directory.dart';
+import 'package:apkdojo/api/api.dart';
 import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/screens/slug.dart';
+import 'package:apkdojo/utils/app_methods.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/basic_app_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class DownloadManager extends StatefulWidget {
   const DownloadManager({Key? key}) : super(key: key);
@@ -17,7 +19,7 @@ class _DownloadManagerState extends State<DownloadManager> {
   late List<FileSystemEntity> _apkFiles;
 
   Future<void> getApplicationList() async {
-    _apkFiles = await getListOfApplicationsFromDirectory();
+    _apkFiles = await App.getListOfApplicationsFromDirectory();
     setState(() {});
   }
 
@@ -25,23 +27,23 @@ class _DownloadManagerState extends State<DownloadManager> {
     String apkIconURL = "";
     String apkSeoUrl = "";
     String apkDeveloper = "";
-    String _appName = apkName(apkPath);
+    String _appName = App.apkName(apkPath);
 
     if (_appName.contains(":")) {
-      _appName = _appName.split(":")[0];
+      _appName = _appName.split(":").first;
     } else if (_appName.contains("&")) {
-      _appName = _appName.split("&")[0];
+      _appName = _appName.split("&").first;
     } else if (_appName.contains("–")) {
-      _appName = _appName.split("–")[0];
+      _appName = _appName.split("–").first;
     }
 
     Response _res = await Dio().get(
-      "https://api.apkdojo.com/search.php?q=${_appName.trimLeft().trimRight()}",
+      "$apiDomain/search.php?q=${_appName.trim()}",
     );
     if (_res.data != []) {
-      apkIconURL = _res.data![0]!["icon"];
-      apkSeoUrl = _res.data![0]!['seourl'];
-      apkDeveloper = _res.data![0]!['developer'];
+      apkIconURL = _res.data.first!["icon"];
+      apkSeoUrl = _res.data.first!['seourl'];
+      apkDeveloper = _res.data.first!['developer'];
     } else {
       return [];
     }
@@ -68,7 +70,7 @@ class _DownloadManagerState extends State<DownloadManager> {
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Do You Really Want to Delete ${apkName(file)} ?'),
+          title: Text('Do You Really Want to Delete ${App.apkName(file)} ?'),
           actions: [
             TextButton(
               child: const Text('Confirm'),
@@ -98,93 +100,84 @@ class _DownloadManagerState extends State<DownloadManager> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _apkFiles.isEmpty
-          ? Center(
-              child: Text(
-                "No Downloads",
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey.shade500,
-                ),
-              ),
-            )
-          : SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Column(
-                children: [
-                  ListView.builder(
-                    physics: const ScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: _apkFiles.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: [
-                          FutureBuilder<List>(
-                            future: getApkIcon(_apkFiles[index].path),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      createRouteRightToLeft(
-                                        targetRoute: Slug(
-                                          seourl: snapshot.data![1],
+    return SafeArea(
+      child: Scaffold(
+        appBar: basicAppBar(title: "Downloads"),
+        body: _apkFiles.isEmpty
+            ? "No Downloads".text.size(25).medium.gray400.makeCentered()
+            : SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Column(
+                  children: [
+                    ListView.builder(
+                      physics: const ScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: _apkFiles.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Column(
+                          children: [
+                            FutureBuilder<List>(
+                              future: getApkIcon(_apkFiles[index].path),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        createRouteRightToLeft(
+                                          targetRoute: Slug(
+                                            seourl: snapshot.data![1],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: ListTile(
+                                      leading: ClipRRect(
+                                        borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                        child: Image.network(
+                                          "${snapshot.data!.first}",
                                         ),
                                       ),
-                                    );
-                                  },
-                                  child: ListTile(
-                                    leading: ClipRRect(
-                                      borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                      child: Image.network(
-                                        "${snapshot.data![0]}",
+                                      title: Text(
+                                        App.apkName(
+                                          _apkFiles[index].path,
+                                        ),
+                                        style: TextStyle(
+                                          color: Colors.grey.shade800,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
-                                    ),
-                                    title: Text(
-                                      apkName(
-                                        _apkFiles[index].path,
+                                      subtitle: Text(
+                                        snapshot.data![2],
+                                        style: const TextStyle(fontSize: 14),
                                       ),
-                                      style: TextStyle(
-                                        color: Colors.grey.shade800,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      snapshot.data![2],
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                    trailing: Padding(
-                                      padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
-                                      child: GestureDetector(
+                                      trailing: GestureDetector(
                                         onTap: () => _deleteConfirmationAlertBox(_apkFiles[index].path),
                                         child: Icon(
                                           Icons.delete_outline_rounded,
                                           color: Colors.grey.shade700,
                                           size: 28,
                                         ),
-                                      ),
+                                      ).pOnly(left: 8, top: 8, bottom: 8),
                                     ),
-                                  ),
-                                );
-                              } else if (snapshot.hasError) {
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return offlineDownloadManager(index);
+                                }
                                 return offlineDownloadManager(index);
-                              }
-                              return offlineDownloadManager(index);
-                            },
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 80),
-                            child: Divider(height: 8),
-                          )
-                        ],
-                      );
-                    },
-                  ),
-                ],
+                              },
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(left: 80),
+                              child: Divider(height: 8),
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 
@@ -194,9 +187,7 @@ class _DownloadManagerState extends State<DownloadManager> {
         "assets/images/lazy_images/lazy-image.jpg",
       ),
       title: Text(
-        apkName(
-          _apkFiles[index].path,
-        ),
+        App.apkName(_apkFiles[index].path),
         style: TextStyle(
           color: Colors.grey.shade800,
           fontWeight: FontWeight.w500,
@@ -204,7 +195,7 @@ class _DownloadManagerState extends State<DownloadManager> {
       ),
       trailing: GestureDetector(
         onTap: () => _deleteConfirmationAlertBox(_apkFiles[index].path),
-        child: const Icon(Icons.delete),
+        child: const Icon(Icons.delete_outline_rounded),
       ),
     );
   }

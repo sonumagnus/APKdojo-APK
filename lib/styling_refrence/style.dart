@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 double p20 = 20;
-Color primaryColor = Colors.white;
-Color iconThemeColor = Colors.black;
-Color appBarTitleColor = Colors.black;
+
+class CustomColor {
+  static Color primaryColor = Colors.white;
+  static Color iconThemeColor = Colors.black;
+  static Color appBarTitleColor = Colors.black;
+}

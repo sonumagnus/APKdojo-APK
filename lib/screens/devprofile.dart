@@ -1,3 +1,4 @@
+import 'package:apkdojo/api/api.dart';
 import 'package:apkdojo/styling_refrence/style.dart';
 import 'package:apkdojo/widgets/dio_error_message.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/search_icon_widget.dart';
@@ -17,7 +18,8 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
   late Future<Map> devInfo;
 
   Future<Map> getDevInfo() async {
-    var response = await Dio().get('https://api.apkdojo.com/developer.php?dev=${widget.devURL}&lang=en');
+    String _api = '$apiDomain/developer.php?dev=${widget.devURL}&lang=en';
+    Response response = await Dio().get(_api);
     return response.data;
   }
 
@@ -34,10 +36,10 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
         elevation: 1,
         title: Text(
           widget.devURL,
-          style: TextStyle(color: appBarTitleColor),
+          style: TextStyle(color: CustomColor.appBarTitleColor),
         ),
-        backgroundColor: primaryColor,
-        iconTheme: IconThemeData(color: iconThemeColor),
+        backgroundColor: CustomColor.primaryColor,
+        iconTheme: IconThemeData(color: CustomColor.iconThemeColor),
         actions: const [SearchIconWidget()],
       ),
       body: FutureBuilder<Map>(

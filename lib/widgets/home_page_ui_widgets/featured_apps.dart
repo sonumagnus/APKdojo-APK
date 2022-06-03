@@ -15,9 +15,10 @@ class FeaturedApps extends StatefulWidget {
 
 class _FeaturedAppsState extends State<FeaturedApps> {
   late Future<List> _featuredApps;
+  final String _api = '$apiDomain/v-apps.php?type=featured_apps&lang=en';
 
   Future<List> fetchApps() async {
-    Response response = await Dio().get(featuredAppApi);
+    Response response = await Dio().get(_api);
     return response.data['featured_apps'];
   }
 

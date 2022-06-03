@@ -34,4 +34,12 @@ class DownloadingProgress extends ChangeNotifier {
     _appName = _currentDownloadingAppName;
     notifyListeners();
   }
+
+  void setDownloadingPSIN(int progress, DownloadTaskStatus downloadTaskStatus, String id, String appName) {
+    _progress = progress;
+    _downloadTaskStatus = downloadTaskStatus;
+    _id = id;
+    _appName = appName;
+    notifyListeners();
+  }
 }

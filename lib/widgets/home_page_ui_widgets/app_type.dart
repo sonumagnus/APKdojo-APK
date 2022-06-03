@@ -79,7 +79,7 @@ class AppType extends StatelessWidget {
                   ),
                 )
               else
-                const Text(''),
+                const SizedBox.shrink()
             ],
           ),
         )

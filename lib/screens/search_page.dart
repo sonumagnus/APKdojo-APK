@@ -1,3 +1,4 @@
+import 'package:apkdojo/api/api.dart';
 import 'package:apkdojo/screens/slug.dart';
 import 'package:apkdojo/styling_refrence/style.dart';
 import 'package:dio/dio.dart';
@@ -15,7 +16,8 @@ class SearchPage extends HookWidget {
     void _getApps() async {
       if (_searchKeyword.value == '') return;
       try {
-        Response res = await Dio().get("https://api.apkdojo.com/search.php?q=${_searchKeyword.value}");
+        String _api = "$apiDomain/search.php?q=${_searchKeyword.value}";
+        Response res = await Dio().get(_api);
         _searchResult.value = res.data;
       } catch (e) {
         // debugPrint(e.toString());
@@ -29,9 +31,9 @@ class SearchPage extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: primaryColor,
+        backgroundColor: CustomColor.primaryColor,
         elevation: 0,
-        iconTheme: IconThemeData(color: iconThemeColor),
+        iconTheme: IconThemeData(color: CustomColor.iconThemeColor),
         title: TextField(
           cursorColor: Colors.black54,
           onChanged: (text) => _searchKeyword.value = text,

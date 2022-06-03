@@ -1,3 +1,4 @@
+import 'package:apkdojo/api/api.dart';
 import 'package:apkdojo/styling_refrence/style.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/developer_apps_animation.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_vertical_app.dart';
@@ -17,9 +18,8 @@ class _DeveloperAppsState extends State<DeveloperApps> {
   late Future<List> developerApps;
 
   Future<List> getDeveloperApps() async {
-    Response response = await Dio().get(
-      'https://api.apkdojo.com/app-developer.php?id=${widget.seourl}',
-    );
+    String _api = '$apiDomain/app-developer.php?id=${widget.seourl}';
+    Response response = await Dio().get(_api);
     return response.data['developer_apps'];
   }
 
@@ -73,8 +73,7 @@ class _DeveloperAppsState extends State<DeveloperApps> {
                             seourl: snapshot.data![index]['seourl'],
                             name: snapshot.data![index]['name'],
                             icon: snapshot.data![index]['icon'],
-                            starRating:
-                                snapshot.data![index]['star_rating'].toString(),
+                            starRating: snapshot.data![index]['star_rating'].toString(),
                             rating: snapshot.data![index]['rating'].toString(),
                           ),
                         );

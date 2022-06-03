@@ -24,7 +24,7 @@ class SlugLoadingAnimation extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 VxBox().size(250, 18).gray300.rounded.make(),
-                VxBox().size(150, 16).blueGray100.rounded.margin(const EdgeInsets.symmetric(vertical: 10)).make(),
+                VxBox().size(150, 16).gray300.rounded.margin(const EdgeInsets.symmetric(vertical: 10)).make(),
                 VxBox().size(120, 34).gray300.roundedLg.make()
               ],
             )

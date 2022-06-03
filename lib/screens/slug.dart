@@ -1,6 +1,8 @@
-import 'package:apkdojo/common_methods/download_methods/download_apk_file.dart';
+import 'package:apkdojo/api/api.dart';
+import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:apkdojo/providers/previous_download_status.dart';
 import 'package:apkdojo/styling_refrence/style.dart';
+import 'package:apkdojo/utils/app_methods.dart';
 import 'package:apkdojo/widgets/dio_error_message.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/slug_animation.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/apk_datail_expansion_panel.dart';
@@ -18,6 +20,7 @@ import 'package:dio/dio.dart';
 import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class Slug extends StatefulWidget {
   final String seourl;
@@ -33,9 +36,8 @@ class _SlugState extends State<Slug> {
   bool _showHeaderName = false;
 
   Future<Map> fetchApp() async {
-    Response response = await Dio().get(
-      'https://api.apkdojo.com/app.php?id=${widget.seourl}&lang=en',
-    );
+    final String _api = '$apiDomain/app.php?id=${widget.seourl}&lang=en';
+    Response response = await Dio().get(_api);
     return response.data;
   }
 
@@ -82,7 +84,7 @@ class _SlugState extends State<Slug> {
                 elevation: 0,
                 backgroundColor: Colors.white12,
                 iconTheme: IconThemeData(
-                  color: iconThemeColor,
+                  color: CustomColor.iconThemeColor,
                 ),
               ),
               body: Stack(
@@ -133,68 +135,54 @@ class _SlugState extends State<Slug> {
                   Positioned(
                     bottom: 0,
                     left: 0,
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 6),
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width,
-                          color: Colors.green.shade200,
-                          child: Text(
-                            "Viewing: ${snapshot.data!['name']}",
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ),
-                        Container(
-                          height: 55,
-                          color: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                          width: MediaQuery.of(context).size.width,
-                          child: GridView(
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 6 / 1.3,
-                              crossAxisSpacing: 8,
-                            ),
+                    child: snapshot.data!['apkurl'] == ""
+                        ? const SizedBox()
+                        : Column(
                             children: [
+                              "Viewing: ${snapshot.data!['name']}".text.size(12).make().box.alignCenter.green200.width(context.mq.size.width).padding(Vx.mSymmetric(v: 6)).make(),
                               Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.grey.shade200,
-                                    ),
-                                    borderRadius: BorderRadius.circular(4)),
-                                child: InkWell(
-                                  onTap: () => Share.share(
-                                    "https://www.apkdojo.com/${widget.seourl}",
+                                height: 55,
+                                color: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                                width: MediaQuery.of(context).size.width,
+                                child: GridView(
+                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 6 / 1.3,
+                                    crossAxisSpacing: 8,
                                   ),
-                                  child: const BottomSheetButton(buttonName: "SHARE"),
+                                  children: [
+                                    InkWell(
+                                      onTap: () => Share.share(
+                                        "https://www.apkdojo.com/${widget.seourl}",
+                                      ),
+                                      child: const BottomSheetButton(buttonName: "SHARE"),
+                                    ).box.border(width: 1, color: Vx.gray200).withRounded(value: 4).make(),
+                                    Consumer<PreviousDownloadStatus>(builder: (context, value, child) {
+                                      return InkWell(
+                                        onTap: () {
+                                          if (value.appAlreadyDownloaded && !value.isOldVersionAvailable) {
+                                            OpenFile.open(value.appPath);
+                                          } else {
+                                            App.download(snapshot.data!['apkurl'], "${snapshot.data!['name']}_${snapshot.data!['version']}");
+                                            context.read<DownloadingProgress>().setAppName(snapshot.data!['name']);
+                                          }
+                                        },
+                                        child: BottomSheetButton(
+                                          buttonName: value.appAlreadyDownloaded && !value.isOldVersionAvailable
+                                              ? "OPEN"
+                                              : value.appAlreadyDownloaded && value.isOldVersionAvailable
+                                                  ? "UPDATE"
+                                                  : "DOWNLOAD",
+                                          buttonBackgroundColor: Colors.green.shade400,
+                                        ),
+                                      );
+                                    })
+                                  ],
                                 ),
                               ),
-                              Consumer<PreviousDownloadStatus>(builder: (context, value, child) {
-                                return InkWell(
-                                  onTap: () {
-                                    if (value.appAlreadyDownloaded && !value.isOldVersionAvailable) {
-                                      OpenFile.open(value.appPath);
-                                    } else {
-                                      download(snapshot.data!['apkurl'], snapshot.data!['name']);
-                                    }
-                                  },
-                                  child: BottomSheetButton(
-                                    buttonName: value.appAlreadyDownloaded && !value.isOldVersionAvailable
-                                        ? "OPEN"
-                                        : value.appAlreadyDownloaded && value.isOldVersionAvailable
-                                            ? "UPDATE"
-                                            : "DOWNLOAD",
-                                    buttonBackgroundColor: Colors.green.shade400,
-                                  ),
-                                );
-                              })
                             ],
                           ),
-                        ),
-                      ],
-                    ),
                   ),
                 ],
               ),
@@ -236,18 +224,7 @@ class BottomSheetButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(buttonName == "SHARE" ? Icons.share : Icons.download, size: 16, color: buttonBackgroundColor == Colors.white ? Colors.green : Colors.white),
-          Padding(
-            padding: const EdgeInsets.only(left: 6),
-            child: Text(
-              buttonName,
-              style: TextStyle(
-                fontSize: 14,
-                color: buttonBackgroundColor == Colors.white ? Colors.grey.shade700 : Colors.white,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.4,
-              ),
-            ),
-          ),
+          buttonName.text.bold.letterSpacing(0.4).color(buttonBackgroundColor == Colors.white ? Colors.grey.shade700 : Colors.white).make().pOnly(left: 6),
         ],
       ),
     );

@@ -34,11 +34,6 @@ class CategoryAppListing extends HookWidget {
       return () => _tabController.removeListener(_tabCallback);
     });
 
-    useEffect(() {
-      debugPrint(">>>>>> $applicationType");
-      return null;
-    }, []);
-
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -49,11 +44,22 @@ class CategoryAppListing extends HookWidget {
             expandedHeight: 100,
             backgroundColor: Colors.white,
             iconTheme: const IconThemeData(color: Colors.black),
-            title: Html(data: categoryList.data![_tabController.index]['catname']),
+            title: Html(
+              data: categoryList.data![_tabController.index]['catname'],
+              style: {
+                "*": Style(
+                  fontSize: const FontSize(20),
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade700,
+                  margin: EdgeInsets.zero,
+                )
+              },
+            ),
             bottom: TabBar(
               indicatorSize: TabBarIndicatorSize.label,
+              indicatorColor: Colors.grey.shade600,
               isScrollable: true,
-              labelColor: Colors.grey.shade600,
+              labelColor: Colors.grey.shade700,
               unselectedLabelColor: Colors.grey.shade400,
               controller: _tabController,
               tabs: categoryList.data!.map((e) => Tab(child: Text(e['catname']))).toList(),
@@ -148,11 +154,7 @@ class _CategoryBodyAppListState extends State<CategoryBodyAppList> with Automati
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: _nextPage.value != apps.value['total_pages'] + 1
-                      ? const Center(child: CircularProgressIndicator())
-                      : Center(
-                          child: Chip(label: "No More Apps".text.medium.make()),
-                        ),
+                  child: _nextPage.value != apps.value['total_pages'] + 1 ? const Center(child: CircularProgressIndicator()) : Chip(label: "No More Apps".text.medium.make()).centered(),
                 )
               ],
             ),

@@ -15,14 +15,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-
   int _selectedIndex = 0;
   late PageController pageController;
 
   static const List<Widget> _pages = [
     HomePage(),
-    CategoryByTabs(selectedIndex: 0),
+    CategoryByTabs(selectedIndex: 0, mediaQueryHeightDivider: 3.5),
     SearchPage(),
     DownloadManager(),
   ];
@@ -56,9 +54,9 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const Test()));
-        },
+        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => const Test(),
+        )),
       ),
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
@@ -75,7 +73,7 @@ class _HomeState extends State<Home> {
           ),
           const BottomNavigationBarItem(
             icon: Icon(Icons.grid_view_rounded),
-            label: 'Category',
+            label: 'Categories',
           ),
           const BottomNavigationBarItem(
             icon: Icon(Icons.search_rounded),

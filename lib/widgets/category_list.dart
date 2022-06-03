@@ -1,3 +1,4 @@
+import 'package:apkdojo/api/api.dart';
 import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/styling_refrence/style.dart';
 import 'package:apkdojo/widgets/category_app_listing.dart';
@@ -23,9 +24,8 @@ class _CategoryListState extends State<CategoryList> with AutomaticKeepAliveClie
   late Future<List> categories;
 
   Future<List> getCategories() async {
-    Response response = await Dio().get(
-      "https://api.apkdojo.com/categories.php?type=${widget.type}&lang=en",
-    );
+    String _api = "$apiDomain/categories.php?type=${widget.type}&lang=en";
+    Response response = await Dio().get(_api);
     return response.data['results'];
   }
 

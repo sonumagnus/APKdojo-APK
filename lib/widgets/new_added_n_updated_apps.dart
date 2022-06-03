@@ -1,6 +1,8 @@
+import 'package:apkdojo/api/api.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/category_app_listing_animation.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_horizonatal_app_tile.dart';
+import 'package:apkdojo/widgets/my_behaviour.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -26,9 +28,8 @@ class _NewAddedAndUpdatedAppsState extends State<NewAddedAndUpdatedApps> {
       if (_nextPage.value == apps.value['total_pages']) return;
 
       try {
-        Response _res = await Dio().get(
-          'https://api.apkdojo.com/v-apps.php?type=${widget.applicationType}&lang=en&page=$pageNum',
-        );
+        String _api = '$apiDomain/v-apps.php?type=${widget.applicationType}&lang=en&page=$pageNum';
+        Response _res = await Dio().get(_api);
         apps.value = _res.data;
         _appsList.value.addAll(apps.value[widget.applicationType]);
         _nextPage.value = _nextPage.value + 1;
@@ -52,70 +53,73 @@ class _NewAddedAndUpdatedAppsState extends State<NewAddedAndUpdatedApps> {
       return null;
     }, []);
 
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white12,
-        iconTheme: IconThemeData(
-          color: Colors.grey.shade800,
+    return ScrollConfiguration(
+      behavior: MyBehavior(),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white12,
+          iconTheme: IconThemeData(
+            color: Colors.grey.shade800,
+          ),
         ),
-      ),
-      body: _appsList.value.isEmpty
-          ? const CategoryAppListingAnimation(animatedTileCount: 9)
-          : SingleChildScrollView(
-              controller: _scrollController,
-              child: ListView(
-                physics: const ScrollPhysics(),
-                shrinkWrap: true,
-                children: [
-                  AppType(
-                    mainHeading: widget.applicationType == "new_apps"
-                        ? "New Added and Updated Apps"
-                        : widget.applicationType == "new_games"
-                            ? "New Added and Updated Games"
-                            : widget.applicationType == "featured_apps"
-                                ? "Editor's Choice"
-                                : "",
-                    followUpText: widget.applicationType == "new_games" ? "Games" : "Applications",
-                    showSeeAll: false,
-                  ),
-                  ListView.builder(
-                    physics: const ScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: _appsList.value.length,
-                    itemBuilder: (context, index) {
-                      return ListView(
-                        physics: const ScrollPhysics(),
-                        shrinkWrap: true,
-                        children: [
-                          SingleHorizontalAppTile(
-                            icon: _appsList.value[index]['icon'],
-                            name: _appsList.value[index]['name'],
-                            seourl: _appsList.value[index]['seourl'],
-                            developer: _appsList.value[index]['developer'],
-                          )
-                        ],
-                      );
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _nextPage.value != apps.value['total_pages']
-                        ? const Center(child: CircularProgressIndicator())
-                        : const Center(
-                            child: Chip(
-                              label: Text(
-                                "No More Data",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
+        body: _appsList.value.isEmpty
+            ? const CategoryAppListingAnimation(animatedTileCount: 9)
+            : SingleChildScrollView(
+                controller: _scrollController,
+                child: ListView(
+                  physics: const ScrollPhysics(),
+                  shrinkWrap: true,
+                  children: [
+                    AppType(
+                      mainHeading: widget.applicationType == "new_apps"
+                          ? "New Added and Updated Apps"
+                          : widget.applicationType == "new_games"
+                              ? "New Added and Updated Games"
+                              : widget.applicationType == "featured_apps"
+                                  ? "Editor's Choice"
+                                  : "",
+                      followUpText: widget.applicationType == "new_games" ? "Games" : "Applications",
+                      showSeeAll: false,
+                    ),
+                    ListView.builder(
+                      physics: const ScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: _appsList.value.length,
+                      itemBuilder: (context, index) {
+                        return ListView(
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          children: [
+                            SingleHorizontalAppTile(
+                              icon: _appsList.value[index]['icon'],
+                              name: _appsList.value[index]['name'],
+                              seourl: _appsList.value[index]['seourl'],
+                              developer: _appsList.value[index]['developer'],
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: _nextPage.value != apps.value['total_pages']
+                          ? const Center(child: CircularProgressIndicator())
+                          : const Center(
+                              child: Chip(
+                                label: Text(
+                                  "No More Data",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }

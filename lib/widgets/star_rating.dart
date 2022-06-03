@@ -4,8 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 class StarRating extends StatefulWidget {
   final String rating;
   final String starSize;
-  const StarRating({Key? key, required this.rating, required this.starSize})
-      : super(key: key);
+  const StarRating({Key? key, required this.rating, required this.starSize}) : super(key: key);
 
   @override
   State<StarRating> createState() => _StarRatingState();

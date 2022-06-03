@@ -1,4 +1,6 @@
 import 'package:apkdojo/widgets/category_list.dart';
+import 'package:apkdojo/widgets/custom_status_bar.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/basic_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class CategoryByTabs extends StatefulWidget {
@@ -7,7 +9,6 @@ class CategoryByTabs extends StatefulWidget {
   const CategoryByTabs({
     Key? key,
     this.selectedIndex = 0,
-    // this.mediaQueryHeightDivider = 3.5,
     this.mediaQueryHeightDivider = 4.7,
   }) : super(key: key);
 
@@ -32,52 +33,54 @@ class _CategoryByTabsState extends State<CategoryByTabs> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              DefaultTabController(
-                length: 2,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  color: Colors.transparent,
+    return CustomStatusBar(
+      child: SafeArea(
+        child: Scaffold(
+          appBar: basicAppBar(title: "Categories"),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                DefaultTabController(
+                  length: 2,
                   child: Container(
-                    clipBehavior: Clip.hardEdge,
-                    // margin: const EdgeInsets.all(20),
-                    height: 35,
-                    decoration: BoxDecoration(
-                      color: Colors.cyan.shade50,
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                    ),
-                    child: TabBar(
-                      unselectedLabelColor: Colors.green.shade500,
-                      controller: tabController,
-                      indicator: BoxDecoration(
-                        color: Colors.green.shade400,
-                        borderRadius: const BorderRadius.all(Radius.circular(0)),
+                    padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                    color: Colors.transparent,
+                    child: Container(
+                      clipBehavior: Clip.hardEdge,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        color: Colors.cyan.shade50,
+                        borderRadius: const BorderRadius.all(Radius.circular(5)),
                       ),
-                      tabs: const [
-                        Tab(text: "Apps"),
-                        Tab(text: "Games"),
-                      ],
+                      child: TabBar(
+                        unselectedLabelColor: Colors.green.shade500,
+                        controller: tabController,
+                        indicator: BoxDecoration(
+                          color: Colors.green.shade400,
+                          borderRadius: const BorderRadius.all(Radius.circular(0)),
+                        ),
+                        tabs: const [
+                          Tab(text: "Apps"),
+                          Tab(text: "Games"),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                // height: MediaQuery.of(context).size.height - 220,
-                height: MediaQuery.of(context).size.height - MediaQuery.of(context).size.height / widget.mediaQueryHeightDivider,
-                child: TabBarView(
-                  controller: tabController,
-                  children: const [
-                    CategoryList(type: "apps", cateListCount: "categoryLength"),
-                    CategoryList(type: "games", cateListCount: "categoryLength"),
-                  ],
-                ),
-              )
-            ],
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  // height: MediaQuery.of(context).size.height - 220,
+                  height: MediaQuery.of(context).size.height - MediaQuery.of(context).size.height / widget.mediaQueryHeightDivider,
+                  child: TabBarView(
+                    controller: tabController,
+                    children: const [
+                      CategoryList(type: "apps", cateListCount: "categoryLength"),
+                      CategoryList(type: "games", cateListCount: "categoryLength"),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

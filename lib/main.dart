@@ -1,8 +1,11 @@
 import 'package:apkdojo/providers/previous_download_status.dart';
+import 'package:apkdojo/widgets/my_behaviour.dart';
+import 'package:apkdojo/widgets/custom_status_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:apkdojo/home.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:apkdojo/common_methods/check_permission_status.dart';
+import 'package:apkdojo/utils/check_permission_status.dart';
 import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:provider/provider.dart';
 
@@ -40,9 +43,16 @@ class _ApkDojoState extends State<ApkDojo> {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: "Apkdojo",
-      home: Home(),
+      home: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark.copyWith(
+          statusBarColor: Colors.transparent,
+        ),
+        child: CustomStatusBar(
+          child: ScrollConfiguration(behavior: MyBehavior(), child: const Home()),
+        ),
+      ),
     );
   }
 }

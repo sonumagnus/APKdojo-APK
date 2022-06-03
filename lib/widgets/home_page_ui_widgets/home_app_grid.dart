@@ -1,3 +1,4 @@
+import 'package:apkdojo/api/api.dart';
 import 'package:apkdojo/styling_refrence/style.dart';
 import 'package:apkdojo/widgets/dio_error_message.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
@@ -20,7 +21,7 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
 
   Future<List> getGridApps() async {
     Response response = await Dio().get(
-      'https://api.apkdojo.com/v-apps.php?type=${widget.type}&lang=en',
+      '$apiDomain/v-apps.php?type=${widget.type}&lang=en',
     );
     return response.data[widget.type];
   }

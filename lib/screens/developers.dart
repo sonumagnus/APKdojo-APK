@@ -1,3 +1,4 @@
+import 'package:apkdojo/api/api.dart';
 import 'package:apkdojo/screens/devprofile.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/category_list_animation.dart';
@@ -26,9 +27,8 @@ class _DevelopersState extends State<Developers> {
       if (_nextPage.value - 1 == _devs.value['total_pages']) return;
 
       try {
-        Response _res = await Dio().get(
-          'https://api.apkdojo.com/developers.php?page=$pageNum',
-        );
+        var _api = '$apiDomain/developers.php?page=$pageNum';
+        Response _res = await Dio().get(_api);
         _devs.value = _res.data;
         _devList.value.addAll(_devs.value['results']);
         _nextPage.value = _nextPage.value + 1;
@@ -38,8 +38,7 @@ class _DevelopersState extends State<Developers> {
     }
 
     void _scrollerCallback() {
-      if (_scrollController.position.pixels !=
-          _scrollController.position.maxScrollExtent) return;
+      if (_scrollController.position.pixels != _scrollController.position.maxScrollExtent) return;
       _fetchApps(_nextPage.value);
     }
 
@@ -65,9 +64,7 @@ class _DevelopersState extends State<Developers> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: _devList.value.isEmpty
-                    ? const CategoryListAnimation(
-                        animatedTileCount: 12,
-                      )
+                    ? const CategoryListAnimation(animatedTileCount: 12)
                     : SingleChildScrollView(
                         child: Column(
                           children: [
@@ -89,18 +86,15 @@ class _DevelopersState extends State<Developers> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                DevProfileAndApps(
-                                              devURL: _devList.value[index]
-                                                  ['url'],
+                                            builder: (context) => DevProfileAndApps(
+                                              devURL: _devList.value[index]['url'],
                                             ),
                                           ),
                                         );
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.grey.shade200),
+                                          border: Border.all(color: Colors.grey.shade200),
                                           borderRadius: const BorderRadius.all(
                                             Radius.circular(12),
                                           ),
@@ -110,9 +104,7 @@ class _DevelopersState extends State<Developers> {
                                           visualDensity: VisualDensity.compact,
                                           leading: Text(
                                             _devList.value[index]['alpha'],
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
+                                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                           ),
                                           title: Text(
                                             _devList.value[index]['name'],
@@ -131,19 +123,16 @@ class _DevelopersState extends State<Developers> {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child:
-                                  _nextPage.value != _devs.value['total_pages']
-                                      ? const Center(
-                                          child: CircularProgressIndicator())
-                                      : const Center(
-                                          child: Chip(
-                                            label: Text(
-                                              "No More Data",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ),
+                              child: _nextPage.value != _devs.value['total_pages']
+                                  ? const Center(child: CircularProgressIndicator())
+                                  : const Center(
+                                      child: Chip(
+                                        label: Text(
+                                          "No More Data",
+                                          style: TextStyle(fontWeight: FontWeight.w500),
                                         ),
+                                      ),
+                                    ),
                             )
                           ],
                         ),

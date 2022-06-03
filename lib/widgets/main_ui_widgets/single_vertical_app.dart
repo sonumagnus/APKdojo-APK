@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/screens/slug.dart';
 import 'package:apkdojo/widgets/star_rating.dart';
@@ -15,6 +17,26 @@ class SingleVerticalApp extends StatelessWidget {
     required this.starRating,
     required this.rating,
   }) : super(key: key);
+
+  static final List<Color> _gradientColors = [
+    Colors.lightGreen.shade200,
+    Colors.blue.shade100,
+    Colors.cyan.shade50,
+    Colors.blueGrey.shade50,
+    Colors.purple.shade100,
+    Colors.teal.shade100,
+  ];
+
+  static List<Color> getRandomColor() {
+    int rand1 = Random().nextInt(6);
+    int rand2 = Random().nextInt(6);
+
+    while (rand1 == rand2) {
+      rand1 = Random().nextInt(6);
+      rand2 = Random().nextInt(6);
+    }
+    return [_gradientColors[rand1], _gradientColors[rand2]];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +66,7 @@ class SingleVerticalApp extends StatelessWidget {
             ],
           ),
         ],
-      ).p(15).box.height(180).withRounded(value: 4).linearGradient([Colors.lightGreen.shade200, Colors.blue.shade100]).make(),
+      ).p(15).box.height(180).withRounded(value: 4).linearGradient(getRandomColor()).make(),
     );
   }
 }

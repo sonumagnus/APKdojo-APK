@@ -52,6 +52,8 @@ dependencies:
   device_apps: ^2.2.0
   share_plus: ^4.0.4
   velocity_x: ^3.4.0
+  package_info_plus: ^1.4.2
+  package_archive_info: ^0.1.0
   
 dev_dependencies:
   flutter_test:
