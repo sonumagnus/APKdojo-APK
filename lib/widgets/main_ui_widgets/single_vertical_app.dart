@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:apkdojo/page_route_animation/right_to_left.dart';
 import 'package:apkdojo/screens/slug.dart';
+import 'package:apkdojo/utils/calculation.dart';
 import 'package:apkdojo/widgets/star_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,6 +10,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 class SingleVerticalApp extends StatelessWidget {
   final String seourl, name, icon, starRating, rating;
+  final int index;
   const SingleVerticalApp({
     Key? key,
     required this.seourl,
@@ -16,26 +18,19 @@ class SingleVerticalApp extends StatelessWidget {
     required this.icon,
     required this.starRating,
     required this.rating,
+    required this.index,
   }) : super(key: key);
 
   static final List<Color> _gradientColors = [
-    Colors.lightGreen.shade200,
-    Colors.blue.shade100,
-    Colors.cyan.shade50,
-    Colors.blueGrey.shade50,
-    Colors.purple.shade100,
-    Colors.teal.shade100,
+    const Color.fromRGBO(230, 247, 233, 1.0),
+    const Color.fromRGBO(239, 246, 253, 1.0),
+    const Color.fromRGBO(253, 242, 225, 1.0),
   ];
 
-  static List<Color> getRandomColor() {
-    int rand1 = Random().nextInt(6);
-    int rand2 = Random().nextInt(6);
+  static Color getRandomColor() {
+    int rand1 = Random().nextInt(3);
 
-    while (rand1 == rand2) {
-      rand1 = Random().nextInt(6);
-      rand2 = Random().nextInt(6);
-    }
-    return [_gradientColors[rand1], _gradientColors[rand2]];
+    return _gradientColors[rand1];
   }
 
   @override
@@ -66,7 +61,7 @@ class SingleVerticalApp extends StatelessWidget {
             ],
           ),
         ],
-      ).p(15).box.height(180).withRounded(value: 4).linearGradient(getRandomColor()).make(),
+      ).p(15).box.height(180).withRounded(value: 4).color(_gradientColors[Calculation.getNumberSequence(maxNumber: _gradientColors.length, index: index)]).make(),
     );
   }
 }

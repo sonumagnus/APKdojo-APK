@@ -10,8 +10,7 @@ class CategoryAppListingHeader extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CategoryAppListingHeader> createState() =>
-      _CategoryAppListingHeaderState();
+  State<CategoryAppListingHeader> createState() => _CategoryAppListingHeaderState();
 }
 
 class _CategoryAppListingHeaderState extends State<CategoryAppListingHeader> {

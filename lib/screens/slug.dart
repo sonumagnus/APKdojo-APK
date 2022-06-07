@@ -137,51 +137,11 @@ class _SlugState extends State<Slug> {
                     left: 0,
                     child: snapshot.data!['apkurl'] == ""
                         ? const SizedBox()
-                        : Column(
-                            children: [
-                              "Viewing: ${snapshot.data!['name']}".text.size(12).make().box.alignCenter.green200.width(context.mq.size.width).padding(Vx.mSymmetric(v: 6)).make(),
-                              Container(
-                                height: 55,
-                                color: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                                width: MediaQuery.of(context).size.width,
-                                child: GridView(
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    childAspectRatio: 6 / 1.3,
-                                    crossAxisSpacing: 8,
-                                  ),
-                                  children: [
-                                    InkWell(
-                                      onTap: () => Share.share(
-                                        "https://www.apkdojo.com/${widget.seourl}",
-                                      ),
-                                      child: const BottomSheetButton(buttonName: "SHARE"),
-                                    ).box.border(width: 1, color: Vx.gray200).withRounded(value: 4).make(),
-                                    Consumer<PreviousDownloadStatus>(builder: (context, value, child) {
-                                      return InkWell(
-                                        onTap: () {
-                                          if (value.appAlreadyDownloaded && !value.isOldVersionAvailable) {
-                                            OpenFile.open(value.appPath);
-                                          } else {
-                                            App.download(snapshot.data!['apkurl'], "${snapshot.data!['name']}_${snapshot.data!['version']}");
-                                            context.read<DownloadingProgress>().setAppName(snapshot.data!['name']);
-                                          }
-                                        },
-                                        child: BottomSheetButton(
-                                          buttonName: value.appAlreadyDownloaded && !value.isOldVersionAvailable
-                                              ? "OPEN"
-                                              : value.appAlreadyDownloaded && value.isOldVersionAvailable
-                                                  ? "UPDATE"
-                                                  : "DOWNLOAD",
-                                          buttonBackgroundColor: Colors.green.shade400,
-                                        ),
-                                      );
-                                    })
-                                  ],
-                                ),
-                              ),
-                            ],
+                        : SlugBottomDownloadButtonSheet(
+                            name: snapshot.data!['name'],
+                            apkurl: snapshot.data!['apkurl'],
+                            seourl: snapshot.data!['seourl'],
+                            version: snapshot.data!['version'],
                           ),
                   ),
                 ],
@@ -195,6 +155,71 @@ class _SlugState extends State<Slug> {
           );
         },
       ),
+    );
+  }
+}
+
+class SlugBottomDownloadButtonSheet extends StatelessWidget {
+  final String name;
+  final String apkurl;
+  final String seourl;
+  final String version;
+
+  const SlugBottomDownloadButtonSheet({
+    Key? key,
+    required this.name,
+    required this.apkurl,
+    required this.seourl,
+    required this.version,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        "Viewing: $name".text.size(12).make().box.alignCenter.green200.width(context.mq.size.width).padding(Vx.mSymmetric(v: 6)).make(),
+        Container(
+          height: 55,
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+          width: MediaQuery.of(context).size.width,
+          child: GridView(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 6 / 1.3,
+              crossAxisSpacing: 8,
+            ),
+            children: [
+              InkWell(
+                onTap: () => Share.share(
+                  "https://www.apkdojo.com/$seourl",
+                ),
+                child: const BottomSheetButton(buttonName: "SHARE"),
+              ).box.border(width: 1, color: Vx.gray200).withRounded(value: 4).make(),
+              Consumer<PreviousDownloadStatus>(builder: (context, value, child){
+                return InkWell(
+                  onTap: () {
+                    if (value.appAlreadyDownloaded && !value.isOldVersionAvailable) {
+                      OpenFile.open(value.appPath);
+                    } else {
+                      App.download(apkurl, "${name}_$version");
+                      context.read<DownloadingProgress>().setAppName(name);
+                    }
+                  },
+                  child: BottomSheetButton(
+                    buttonName: value.appAlreadyDownloaded && !value.isOldVersionAvailable
+                        ? "OPEN"
+                        : value.appAlreadyDownloaded && value.isOldVersionAvailable
+                            ? "UPDATE"
+                            : "DOWNLOAD",
+                    buttonBackgroundColor: Colors.green.shade400,
+                  ),
+                );
+              })
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

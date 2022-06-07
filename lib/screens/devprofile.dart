@@ -129,6 +129,7 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
                               icon: snapshot.data!['results'][index]['icon'],
                               rating: snapshot.data!['results'][index]['rating'].toString(),
                               starRating: snapshot.data!['results'][index]['star_rating'].toString(),
+                              index: index,
                             )
                           ],
                         );

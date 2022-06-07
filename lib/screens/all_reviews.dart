@@ -33,46 +33,48 @@ class AllReviewsState extends State<AllReviews> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomStatusBar(
-      child: SafeArea(
-        child: Scaffold(
-          appBar: basicAppBar(title: "Reviews", titleLeftSpacing: false),
-          body: FutureBuilder<Map>(
-            future: reviews,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      WriteReviews(
-                        name: snapshot.data!['name'],
-                        icon: snapshot.data!['icon'],
-                        appid: snapshot.data!['app_id'],
-                        appurl: snapshot.data!['app_url'],
-                        type: snapshot.data!['type'],
-                      ),
-                      ListView.builder(
-                        physics: const ScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: snapshot.data!['reviews'] != null ? snapshot.data!['reviews'].length : 0,
-                        itemBuilder: (BuildContext context, int index) {
-                          return ReviewsList(
-                            rating: snapshot.data!['reviews'][index]['rating'].toString(),
-                            name: snapshot.data!['reviews'][index]['name'],
-                            comment: snapshot.data!['reviews'][index]['comment'],
-                            date: snapshot.data!['reviews'][index]['time'],
-                            showDate: true,
-                          );
-                        },
-                      ).p12(),
-                    ],
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return const DioErrorMessage();
-              }
-              return const Center(child: CircularProgressIndicator());
-            },
+    return Material(
+      child: CustomStatusBar(
+        child: SafeArea(
+          child: Scaffold(
+            appBar: basicAppBar(title: "Reviews", titleLeftSpacing: false),
+            body: FutureBuilder<Map>(
+              future: reviews,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        WriteReviews(
+                          name: snapshot.data!['name'],
+                          icon: snapshot.data!['icon'],
+                          appid: snapshot.data!['app_id'],
+                          appurl: snapshot.data!['app_url'],
+                          type: snapshot.data!['type'],
+                        ),
+                        ListView.builder(
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!['reviews'] != null ? snapshot.data!['reviews'].length : 0,
+                          itemBuilder: (BuildContext context, int index) {
+                            return ReviewsList(
+                              rating: snapshot.data!['reviews'][index]['rating'].toString(),
+                              name: snapshot.data!['reviews'][index]['name'],
+                              comment: snapshot.data!['reviews'][index]['comment'],
+                              date: snapshot.data!['reviews'][index]['time'],
+                              showDate: true,
+                            );
+                          },
+                        ).p12(),
+                      ],
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return const DioErrorMessage();
+                }
+                return const Center(child: CircularProgressIndicator());
+              },
+            ),
           ),
         ),
       ),

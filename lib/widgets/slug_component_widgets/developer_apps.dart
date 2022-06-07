@@ -75,6 +75,7 @@ class _DeveloperAppsState extends State<DeveloperApps> {
                             icon: snapshot.data![index]['icon'],
                             starRating: snapshot.data![index]['star_rating'].toString(),
                             rating: snapshot.data![index]['rating'].toString(),
+                            index: index,
                           ),
                         );
                       },

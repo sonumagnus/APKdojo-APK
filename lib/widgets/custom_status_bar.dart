@@ -9,7 +9,7 @@ class CustomStatusBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: const Color.fromARGB(250, 255, 255, 255),
+        statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
       ),
       child: child,

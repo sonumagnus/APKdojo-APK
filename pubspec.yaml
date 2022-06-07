@@ -52,7 +52,6 @@ dependencies:
   device_apps: ^2.2.0
   share_plus: ^4.0.4
   velocity_x: ^3.4.0
-  package_info_plus: ^1.4.2
   package_archive_info: ^0.1.0
   
 dev_dependencies:
@@ -84,6 +83,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/category_icons/
+    - assets/images/bottom_navigation_icons/
     - assets/images/lazy_images/
     - assets/images/drawer_icons/
   # To add assets to your application, add an assets section, like this:

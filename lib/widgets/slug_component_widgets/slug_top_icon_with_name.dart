@@ -1,6 +1,6 @@
 import 'package:apkdojo/screens/devprofile.dart';
 import 'package:apkdojo/styling_refrence/style.dart';
-import 'package:apkdojo/widgets/slug_component_widgets/slug_icon_name_download_button.dart';
+import 'package:apkdojo/widgets/slug_component_widgets/download_button_with_logic.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -56,7 +56,7 @@ class SlugTopIconWithName extends StatelessWidget {
           ].hStack().pSymmetric(v: 2),
         ),
         [
-          SlugIconNameDownloadButton(
+          DownloadButtonWithLogic(
             name: name!,
             apkurl: apkurl!,
             version: version!,

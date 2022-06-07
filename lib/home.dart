@@ -2,7 +2,7 @@ import 'package:apkdojo/screens/download_manager.dart';
 import 'package:apkdojo/screens/homepage.dart';
 import 'package:apkdojo/screens/search_page.dart';
 import 'package:apkdojo/widgets/categorytabs.dart';
-import 'package:apkdojo/widgets/test.dart';
+// import 'package:apkdojo/widgets/test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -53,11 +53,11 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const Test(),
-        )),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+      //     builder: (context) => const Test(),
+      //   )),
+      // ),
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
         children: _pages,
@@ -67,16 +67,34 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home_filled),
+          BottomNavigationBarItem(
+            icon: _selectedIndex != 0
+                ? SvgPicture.asset(
+                    "assets/images/bottom_navigation_icons/home.svg",
+                    color: Colors.grey.shade700,
+                  )
+                : SvgPicture.asset(
+                    "assets/images/bottom_navigation_icons/home_active.svg",
+                    color: Colors.green.shade400,
+                  ),
             label: 'Home',
           ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view_rounded),
+          BottomNavigationBarItem(
+            icon: _selectedIndex == 1
+                ? const Icon(Icons.grid_view_rounded)
+                : SvgPicture.asset(
+                    "assets/images/bottom_navigation_icons/grid_inactive.svg",
+                    height: 22,
+                    width: 22,
+                  ),
             label: 'Categories',
           ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.search_rounded),
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              'assets/images/search_icon.svg',
+              height: 22,
+              color: _selectedIndex == 2 ? Colors.green.shade400 : Colors.grey.shade700,
+            ),
             label: 'Search',
           ),
           BottomNavigationBarItem(

@@ -15,9 +15,9 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class SlugIconNameDownloadButton extends StatefulWidget {
+class DownloadButtonWithLogic extends StatefulWidget {
   final String name, apkurl, playStoreUrl, version;
-  const SlugIconNameDownloadButton({
+  const DownloadButtonWithLogic({
     Key? key,
     required this.name,
     required this.apkurl,
@@ -26,14 +26,14 @@ class SlugIconNameDownloadButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SlugIconNameDownloadButton> createState() => _SlugIconNameDownloadButtonState();
+  State<DownloadButtonWithLogic> createState() => _DownloadButtonWithLogicState();
 }
 
-class _SlugIconNameDownloadButtonState extends State<SlugIconNameDownloadButton> {
+class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> {
   int progress = 0;
   String id = '';
   bool _apkAlreadyDownloaded = false;
-  String _apkPath = ""; //in case app is already downloaded
+  String _apkPath = ""; // in case app is already downloaded
   bool oldVersionAvailable = false;
   late DownloadTaskStatus status = DownloadTaskStatus.undefined;
 

@@ -49,6 +49,7 @@ class _FeaturedAppsState extends State<FeaturedApps> {
                     icon: snapshot.data![index]['icon'],
                     starRating: snapshot.data![index]['star_rating'].toString(),
                     rating: snapshot.data![index]['rating'],
+                    index: index,
                   ).pOnly(right: 10);
                 },
               ).box.height(170).make().pSymmetric(h: 20),

@@ -50,17 +50,17 @@ class CategoryAppListing extends HookWidget {
                 "*": Style(
                   fontSize: const FontSize(20),
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade700,
+                  color: Colors.grey.shade900,
                   margin: EdgeInsets.zero,
                 )
               },
             ),
             bottom: TabBar(
               indicatorSize: TabBarIndicatorSize.label,
-              indicatorColor: Colors.grey.shade600,
+              indicatorColor: Colors.green.shade500,
               isScrollable: true,
-              labelColor: Colors.grey.shade700,
-              unselectedLabelColor: Colors.grey.shade400,
+              labelColor: Colors.grey.shade900,
+              unselectedLabelColor: Colors.grey.shade600,
               controller: _tabController,
               tabs: categoryList.data!.map((e) => Tab(child: Text(e['catname']))).toList(),
             ),

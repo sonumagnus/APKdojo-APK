@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:package_archive_info/package_archive_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class App {
+  // get apk name from path (includes name_version)
   static fileName(String filePath) {
     final _splitedList = filePath.split("/");
     final _apkNameWithExtension = _splitedList.last;
@@ -11,6 +14,7 @@ class App {
     return _apkNameWithoutExtension;
   }
 
+  // Get apk name (without _version) from apk path
   static apkName(String filePath) {
     final String _apkNameWithoutExtension = fileName(filePath);
     final List<String> _splitedListofNameAndVersion = _apkNameWithoutExtension.split("_");
@@ -18,6 +22,7 @@ class App {
     return _realAppName;
   }
 
+  // Create Application Directory if it doesn't exist
   static createApplicationDirectory() async {
     Directory? externalDir;
 
@@ -29,7 +34,7 @@ class App {
     }
   }
 
-  // method for
+  // method for path of application specific directory
   static Future<String> getApksDirectory() async {
     Directory? directory = await getExternalStorageDirectory();
     String _apkPath = "";
@@ -48,6 +53,7 @@ class App {
     return _apkListPath;
   }
 
+  // get list of all the .APK files those are located in application specific directory
   static Future<List<FileSystemEntity>> getListOfApplicationsFromDirectory() async {
     late List<FileSystemEntity> apkFiles;
     late List<FileSystemEntity> allFiles;
@@ -70,6 +76,20 @@ class App {
     return apkFiles;
   }
 
+  // Read the version of any app located in application specific directory
+  static Future<String> getAppVersion(String apkPath) async {
+    String _apkVersion;
+    try {
+      PackageArchiveInfo info = await PackageArchiveInfo.fromPath(apkPath);
+      _apkVersion = info.version;
+    } on PlatformException {
+      _apkVersion = "0.0";
+    } catch (e) {
+      _apkVersion = "0.0";
+    }
+    return _apkVersion;
+  }
+
   // function to access Single app path
   static Future<String> getApkPath(String name, String version) async {
     String _apkFilesDirectory = await getApksDirectory();
@@ -77,7 +97,7 @@ class App {
     return _apkFilePath;
   }
 
-// check if the app is already available in the application specific directory
+  // check if the app is already available in the application specific directory
   static Future<bool> isApkFileAlreadyDownloaded(String name, String version) async {
     bool _apkAlreadyDownloaded = false;
 
@@ -90,6 +110,7 @@ class App {
     return _apkAlreadyDownloaded;
   }
 
+  // Check if the app's older version is already available in the directory
   static Future<bool> isOldVersionAlreadyAvaiable(String name) async {
     late List<FileSystemEntity> _apkFiles;
     bool oldVersionAvailable = false;
@@ -106,6 +127,7 @@ class App {
     return oldVersionAvailable;
   }
 
+  // Download method
   static download(String url, String name) async {
     final status = await Permission.storage.request();
     final applicationSpecificFolderPath = await getApksDirectory();

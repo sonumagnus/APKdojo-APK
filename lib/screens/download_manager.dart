@@ -6,6 +6,8 @@ import 'package:apkdojo/utils/app_methods.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/basic_app_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class DownloadManager extends StatefulWidget {
@@ -138,9 +140,7 @@ class _DownloadManagerState extends State<DownloadManager> {
                                         ),
                                       ),
                                       title: Text(
-                                        App.apkName(
-                                          _apkFiles[index].path,
-                                        ),
+                                        App.apkName(_apkFiles[index].path),
                                         style: TextStyle(
                                           color: Colors.grey.shade800,
                                           fontWeight: FontWeight.w500,
@@ -150,14 +150,7 @@ class _DownloadManagerState extends State<DownloadManager> {
                                         snapshot.data![2],
                                         style: const TextStyle(fontSize: 14),
                                       ),
-                                      trailing: GestureDetector(
-                                        onTap: () => _deleteConfirmationAlertBox(_apkFiles[index].path),
-                                        child: Icon(
-                                          Icons.delete_outline_rounded,
-                                          color: Colors.grey.shade700,
-                                          size: 28,
-                                        ),
-                                      ).pOnly(left: 8, top: 8, bottom: 8),
+                                      trailing: popupMenuButtonBox(index, snapshot),
                                     ),
                                   );
                                 } else if (snapshot.hasError) {
@@ -181,6 +174,46 @@ class _DownloadManagerState extends State<DownloadManager> {
     );
   }
 
+  PopupMenuButton<MenuItem> popupMenuButtonBox(int index, AsyncSnapshot<List<dynamic>> snapshot) {
+    return PopupMenuButton<MenuItem>(
+      elevation: 1,
+      padding: EdgeInsets.zero,
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem(
+            child: Row(
+              children: [
+                const Icon(Icons.install_mobile_sharp).pOnly(right: 9),
+                const Text("Install"),
+              ],
+            ),
+            onTap: () => OpenFile.open(_apkFiles[index].path),
+          ),
+          PopupMenuItem(
+            child: Row(
+              children: [
+                const Icon(Icons.delete_outline_rounded).pOnly(right: 9),
+                const Text("Delete"),
+              ],
+            ),
+            onTap: () {
+              Future.delayed(const Duration(seconds: 0), () => _deleteConfirmationAlertBox(_apkFiles[index].path));
+            },
+          ),
+          PopupMenuItem(
+            onTap: () => Share.share('https://www.apkdojo.com/${snapshot.data![1]}'),
+            child: Row(
+              children: [
+                const Icon(Icons.share_rounded).pOnly(right: 9),
+                const Text("Share"),
+              ],
+            ),
+          ),
+        ];
+      },
+    );
+  }
+
   ListTile offlineDownloadManager(int index) {
     return ListTile(
       leading: Image.asset(
@@ -193,9 +226,24 @@ class _DownloadManagerState extends State<DownloadManager> {
           fontWeight: FontWeight.w500,
         ),
       ),
-      trailing: GestureDetector(
-        onTap: () => _deleteConfirmationAlertBox(_apkFiles[index].path),
-        child: const Icon(Icons.delete_outline_rounded),
+      trailing: PopupMenuButton<MenuItem>(
+        elevation: 1,
+        position: PopupMenuPosition.under,
+        padding: EdgeInsets.zero,
+        itemBuilder: (context) {
+          return [
+            PopupMenuItem(
+              child: const Text("Install"),
+              onTap: () => OpenFile.open(_apkFiles[index].path),
+            ),
+            PopupMenuItem(
+              child: const Text("Delete"),
+              onTap: () {
+                Future.delayed(const Duration(seconds: 0), () => _deleteConfirmationAlertBox(_apkFiles[index].path));
+              },
+            ),
+          ];
+        },
       ),
     );
   }

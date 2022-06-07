@@ -21,65 +21,28 @@ class AppType extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          mainHeading,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w800,
-            color: Colors.black87,
-          ),
-        ),
+        mainHeading.text.size(16).extraBold.make(),
         Padding(
           padding: const EdgeInsets.only(top: 4.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                followUpText,
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              if (showSeeAll)
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      createRouteRightToLeft(targetRoute: seeAllUrl),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                      left: 8,
-                      top: 3,
-                      bottom: 3,
-                      right: 3,
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          'See All',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                        const Icon(
-                          Icons.navigate_next,
-                          size: 16,
-                        )
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.cyan.shade50,
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(8),
-                      ),
-                    ),
+              followUpText.text.size(15).gray600.make(),
+              Visibility(
+                visible: showSeeAll,
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () => Navigator.of(context).push(
+                    createRouteRightToLeft(targetRoute: seeAllUrl),
                   ),
-                )
-              else
-                const SizedBox.shrink()
+                  icon: Icon(
+                    Icons.arrow_forward,
+                    size: 22,
+                    color: Colors.grey.shade700,
+                  ),
+                ).pOnly(right: 8),
+              ),
             ],
           ),
         )
