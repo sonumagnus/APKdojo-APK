@@ -3,8 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 
 class SlugDescription extends StatefulWidget {
   final String description;
-  const SlugDescription({Key? key, required this.description})
-      : super(key: key);
+  const SlugDescription({Key? key, required this.description}) : super(key: key);
 
   @override
   State<SlugDescription> createState() => _SlugDescriptionState();
@@ -24,15 +23,13 @@ class _SlugDescriptionState extends State<SlugDescription> {
         alignment: Alignment.bottomRight,
         children: [
           ConstrainedBox(
-            constraints: isExpanded
-                ? const BoxConstraints()
-                : const BoxConstraints(maxHeight: 80),
+            constraints: isExpanded ? const BoxConstraints() : const BoxConstraints(maxHeight: 80),
             child: Html(
               data: widget.description,
               style: {
                 "*": Style(
                   fontSize: const FontSize(12),
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).textTheme.titleSmall!.color,
                 ),
               },
             ),
@@ -46,7 +43,7 @@ class _SlugDescriptionState extends State<SlugDescription> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 1),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100,
+                color: Theme.of(context).textTheme.displayMedium!.color,
                 borderRadius: BorderRadius.circular(15),
               ),
               width: 60,
@@ -58,14 +55,12 @@ class _SlugDescriptionState extends State<SlugDescription> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade700,
+                      color: Theme.of(context).textTheme.bodyMedium!.color,
                     ),
                   ),
                   Icon(
-                    isExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
-                    color: Colors.grey.shade600,
+                    isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    color: Theme.of(context).iconTheme.color,
                   ),
                 ],
               ),

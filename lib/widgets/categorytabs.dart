@@ -1,7 +1,7 @@
 import 'package:apkdojo/widgets/category_list.dart';
-import 'package:apkdojo/widgets/custom_status_bar.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/basic_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class CategoryByTabs extends StatefulWidget {
   final int selectedIndex;
@@ -33,55 +33,75 @@ class _CategoryByTabsState extends State<CategoryByTabs> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    return CustomStatusBar(
-      child: SafeArea(
-        child: Scaffold(
-          appBar: basicAppBar(title: "Categories"),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                DefaultTabController(
-                  length: 2,
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                    color: Colors.transparent,
-                    child: Container(
-                      clipBehavior: Clip.hardEdge,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        color: Colors.cyan.shade50,
-                        borderRadius: const BorderRadius.all(Radius.circular(5)),
+    final _size = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: basicAppBar(title: "Categories", context: context),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            DefaultTabController(
+              length: 2,
+              child: Container(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                color: Colors.transparent,
+                child: Container(
+                  clipBehavior: Clip.hardEdge,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(color: Colors.grey.shade200),
+                      BoxShadow(
+                        color: Colors.grey.shade100,
+                        spreadRadius: -1.0,
+                        blurRadius: 1.0,
                       ),
-                      child: TabBar(
-                        unselectedLabelColor: Colors.green.shade500,
-                        controller: tabController,
-                        indicator: BoxDecoration(
-                          color: Colors.green.shade400,
-                          borderRadius: const BorderRadius.all(Radius.circular(0)),
+                    ],
+                    borderRadius: const BorderRadius.all(Radius.circular(7)),
+                  ),
+                  child: TabBar(
+                    unselectedLabelColor: Vx.gray700,
+                    controller: tabController,
+                    labelColor: Vx.gray700,
+                    padding: const EdgeInsets.all(4.0),
+                    indicator: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 1,
+                          spreadRadius: 1,
+                          color: Colors.grey.shade200,
                         ),
-                        tabs: const [
-                          Tab(text: "Apps"),
-                          Tab(text: "Games"),
-                        ],
+                      ],
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(5),
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  // height: MediaQuery.of(context).size.height - 220,
-                  height: MediaQuery.of(context).size.height - MediaQuery.of(context).size.height / widget.mediaQueryHeightDivider,
-                  child: TabBarView(
-                    controller: tabController,
-                    children: const [
-                      CategoryList(type: "apps", cateListCount: "categoryLength"),
-                      CategoryList(type: "games", cateListCount: "categoryLength"),
+                    tabs: const [
+                      Tab(text: "Apps"),
+                      Tab(text: "Games"),
                     ],
                   ),
-                )
-              ],
+                ),
+              ),
             ),
-          ),
+            SizedBox(
+              width: _size.width,
+              height: _size.height - _size.height / widget.mediaQueryHeightDivider,
+              child: TabBarView(
+                controller: tabController,
+                children: const [
+                  CategoryList(
+                    type: "apps",
+                    cateListCount: "categoryLength",
+                  ),
+                  CategoryList(
+                    type: "games",
+                    cateListCount: "categoryLength",
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );

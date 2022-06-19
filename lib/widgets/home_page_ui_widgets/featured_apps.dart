@@ -42,16 +42,14 @@ class _FeaturedAppsState extends State<FeaturedApps> {
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemCount: 8,
-                itemBuilder: (BuildContext context, int index) {
-                  return SingleVerticalApp(
-                    seourl: snapshot.data![index]['seourl'],
-                    name: snapshot.data![index]['name'],
-                    icon: snapshot.data![index]['icon'],
-                    starRating: snapshot.data![index]['star_rating'].toString(),
-                    rating: snapshot.data![index]['rating'],
-                    index: index,
-                  ).pOnly(right: 10);
-                },
+                itemBuilder: (BuildContext context, int index) => SingleVerticalApp(
+                  seourl: snapshot.data![index]['seourl'],
+                  name: snapshot.data![index]['name'],
+                  icon: snapshot.data![index]['icon'],
+                  starRating: snapshot.data![index]['star_rating'].toString(),
+                  rating: snapshot.data![index]['rating'],
+                  index: index,
+                ).pOnly(right: 10),
               ).box.height(170).make().pSymmetric(h: 20),
             ],
           );

@@ -10,12 +10,12 @@ class SlugLoadingAnimation extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white12,
-        iconTheme: const IconThemeData(color: Vx.black),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        iconTheme: Theme.of(context).iconTheme,
       ),
       body: Shimmer.fromColors(
-        baseColor: Colors.cyan.shade100,
-        highlightColor: Colors.grey.shade100,
+        baseColor: Theme.of(context).textTheme.displayMedium!.color!,
+        highlightColor: Theme.of(context).textTheme.displaySmall!.color!,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -17,12 +17,12 @@ class RatingSizeVersionTable extends StatelessWidget {
   Widget build(BuildContext context) {
     TextStyle _keyOptionStyling = TextStyle(
       fontSize: 12,
-      color: Colors.grey.shade500,
+      color: Theme.of(context).textTheme.titleSmall!.color,
     );
 
     TextStyle _keyDataStyling = TextStyle(
       fontSize: 14,
-      color: Colors.grey.shade700,
+      color: Theme.of(context).textTheme.titleMedium!.color,
       fontWeight: FontWeight.bold,
     );
 

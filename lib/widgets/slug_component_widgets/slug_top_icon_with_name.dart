@@ -29,16 +29,12 @@ class SlugTopIconWithName extends StatelessWidget {
       [
         name!.text.size(18).semiBold.make(),
         GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DevProfileAndApps(
-                  devURL: developerUrl!,
-                ),
-              ),
-            );
-          },
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DevProfileAndApps(devURL: developerUrl!),
+            ),
+          ),
           child: [
             "• ".text.size(18).green500.make(),
             Html(
@@ -65,8 +61,8 @@ class SlugTopIconWithName extends StatelessWidget {
           GestureDetector(
             onTap: () => Share.share("https://www.apkdojo.com/$seourl"),
             child: VxBox(
-              child: const Icon(Icons.share, size: 18, color: Vx.green500),
-            ).square(35).border(width: 1, color: Vx.gray300).gray100.roundedFull.make(),
+              child: Icon(Icons.share, size: 18, color: Colors.green.shade400),
+            ).square(35).border(width: 1, color: Vx.gray300).color(Theme.of(context).scaffoldBackgroundColor).roundedFull.make(),
           ),
         ].hStack(
           alignment: MainAxisAlignment.spaceBetween,

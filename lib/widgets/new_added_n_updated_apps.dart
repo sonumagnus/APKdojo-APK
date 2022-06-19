@@ -58,10 +58,8 @@ class _NewAddedAndUpdatedAppsState extends State<NewAddedAndUpdatedApps> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: Colors.white12,
-          iconTheme: IconThemeData(
-            color: Colors.grey.shade800,
-          ),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          iconTheme: Theme.of(context).iconTheme,
         ),
         body: _appsList.value.isEmpty
             ? const CategoryAppListingAnimation(animatedTileCount: 9)

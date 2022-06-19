@@ -7,12 +7,14 @@ import 'package:velocity_x/velocity_x.dart';
 
 class SingleHorizontalAppTile extends StatelessWidget {
   final String seourl, icon, name, developer;
+  final bool showTrailing;
   const SingleHorizontalAppTile({
     Key? key,
     required this.seourl,
     required this.icon,
     required this.name,
     required this.developer,
+    this.showTrailing = true,
   }) : super(key: key);
 
   @override
@@ -38,13 +40,15 @@ class SingleHorizontalAppTile extends StatelessWidget {
               style: {
                 "*": Style(
                   margin: const EdgeInsets.only(top: 2),
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).textTheme.titleSmall!.color,
                   maxLines: 1,
                   textOverflow: TextOverflow.ellipsis,
                 ),
               },
             ),
-            trailing: "GET".text.lg.green600.extraBold.make().box.color(Colors.grey.shade200).withRounded(value: 50).padding(const EdgeInsets.symmetric(horizontal: 25, vertical: 6)).make(),
+            trailing: Visibility(
+                visible: showTrailing,
+                child: "GET".text.lg.green600.extraBold.make().box.color(Colors.grey.shade200).withRounded(value: 50).padding(const EdgeInsets.symmetric(horizontal: 25, vertical: 6)).make()),
           ),
           const Divider(height: 2).pOnly(left: 65)
         ],

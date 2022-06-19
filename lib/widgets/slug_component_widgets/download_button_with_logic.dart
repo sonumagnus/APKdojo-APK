@@ -175,7 +175,7 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return buttonText.text.white.bold.make().box.size(120, 34).alignCenter.green400.roundedLg.make();
+    return buttonText.text.white.bold.make().box.size(120, 34).alignCenter.color(Colors.green.shade400).roundedLg.make();
   }
 }
 

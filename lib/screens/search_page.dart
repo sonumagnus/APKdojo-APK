@@ -1,6 +1,5 @@
 import 'package:apkdojo/api/api.dart';
 import 'package:apkdojo/screens/slug.dart';
-import 'package:apkdojo/styling_refrence/style.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -31,17 +30,20 @@ class SearchPage extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: CustomColor.primaryColor,
-        elevation: 0,
-        iconTheme: IconThemeData(color: CustomColor.iconThemeColor),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 1,
+        iconTheme: Theme.of(context).iconTheme,
         title: TextField(
-          cursorColor: Colors.black54,
           onChanged: (text) => _searchKeyword.value = text,
           autofocus: true,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: "Search Apps & Games",
-            hintStyle: TextStyle(color: Colors.black54),
             focusedBorder: InputBorder.none,
+            prefixIcon: Icon(
+              Icons.search_rounded,
+              color: Colors.grey.shade500,
+              size: 25,
+            ),
           ),
         ),
       ),
@@ -81,9 +83,7 @@ class SearchPage extends HookWidget {
                           style: const TextStyle(fontSize: 12),
                         ),
                       ),
-                      const Divider(
-                        height: 1,
-                      )
+                      const Divider(height: 1)
                     ],
                   ),
                 );

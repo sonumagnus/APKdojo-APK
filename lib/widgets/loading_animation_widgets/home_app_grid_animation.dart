@@ -11,8 +11,8 @@ class HomeAppGridAnimation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.cyan.shade100,
-      highlightColor: Colors.grey.shade100,
+      baseColor: Theme.of(context).textTheme.displayMedium!.color!,
+      highlightColor: Theme.of(context).textTheme.displaySmall!.color!,
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: GridView.builder(

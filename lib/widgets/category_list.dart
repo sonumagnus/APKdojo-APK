@@ -24,7 +24,7 @@ class _CategoryListState extends State<CategoryList> with AutomaticKeepAliveClie
   late Future<List> categories;
 
   Future<List> getCategories() async {
-    String _api = "$apiDomain/categories.php?type=${widget.type}&lang=en";
+    final String _api = "$apiDomain/categories.php?type=${widget.type}&lang=en";
     Response response = await Dio().get(_api);
     return response.data['results'];
   }
@@ -51,53 +51,50 @@ class _CategoryListState extends State<CategoryList> with AutomaticKeepAliveClie
               shrinkWrap: true,
               physics: const ScrollPhysics(),
               itemCount: widget.cateListCount == "categoryLength" ? snapshot.data!.length : int.parse(widget.cateListCount),
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      createRouteRightToLeft(
-                        targetRoute: CategoryAppListing(
-                          applicationType: widget.type,
-                          categoryName: snapshot.data![index]['catname'],
-                          caturl: snapshot.data![index]['caturl'],
-                          categoryList: snapshot,
-                          intitalIndex: index,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      ListTile(
-                        visualDensity: VisualDensity.compact,
-                        dense: true,
-                        horizontalTitleGap: 12,
-                        contentPadding: const EdgeInsets.all(0),
-                        leading: Image(
-                          image: AssetImage(
-                            'assets/images/category_icons/${snapshot.data![index]["caticon"]}.png',
-                          ),
-                          width: 28,
-                          height: 28,
-                        ),
-                        title: Html(
-                          data: snapshot.data![index]['catname'],
-                          style: {
-                            "*": Style(
-                              fontSize: const FontSize(20),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          },
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 50),
-                        child: Divider(height: 2),
-                      )
-                    ],
+              itemBuilder: (BuildContext context, int index) => GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  createRouteRightToLeft(
+                    targetRoute: CategoryAppListing(
+                      applicationType: widget.type,
+                      categoryName: snapshot.data![index]['catname'],
+                      caturl: snapshot.data![index]['caturl'],
+                      categoryList: snapshot,
+                      intitalIndex: index,
+                    ),
                   ),
-                );
-              },
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      visualDensity: VisualDensity.compact,
+                      dense: true,
+                      horizontalTitleGap: 12,
+                      contentPadding: const EdgeInsets.all(0),
+                      leading: Image(
+                        image: AssetImage(
+                          'assets/images/category_icons/${snapshot.data![index]["caticon"]}.png',
+                        ),
+                        width: 28,
+                        height: 28,
+                      ),
+                      title: Html(
+                        data: snapshot.data![index]['catname'],
+                        style: {
+                          "*": Style(
+                            color: Theme.of(context).textTheme.titleLarge!.color,
+                            fontSize: const FontSize(20),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        },
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 50),
+                      child: Divider(height: 2),
+                    )
+                  ],
+                ),
+              ),
             );
           } else if (snapshot.hasError) {
             return const DioErrorMessage();

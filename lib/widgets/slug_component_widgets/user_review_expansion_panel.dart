@@ -21,8 +21,7 @@ class UserReviewsExpansionPanel extends StatelessWidget {
           ListView.builder(
             shrinkWrap: true,
             physics: const ScrollPhysics(),
-            itemCount:
-                appData!['reviews'] != null ? appData!['reviews'].length : 0,
+            itemCount: appData!['reviews'] != null ? appData!['reviews'].length : 0,
             itemBuilder: (BuildContext context, int index) {
               return ReviewsList(
                 rating: appData!['reviews'][index]['rating'],
@@ -51,7 +50,7 @@ class UserReviewsExpansionPanel extends StatelessWidget {
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(0),
               backgroundColor: MaterialStateProperty.all(
-                Colors.cyan.shade50,
+                Theme.of(context).textTheme.displayMedium!.color,
               ),
             ),
           )

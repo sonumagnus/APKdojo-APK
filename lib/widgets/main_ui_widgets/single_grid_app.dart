@@ -39,7 +39,7 @@ class SingleGridApp extends StatelessWidget {
               width: 68.33,
             ),
           ),
-          name.text.maxLines(2).size(12).gray500.medium.make(),
+          name.text.maxLines(2).size(12).color(Theme.of(context).textTheme.labelMedium!.color).medium.make().pOnly(right: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -47,9 +47,9 @@ class SingleGridApp extends StatelessWidget {
               StarRating(rating: starRating, starSize: '9'),
               (rating == "null" ? "0.0" : rating).text.scale(0.6).make(),
             ],
-          )
+          ).pOnly(right: 10)
         ],
-      ).p(7.8),
+      ),
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:package_archive_info/package_archive_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class App {
+abstract class App {
   // get apk name from path (includes name_version)
   static fileName(String filePath) {
     final _splitedList = filePath.split("/");

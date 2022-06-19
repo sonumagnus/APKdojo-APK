@@ -10,8 +10,8 @@ class DeveloperAppsLoadingAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
     return [
       Shimmer.fromColors(
-        baseColor: Colors.cyan.shade100,
-        highlightColor: Colors.grey.shade100,
+        baseColor: Theme.of(context).textTheme.displayMedium!.color!,
+        highlightColor: Theme.of(context).textTheme.displaySmall!.color!,
         child: VxBox().size(120, 15).cyan400.rounded.margin(const EdgeInsets.only(left: 20, bottom: 30, top: 20)).make(),
       ),
       const FeaturedAppAnimation(animatedItemCount: 3)

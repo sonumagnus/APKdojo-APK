@@ -18,7 +18,7 @@ class _DeveloperAppsState extends State<DeveloperApps> {
   late Future<List> developerApps;
 
   Future<List> getDeveloperApps() async {
-    String _api = '$apiDomain/app-developer.php?id=${widget.seourl}';
+    final String _api = '$apiDomain/app-developer.php?id=${widget.seourl}';
     Response response = await Dio().get(_api);
     return response.data['developer_apps'];
   }

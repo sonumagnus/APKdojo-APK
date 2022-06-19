@@ -1,5 +1,6 @@
 import 'package:apkdojo/widgets/accordion.dart';
 import 'package:flutter/material.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class ApkDetailsExpansionPanel extends StatelessWidget {
   final Map<dynamic, dynamic>? appData;
@@ -77,14 +78,8 @@ class ApkDetailsSingleKeyValue extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           visualDensity: VisualDensity.compact,
           dense: true,
-          leading: Text(
-            title,
-            style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
-          ),
-          trailing: Text(
-            value,
-            style: TextStyle(color: Colors.grey.shade800, fontSize: 16),
-          ),
+          leading: title.text.color(Theme.of(context).textTheme.titleMedium!.color).size(16).make(),
+          trailing: value.text.size(16).color(Theme.of(context).textTheme.titleSmall!.color).ellipsis.make(),
         ),
         const Divider(height: 4)
       ],

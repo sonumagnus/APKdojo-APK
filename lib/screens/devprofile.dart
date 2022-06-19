@@ -38,8 +38,6 @@ class _DevProfileAndAppsState extends State<DevProfileAndApps> {
           widget.devURL,
           style: TextStyle(color: CustomColor.appBarTitleColor),
         ),
-        backgroundColor: CustomColor.primaryColor,
-        iconTheme: IconThemeData(color: CustomColor.iconThemeColor),
         actions: const [SearchIconWidget()],
       ),
       body: FutureBuilder<Map>(

@@ -1,7 +1,7 @@
+import 'package:apkdojo/animation/show_up.dart';
 import 'package:apkdojo/api/api.dart';
 import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:apkdojo/providers/previous_download_status.dart';
-import 'package:apkdojo/styling_refrence/style.dart';
 import 'package:apkdojo/utils/app_methods.dart';
 import 'package:apkdojo/widgets/dio_error_message.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/slug_animation.dart';
@@ -34,6 +34,7 @@ class _SlugState extends State<Slug> {
   late Future<Map> app;
   late ScrollController _controller;
   bool _showHeaderName = false;
+  bool _showBottomDownloadButton = false;
 
   Future<Map> fetchApp() async {
     final String _api = '$apiDomain/app.php?id=${widget.seourl}&lang=en';
@@ -42,13 +43,27 @@ class _SlugState extends State<Slug> {
   }
 
   _scrollListener() {
-    if (_controller.offset >= 100 && !_controller.position.outOfRange) {
-      if (_showHeaderName == true) return;
-      setState(() => _showHeaderName = true);
+    final double scrollPosition = _controller.offset;
+    final bool cpoor = _controller.position.outOfRange;
+
+    if (scrollPosition > 120 && !cpoor) {
+      if (_showBottomDownloadButton == true) return;
+      setState(() => _showBottomDownloadButton = true);
     }
-    if (_controller.offset <= 100 && !_controller.position.outOfRange) {
+
+    if (scrollPosition <= 50 && !cpoor) {
       if (_showHeaderName == false) return;
       setState(() => _showHeaderName = false);
+    }
+
+    if (scrollPosition > 50 && scrollPosition <= 120 && !cpoor) {
+      if (_showHeaderName == false) {
+        setState(() => _showHeaderName = true);
+      }
+      if (_showBottomDownloadButton == true) {
+        setState(() => _showBottomDownloadButton = false);
+      }
+      return;
     }
   }
 
@@ -70,100 +85,96 @@ class _SlugState extends State<Slug> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: FutureBuilder<Map>(
-        future: app,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  _showHeaderName ? snapshot.data!["name"] : "",
-                  style: const TextStyle(color: Colors.black),
-                ),
-                elevation: 0,
-                backgroundColor: Colors.white12,
-                iconTheme: IconThemeData(
-                  color: CustomColor.iconThemeColor,
-                ),
+    return FutureBuilder<Map>(
+      future: app,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Scaffold(
+            appBar: AppBar(
+              title: ShowUpAnimation(
+                activate: _showHeaderName,
+                child: Text(snapshot.data!["name"]),
               ),
-              body: Stack(
-                children: [
-                  SingleChildScrollView(
-                    padding: const EdgeInsets.only(bottom: 85),
-                    controller: _controller,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SlugTopIconWithName(
-                          icon: snapshot.data!['icon'],
-                          developer: snapshot.data!['developer'],
-                          developerUrl: snapshot.data!['developer_url'],
+              elevation: 0,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              iconTheme: Theme.of(context).iconTheme,
+            ),
+            body: Stack(
+              children: [
+                SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom: "${snapshot.data!['apkurl']}".isEmpty ? 0 : 85,
+                  ),
+                  controller: _controller,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SlugTopIconWithName(
+                        icon: snapshot.data!['icon'],
+                        developer: snapshot.data!['developer'],
+                        developerUrl: snapshot.data!['developer_url'],
+                        name: snapshot.data!['name'],
+                        seourl: snapshot.data!['seourl'],
+                        apkurl: snapshot.data!['apkurl'],
+                        playStoreUrl: snapshot.data!['playstore'],
+                        version: snapshot.data!['version'].toString(),
+                      ),
+                      RatingSizeVersionTable(
+                        rating: snapshot.data!['rating'].toString(),
+                        size: snapshot.data!['size'],
+                        version: snapshot.data!['version'],
+                        totalRating: snapshot.data!['total_ratings'].toString(),
+                      ),
+                      SlugDescription(
+                        description: snapshot.data!['des'],
+                      ),
+                      SlugScreenshot(
+                        screenshotCount: snapshot.data!['screenshots'].length,
+                        screenshots: snapshot.data!['screenshots'],
+                      ),
+                      SlugCustomCardShadow(
+                        child: Column(
+                          children: [
+                            UserReviewsExpansionPanel(appData: snapshot.data),
+                            ApkDetailsExpansionPanel(appData: snapshot.data),
+                            WhatsNewExpansionPanel(appData: snapshot.data),
+                          ],
+                        ),
+                      ),
+                      DeveloperApps(seourl: snapshot.data!['seourl']),
+                      RelatedApps(relatedApps: snapshot.data!['related'])
+                    ],
+                  ),
+                ),
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 300),
+                  bottom: _showBottomDownloadButton ? 0 : -81,
+                  left: 0,
+                  child: "${snapshot.data!['apkurl']}".isEmpty
+                      ? const SizedBox()
+                      : SlugBottomDownloadButtonSheet(
                           name: snapshot.data!['name'],
-                          seourl: snapshot.data!['seourl'],
                           apkurl: snapshot.data!['apkurl'],
-                          playStoreUrl: snapshot.data!['playstore'],
-                          version: snapshot.data!['version'].toString(),
-                        ),
-                        RatingSizeVersionTable(
-                          rating: snapshot.data!['rating'].toString(),
-                          size: snapshot.data!['size'],
+                          seourl: snapshot.data!['seourl'],
                           version: snapshot.data!['version'],
-                          totalRating: snapshot.data!['total_ratings'].toString(),
                         ),
-                        SlugDescription(
-                          description: snapshot.data!['des'],
-                        ),
-                        SlugScreenshot(
-                          screenshotCount: snapshot.data!['screenshots'].length,
-                          screenshots: snapshot.data!['screenshots'],
-                        ),
-                        SlugCustomCardShadow(
-                          child: Column(
-                            children: [
-                              UserReviewsExpansionPanel(appData: snapshot.data),
-                              ApkDetailsExpansionPanel(appData: snapshot.data),
-                              WhatsNewExpansionPanel(appData: snapshot.data),
-                            ],
-                          ),
-                        ),
-                        DeveloperApps(seourl: snapshot.data!['seourl']),
-                        RelatedApps(relatedApps: snapshot.data!['related'])
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    child: snapshot.data!['apkurl'] == ""
-                        ? const SizedBox()
-                        : SlugBottomDownloadButtonSheet(
-                            name: snapshot.data!['name'],
-                            apkurl: snapshot.data!['apkurl'],
-                            seourl: snapshot.data!['seourl'],
-                            version: snapshot.data!['version'],
-                          ),
-                  ),
-                ],
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return const DioErrorMessage();
-          }
-          return const Center(
-            child: SlugLoadingAnimation(),
+                ),
+              ],
+            ),
           );
-        },
-      ),
+        } else if (snapshot.hasError) {
+          return const DioErrorMessage();
+        }
+        return const Center(
+          child: SlugLoadingAnimation(),
+        );
+      },
     );
   }
 }
 
 class SlugBottomDownloadButtonSheet extends StatelessWidget {
-  final String name;
-  final String apkurl;
-  final String seourl;
-  final String version;
+  final String name, apkurl, seourl, version;
 
   const SlugBottomDownloadButtonSheet({
     Key? key,
@@ -177,10 +188,10 @@ class SlugBottomDownloadButtonSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        "Viewing: $name".text.size(12).make().box.alignCenter.green200.width(context.mq.size.width).padding(Vx.mSymmetric(v: 6)).make(),
+        "Viewing: $name".text.gray500.size(12).make().box.alignCenter.green300.width(context.mq.size.width).padding(Vx.mSymmetric(v: 6)).make(),
         Container(
           height: 55,
-          color: Colors.white,
+          color: Theme.of(context).scaffoldBackgroundColor,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
           width: MediaQuery.of(context).size.width,
           child: GridView(
@@ -196,26 +207,28 @@ class SlugBottomDownloadButtonSheet extends StatelessWidget {
                 ),
                 child: const BottomSheetButton(buttonName: "SHARE"),
               ).box.border(width: 1, color: Vx.gray200).withRounded(value: 4).make(),
-              Consumer<PreviousDownloadStatus>(builder: (context, value, child){
-                return InkWell(
-                  onTap: () {
-                    if (value.appAlreadyDownloaded && !value.isOldVersionAvailable) {
-                      OpenFile.open(value.appPath);
-                    } else {
-                      App.download(apkurl, "${name}_$version");
-                      context.read<DownloadingProgress>().setAppName(name);
-                    }
-                  },
-                  child: BottomSheetButton(
-                    buttonName: value.appAlreadyDownloaded && !value.isOldVersionAvailable
-                        ? "OPEN"
-                        : value.appAlreadyDownloaded && value.isOldVersionAvailable
-                            ? "UPDATE"
-                            : "DOWNLOAD",
-                    buttonBackgroundColor: Colors.green.shade400,
-                  ),
-                );
-              })
+              Consumer<PreviousDownloadStatus>(
+                builder: (context, value, child) {
+                  return InkWell(
+                    onTap: () {
+                      if (value.appAlreadyDownloaded && !value.isOldVersionAvailable) {
+                        OpenFile.open(value.appPath);
+                      } else {
+                        App.download(apkurl, "${name}_$version");
+                        context.read<DownloadingProgress>().setAppName(name);
+                      }
+                    },
+                    child: BottomSheetButton(
+                      buttonName: value.appAlreadyDownloaded && !value.isOldVersionAvailable
+                          ? "OPEN"
+                          : value.appAlreadyDownloaded && value.isOldVersionAvailable
+                              ? "UPDATE"
+                              : "DOWNLOAD",
+                      buttonBackgroundColor: Colors.green.shade400,
+                    ),
+                  );
+                },
+              )
             ],
           ),
         ),

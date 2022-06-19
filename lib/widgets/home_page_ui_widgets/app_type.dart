@@ -21,31 +21,24 @@ class AppType extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        mainHeading.text.size(16).extraBold.make(),
-        Padding(
-          padding: const EdgeInsets.only(top: 4.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              followUpText.text.size(15).gray600.make(),
-              Visibility(
-                visible: showSeeAll,
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () => Navigator.of(context).push(
-                    createRouteRightToLeft(targetRoute: seeAllUrl),
-                  ),
-                  icon: Icon(
-                    Icons.arrow_forward,
-                    size: 22,
-                    color: Colors.grey.shade700,
-                  ),
-                ).pOnly(right: 8),
-              ),
-            ],
-          ),
-        )
+        mainHeading.text.size(16).color(Theme.of(context).textTheme.titleLarge!.color).extraBold.make(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            followUpText.text.size(15).color(Theme.of(context).textTheme.titleSmall!.color).make(),
+            Visibility(
+              visible: showSeeAll,
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () => Navigator.of(context).push(
+                  createRouteRightToLeft(targetRoute: seeAllUrl),
+                ),
+                icon: const Icon(Icons.arrow_forward, size: 22),
+              ).pOnly(right: 8),
+            ),
+          ],
+        ).pOnly(top: 4)
       ],
     ).pLTRB(p20, p20, p20, 10);
   }

@@ -1,6 +1,6 @@
+import 'package:apkdojo/providers/theme_provider.dart';
 import 'package:apkdojo/providers/previous_download_status.dart';
 import 'package:apkdojo/widgets/my_behaviour.dart';
-import 'package:apkdojo/widgets/custom_status_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:apkdojo/home.dart';
 import 'package:flutter/services.dart';
@@ -12,19 +12,22 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(debug: false);
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider<DownloadingProgress>(
-          create: (_) => DownloadingProgress(),
-        ),
-        ChangeNotifierProvider<PreviousDownloadStatus>(
-          create: (_) => PreviousDownloadStatus(),
-        ),
-      ],
-      child: const ApkDojo(),
-    ),
-  );
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<DownloadingProgress>(
+            create: (_) => DownloadingProgress(),
+          ),
+          ChangeNotifierProvider<PreviousDownloadStatus>(
+            create: (_) => PreviousDownloadStatus(),
+          ),
+        ],
+        child: const ApkDojo(),
+      ),
+    );
+  });
 }
 
 class ApkDojo extends StatefulWidget {
@@ -42,17 +45,23 @@ class _ApkDojoState extends State<ApkDojo> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Apkdojo",
-      home: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark.copyWith(
-          statusBarColor: Colors.transparent,
-        ),
-        child: CustomStatusBar(
-          child: ScrollConfiguration(behavior: MyBehavior(), child: const Home()),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+        create: (context) => ThemeProvider(),
+        builder: (context, _) {
+          return Consumer<ThemeProvider>(
+            builder: (context, value, child) {
+              return MaterialApp(
+                title: "Apkdojo",
+                theme: MyThemes.lightTheme,
+                darkTheme: MyThemes.darkTheme,
+                themeMode: value.themeMode,
+                home: ScrollConfiguration(
+                  behavior: MyBehavior(),
+                  child: const Home(),
+                ),
+              );
+            },
+          );
+        },
+      );
 }
