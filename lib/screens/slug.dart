@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'package:apkdojo/animation/show_up.dart';
 import 'package:apkdojo/api/api.dart';
 import 'package:apkdojo/providers/downloading_progress.dart';
-import 'package:apkdojo/providers/previous_download_status.dart';
+import 'package:apkdojo/screens/search_screen.dart';
 import 'package:apkdojo/utils/app_methods.dart';
 import 'package:apkdojo/widgets/dio_error_message.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/slug_animation.dart';
@@ -15,8 +16,10 @@ import 'package:apkdojo/widgets/slug_component_widgets/slug_screenshot.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/slug_top_icon_with_name.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/user_review_expansion_panel.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/whats_new_expansion_panel.dart';
+import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -88,93 +91,116 @@ class _SlugState extends State<Slug> {
     return FutureBuilder<Map>(
       future: app,
       builder: (context, snapshot) {
+        final app = snapshot.data;
         if (snapshot.hasData) {
           return Scaffold(
             appBar: AppBar(
               title: ShowUpAnimation(
                 activate: _showHeaderName,
-                child: Text(snapshot.data!["name"]),
+                child: Text(
+                  snapshot.data!["name"],
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.titleMedium!.color,
+                  ),
+                ),
               ),
               elevation: 0,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               iconTheme: Theme.of(context).iconTheme,
+              actions: [
+                IconButton(
+                  onPressed: () => showSearch(
+                    context: context,
+                    delegate: SearchScreen(),
+                  ),
+                  icon: const Icon(Icons.search),
+                ),
+                IconButton(
+                  onPressed: () => Share.share(
+                    "$siteDomain/${app!['seourl']}",
+                  ),
+                  icon: const Icon(Icons.share, size: 21),
+                ),
+              ],
             ),
             body: Stack(
               children: [
                 SingleChildScrollView(
                   padding: EdgeInsets.only(
-                    bottom: "${snapshot.data!['apkurl']}".isEmpty ? 0 : 85,
+                    bottom: "${app!['apkurl']}".isEmpty ? 0 : 55,
                   ),
                   controller: _controller,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SlugTopIconWithName(
-                        icon: snapshot.data!['icon'],
-                        developer: snapshot.data!['developer'],
-                        developerUrl: snapshot.data!['developer_url'],
-                        name: snapshot.data!['name'],
-                        seourl: snapshot.data!['seourl'],
-                        apkurl: snapshot.data!['apkurl'],
-                        playStoreUrl: snapshot.data!['playstore'],
-                        version: snapshot.data!['version'].toString(),
+                        icon: app['icon'],
+                        developer: app['developer'],
+                        developerUrl: app['developer_url'],
+                        name: app['name'],
+                        seourl: app['seourl'],
+                        apkurl: app['apkurl'],
+                        playStoreUrl: app['playstore'],
+                        version: app['version'].toString(),
+                        packageName: app['app_package'],
+                        size: app['size'],
                       ),
                       RatingSizeVersionTable(
-                        rating: snapshot.data!['rating'].toString(),
-                        size: snapshot.data!['size'],
-                        version: snapshot.data!['version'],
-                        totalRating: snapshot.data!['total_ratings'].toString(),
-                      ),
-                      SlugDescription(
-                        description: snapshot.data!['des'],
+                        rating: app['rating'].toString(),
+                        size: app['size'],
+                        version: app['version'],
+                        totalRating: app['total_ratings'].toString(),
                       ),
                       SlugScreenshot(
-                        screenshotCount: snapshot.data!['screenshots'].length,
-                        screenshots: snapshot.data!['screenshots'],
+                        screenshots: app['screenshots'],
+                      ),
+                      SlugDescription(
+                        description: app['des'],
                       ),
                       SlugCustomCardShadow(
+                        hideUpshadow: true,
                         child: Column(
                           children: [
-                            UserReviewsExpansionPanel(appData: snapshot.data),
-                            ApkDetailsExpansionPanel(appData: snapshot.data),
-                            WhatsNewExpansionPanel(appData: snapshot.data),
+                            UserReviewsExpansionPanel(appData: app),
+                            ApkDetailsExpansionPanel(appData: app),
+                            WhatsNewExpansionPanel(appData: app),
                           ],
                         ),
                       ),
-                      DeveloperApps(seourl: snapshot.data!['seourl']),
-                      RelatedApps(relatedApps: snapshot.data!['related'])
+                      DeveloperApps(seourl: app['seourl']),
+                      RelatedApps(relatedApps: app['related'])
                     ],
                   ),
                 ),
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 300),
-                  bottom: _showBottomDownloadButton ? 0 : -81,
+                  bottom: _showBottomDownloadButton ? 0 : -58,
                   left: 0,
-                  child: "${snapshot.data!['apkurl']}".isEmpty
+                  child: "${app['apkurl']}".isEmpty
                       ? const SizedBox()
                       : SlugBottomDownloadButtonSheet(
-                          name: snapshot.data!['name'],
-                          apkurl: snapshot.data!['apkurl'],
-                          seourl: snapshot.data!['seourl'],
-                          version: snapshot.data!['version'],
+                          name: app['name'],
+                          apkurl: app['apkurl'],
+                          seourl: app['seourl'],
+                          version: app['version'],
+                          packageName: app['app_package'],
+                          size: app['size'],
                         ),
                 ),
               ],
             ),
           );
         } else if (snapshot.hasError) {
-          return const DioErrorMessage();
+          return const Material(child: DioErrorMessage());
         }
-        return const Center(
-          child: SlugLoadingAnimation(),
-        );
+        return const Center(child: SlugLoadingAnimation());
       },
     );
   }
 }
 
 class SlugBottomDownloadButtonSheet extends StatelessWidget {
-  final String name, apkurl, seourl, version;
+  final String name, apkurl, seourl, version, packageName, size;
 
   const SlugBottomDownloadButtonSheet({
     Key? key,
@@ -182,89 +208,126 @@ class SlugBottomDownloadButtonSheet extends StatelessWidget {
     required this.apkurl,
     required this.seourl,
     required this.version,
+    required this.packageName,
+    required this.size,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        "Viewing: $name".text.gray500.size(12).make().box.alignCenter.green300.width(context.mq.size.width).padding(Vx.mSymmetric(v: 6)).make(),
-        Container(
-          height: 55,
-          color: Theme.of(context).scaffoldBackgroundColor,
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-          width: MediaQuery.of(context).size.width,
-          child: GridView(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 6 / 1.3,
-              crossAxisSpacing: 8,
+    TextStyle _buttonStyle = TextStyle(
+      color: Colors.grey.shade200,
+      fontWeight: FontWeight.w600,
+    );
+    return Consumer<SingleAPkState>(
+      builder: (context, state, child) {
+        var startCondition = state.downloadTaskStatus == DownloadTaskStatus.running && name == state.appName;
+        return Stack(
+          alignment: state.downloadTaskStatus == DownloadTaskStatus.running ? Alignment.centerLeft : Alignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).shadowColor,
+                    offset: const Offset(0.0, -2.0),
+                    blurRadius: 5.0,
+                  ),
+                ],
+              ),
+              height: 55,
+              width: context.mq.size.width,
+              child: LinearProgressIndicator(
+                backgroundColor: Colors.green.shade500,
+                color: Colors.green.shade700,
+                value: state.progress / 100,
+              ),
             ),
-            children: [
-              InkWell(
-                onTap: () => Share.share(
-                  "https://www.apkdojo.com/$seourl",
-                ),
-                child: const BottomSheetButton(buttonName: "SHARE"),
-              ).box.border(width: 1, color: Vx.gray200).withRounded(value: 4).make(),
-              Consumer<PreviousDownloadStatus>(
-                builder: (context, value, child) {
-                  return InkWell(
-                    onTap: () {
-                      if (value.appAlreadyDownloaded && !value.isOldVersionAvailable) {
-                        OpenFile.open(value.appPath);
-                      } else {
-                        App.download(apkurl, "${name}_$version");
-                        context.read<DownloadingProgress>().setAppName(name);
-                      }
-                    },
-                    child: BottomSheetButton(
-                      buttonName: value.appAlreadyDownloaded && !value.isOldVersionAvailable
-                          ? "OPEN"
-                          : value.appAlreadyDownloaded && value.isOldVersionAvailable
-                              ? "UPDATE"
-                              : "DOWNLOAD",
-                      buttonBackgroundColor: Colors.green.shade400,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              width: context.mq.size.width,
+              child: startCondition
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("DOWNLOADING...", style: _buttonStyle),
+                            Text(
+                              getDownloadPercentage(state.progress) + "MB" + "/$size",
+                              style: _buttonStyle,
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          onPressed: () => FlutterDownloader.cancel(taskId: state.id),
+                          icon: Icon(
+                            Icons.close_rounded,
+                            color: Colors.grey.shade200,
+                          ),
+                        )
+                      ],
+                    )
+                  : Consumer<SingleAPkState>(
+                      builder: (context, value, child) {
+                        if (value.isApkInstalled) {
+                          return SizedBox(
+                            width: context.mq.size.width,
+                            height: 30,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                TextButton(
+                                  onPressed: () => DeviceApps.uninstallApp(packageName),
+                                  child: Text("UNINSTALL", style: _buttonStyle),
+                                ),
+                                const VerticalDivider(color: Colors.white),
+                                TextButton(
+                                  onPressed: () => DeviceApps.openApp(packageName),
+                                  child: Text("OPEN", style: _buttonStyle),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else if (value.appAlreadyDownloaded && state.downloadTaskStatus != DownloadTaskStatus.running) {
+                          return Align(
+                            alignment: Alignment.center,
+                            child: TextButton(
+                              onPressed: () async => OpenFile.open(
+                                await App.getApkPath(apkName: name),
+                              ),
+                              child: Text("INSTALL", style: _buttonStyle),
+                            ),
+                          );
+                        } else {
+                          return Align(
+                            alignment: Alignment.center,
+                            child: TextButton(
+                                onPressed: () {
+                                  if (value.downloadTaskStatus != DownloadTaskStatus.running) {
+                                    App.download(url: apkurl, name: name);
+                                  } else {
+                                    // show alerts that a app is already downloading
+                                  }
+                                },
+                                child: Text(value.isOldVersionAvailable && state.downloadTaskStatus != DownloadTaskStatus.running ? "UPDATE" : "INSTALL", style: _buttonStyle)),
+                          );
+                        }
+                      },
                     ),
-                  );
-                },
-              )
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
-}
 
-class BottomSheetButton extends StatelessWidget {
-  final String buttonName;
-  final Color buttonBackgroundColor;
-  const BottomSheetButton({
-    Key? key,
-    required this.buttonName,
-    this.buttonBackgroundColor = Colors.white,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: buttonBackgroundColor,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      height: 35,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(
-        vertical: 8,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(buttonName == "SHARE" ? Icons.share : Icons.download, size: 16, color: buttonBackgroundColor == Colors.white ? Colors.green : Colors.white),
-          buttonName.text.bold.letterSpacing(0.4).color(buttonBackgroundColor == Colors.white ? Colors.grey.shade700 : Colors.white).make().pOnly(left: 6),
-        ],
-      ),
-    );
+  String getDownloadPercentage(int progress) {
+    String apkSize = size.replaceAll("..", "").replaceAll("MB", "");
+    double appSize = double.parse(apkSize);
+    double downloadedSize = (appSize * progress / 100);
+    String roundedDownloadSize = downloadedSize.toStringAsFixed(2);
+    return roundedDownloadSize;
   }
 }

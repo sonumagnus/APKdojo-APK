@@ -1,5 +1,4 @@
 import 'package:apkdojo/providers/theme_provider.dart';
-import 'package:apkdojo/providers/previous_download_status.dart';
 import 'package:apkdojo/widgets/my_behaviour.dart';
 import 'package:flutter/material.dart';
 import 'package:apkdojo/home.dart';
@@ -17,11 +16,8 @@ void main() async {
     runApp(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider<DownloadingProgress>(
-            create: (_) => DownloadingProgress(),
-          ),
-          ChangeNotifierProvider<PreviousDownloadStatus>(
-            create: (_) => PreviousDownloadStatus(),
+          ChangeNotifierProvider<SingleAPkState>(
+            create: (_) => SingleAPkState(),
           ),
         ],
         child: const ApkDojo(),

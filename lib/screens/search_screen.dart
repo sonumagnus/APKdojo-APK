@@ -90,7 +90,7 @@ class SearchScreen extends SearchDelegate {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return snapshot.data!.isEmpty
-              ? "Search Apps & Games".text.xl.medium.gray400.makeCentered()
+              ? "Search Apps & Games".text.xl.medium.color(Theme.of(context).textTheme.titleMedium!.color).makeCentered()
               : ListView.builder(
                   itemCount: snapshot.data!.length < 5 ? snapshot.data!.length : 5,
                   itemBuilder: (context, index) {
@@ -103,8 +103,8 @@ class SearchScreen extends SearchDelegate {
                         ),
                       ),
                       child: ListTile(
-                        leading: Icon(Icons.search, color: Colors.grey.shade600),
-                        title: "${snapshot.data![index]['name']}".text.lg.medium.gray700.make(),
+                        leading: Icon(Icons.search, color: Theme.of(context).textTheme.titleMedium!.color),
+                        title: "${snapshot.data![index]['name']}".text.lg.medium.color(Theme.of(context).textTheme.titleMedium!.color).make(),
                       ),
                     );
                   },

@@ -1,12 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
-import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:apkdojo/providers/downloading_progress.dart';
-import 'package:apkdojo/providers/previous_download_status.dart';
 import 'package:apkdojo/utils/app_methods.dart';
+import 'package:apkdojo/utils/xapk_installer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,12 +15,14 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class DownloadButtonWithLogic extends StatefulWidget {
-  final String name, apkurl, playStoreUrl, version;
+  final String name, apkurl, playStoreUrl, version, packageName, size;
   const DownloadButtonWithLogic({
     Key? key,
     required this.name,
     required this.apkurl,
     required this.version,
+    required this.packageName,
+    required this.size,
     this.playStoreUrl = "",
   }) : super(key: key);
 
@@ -29,65 +30,95 @@ class DownloadButtonWithLogic extends StatefulWidget {
   State<DownloadButtonWithLogic> createState() => _DownloadButtonWithLogicState();
 }
 
-class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> {
+class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with WidgetsBindingObserver {
   int progress = 0;
   String id = '';
   bool _apkAlreadyDownloaded = false;
   String _apkPath = ""; // in case app is already downloaded
   bool oldVersionAvailable = false;
   late DownloadTaskStatus status = DownloadTaskStatus.undefined;
+  bool isApkInstalled = false;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setState(() => checkIfAppInstalled());
+    }
+  }
 
   final ReceivePort _port = ReceivePort();
+
+  triggerAppInstallation() async {
+    final String apkExtension = widget.apkurl.split("/").last.split(".").last;
+
+    if (apkExtension == 'apk') {
+      OpenFile.open(await App.getApkPath(apkName: widget.name));
+    } else {
+      XapkInstaller.install(apkPath: await App.internalStoragePath() + "/APKdojo" + "/${widget.name.trim()}" + ".xapk");
+    }
+  }
+
+  checkIfAppInstalled() async {
+    isApkInstalled = await App.isInstalled(packageName: widget.packageName);
+    context.read<SingleAPkState>().setIsAppInstalled(isAppInstalled: isApkInstalled);
+  }
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
-    isAlreadyDownloaded(widget.name, widget.version);
+    isAlreadyDownloaded();
+    checkIfAppInstalled();
 
     IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
-    _port.listen((dynamic data) async {
-      // settinng local state
-      id = data[0];
-      status = data[1];
-      progress = data[2];
+    _port.listen(
+      (dynamic data) async {
+        // settinng local state
+        id = data[0];
+        status = data[1];
+        progress = data[2];
 
-      // setting global state
-      context.read<DownloadingProgress>().setDownloadingPSIN(data[2], data[1], data[0], widget.name);
+        // setting global state
+        context.read<SingleAPkState>().setDownloadingPSIN(progress: progress, downloadTaskStatus: status, id: id, appName: widget.name);
 
-      // resetting state on download complete or cancel
-      if (status == DownloadTaskStatus.complete || status == DownloadTaskStatus.canceled) {
-        Timer(
-          const Duration(milliseconds: 10),
-          () => setState(
+        // resetting state on download complete or cancel
+        if (status == DownloadTaskStatus.complete || status == DownloadTaskStatus.canceled || status == DownloadTaskStatus.failed) {
+          Future.delayed(
+            const Duration(seconds: 0),
             () {
-              // Resetting local state after download complete or cancel
+              // resetting local state
               progress = 0;
               status = DownloadTaskStatus.undefined;
               id = '';
 
-              context.read<DownloadingProgress>().setDownloadingPSIN(0, DownloadTaskStatus.undefined, "", "");
+              // resetting Global state
+              context.read<SingleAPkState>().setDownloadingPSIN(
+                    progress: 0,
+                    downloadTaskStatus: DownloadTaskStatus.undefined,
+                    id: "",
+                    appName: "",
+                  );
             },
-          ),
-        );
-      }
-      setState(() {
-        //this setState function updates local state continuously
-      });
+          );
+        }
 
-      // Apk is now downloaded
-      if (status == DownloadTaskStatus.complete) {
-        String _apkPath = await App.getApkPath(widget.name, widget.version);
-        context.read<PreviousDownloadStatus>().setIsAppAlreadyDownloaded(true, apkPath: _apkPath);
-        setState(() => _apkAlreadyDownloaded = true);
-      }
-    });
+        // Apk is now downloaded
+        if (status == DownloadTaskStatus.complete) {
+          triggerAppInstallation();
+          String _apkPath = await App.getApkPath(apkName: widget.name);
+          context.read<SingleAPkState>().setIsAppAlreadyDownloaded(true, apkPath: _apkPath);
+          setState(() => _apkAlreadyDownloaded = true);
+        }
+      },
+    );
 
     FlutterDownloader.registerCallback(downloadCallback);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     IsolateNameServer.removePortNameMapping('downloader_send_port');
     super.dispose();
   }
@@ -97,85 +128,91 @@ class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> {
     send.send([id, status, progress]);
   }
 
-  _downloadnCancelTask() {
-    if (status == DownloadTaskStatus.undefined) {
-      App.download(widget.apkurl, "${widget.name}_${widget.version}");
-      context.read<DownloadingProgress>().setAppName(widget.name);
-    } else if (status == DownloadTaskStatus.running) {
-      FlutterDownloader.cancel(taskId: id);
-    }
-  }
+  void isAlreadyDownloaded() async {
+    _apkPath = await App.getApkPath(apkName: widget.name);
 
-  _downloadButtonGesture() {
-    _apkAlreadyDownloaded && status != DownloadTaskStatus.running ? OpenFile.open(_apkPath) : _downloadnCancelTask();
-  }
+    bool isApkAlreadyDownloaded = await App.isApkFileAlreadyDownloaded(apkName: widget.name, packageName: widget.packageName, currentVersion: widget.version);
 
-  void isAlreadyDownloaded(String name, String version) async {
-    _apkPath = await App.getApkPath(name, version);
+    bool isOldVersionAvailable = await App.isOldVersionAlreadyAvaiable(packageName: widget.packageName, currentVersion: widget.version);
 
-    if (File(_apkPath).existsSync()) {
-      // setting global state if app is alredy downloaded
-      context.read<PreviousDownloadStatus>().setIsAppAlreadyDownloaded(true, apkPath: _apkPath);
-      // setting local state if app is already downloaded
-      setState(() => _apkAlreadyDownloaded = true);
-      return;
-    }
+    setState(() {
+      _apkAlreadyDownloaded = isApkAlreadyDownloaded;
+      oldVersionAvailable = isOldVersionAvailable;
+    });
 
-    bool isOldVersionAvailable = await App.isOldVersionAlreadyAvaiable(name);
-
-    if (isOldVersionAvailable) {
-      context.read<PreviousDownloadStatus>().setIsAppAlreadyDownloaded(true, apkPath: _apkPath, isOldVersionAvailable: true);
-      setState(() => oldVersionAvailable = true);
-      return;
-    }
-
-    // setting global state if app is already not downloaded
-    context.read<PreviousDownloadStatus>().setIsAppAlreadyDownloaded(false);
-    // setting local state if app is already not downloaded
-    setState(() => _apkAlreadyDownloaded = false);
-    return;
+    context.read<SingleAPkState>().setIsAppAlreadyDownloaded(isApkAlreadyDownloaded, apkPath: _apkPath, isOldVersionAvailable: isOldVersionAvailable);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DownloadingProgress>(builder: (context, value, child) {
+    return Consumer<SingleAPkState>(builder: (context, value, child) {
+      bool downloadingRunning = value.downloadTaskStatus == DownloadTaskStatus.running;
       return GestureDetector(
-        onTap: _downloadButtonGesture,
+        onTap: () => App.downloadButtonGesture(apkName: widget.name, apkUrl: widget.apkurl, globalState: value, packageName: widget.packageName),
         child: [
-          if (_apkAlreadyDownloaded && status != DownloadTaskStatus.running)
+          if (isApkInstalled && !downloadingRunning)
             const Button(buttonText: "Open")
-          else if (oldVersionAvailable && status == DownloadTaskStatus.undefined)
+          else if (_apkAlreadyDownloaded && !downloadingRunning)
+            const Button(buttonText: "Install")
+          else if (oldVersionAvailable && value.downloadTaskStatus == DownloadTaskStatus.undefined)
             const Button(buttonText: "Update")
           else if (widget.apkurl == "")
             GetFromPlayStore(playStoreUrl: widget.playStoreUrl)
-          else if (status == DownloadTaskStatus.undefined || value.appName != widget.name)
-            const Button(buttonText: "Download")
-          else if (status == DownloadTaskStatus.running && value.appName == widget.name)
-            CircularProgressIndicator(
-              strokeWidth: 2,
-              color: Colors.grey.shade600,
-              value: double.parse("$progress") / 100,
-            ).box.width(120).alignCenterLeft.make().box.square(32).make()
-          else if (status == DownloadTaskStatus.complete)
+          else if (value.downloadTaskStatus == DownloadTaskStatus.undefined || value.appName != widget.name)
+            const Button(buttonText: "Install", showDownloadIcon: true)
+          else if (downloadingRunning && value.appName == widget.name)
+            downloadProgressWithCancelButton(value, context)
+          else if (value.downloadTaskStatus == DownloadTaskStatus.complete)
             const Button(buttonText: "Downloaded")
-          else if (status == DownloadTaskStatus.canceled)
+          else if (value.downloadTaskStatus == DownloadTaskStatus.canceled)
             const Button(buttonText: "Canceled")
-          else if (status == DownloadTaskStatus.failed)
-            const Button(buttonText: "Failed"), // following code is for progress in percentage
-          if (status == DownloadTaskStatus.running && value.appName == widget.name) "$progress%".text.sm.make().pOnly(left: 5) else const SizedBox.shrink()
-        ].zStack(alignment: Alignment.centerLeft),
+          else if (value.downloadTaskStatus == DownloadTaskStatus.failed)
+            const Button(buttonText: "Failed"),
+        ].vStack(crossAlignment: CrossAxisAlignment.start),
       ).pOnly(top: 2);
     });
+  }
+
+  Widget downloadProgressWithCancelButton(SingleAPkState value, BuildContext context) {
+    return Row(
+      children: [
+        "${value.progress}% of ${widget.size}".text.color(Theme.of(context).textTheme.titleMedium!.color).make(),
+        const SizedBox(width: 10),
+        IconButton(
+          padding: EdgeInsets.zero,
+          onPressed: () => FlutterDownloader.cancel(taskId: value.id),
+          icon: Icon(Icons.close_outlined, color: Theme.of(context).iconTheme.color),
+          iconSize: 22,
+        ),
+      ],
+    ).box.size(155, 34).make();
   }
 }
 
 class Button extends StatelessWidget {
   final String buttonText;
-  const Button({Key? key, required this.buttonText}) : super(key: key);
+  final bool showDownloadIcon;
+  const Button({
+    Key? key,
+    required this.buttonText,
+    this.showDownloadIcon = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return buttonText.text.white.bold.make().box.size(120, 34).alignCenter.color(Colors.green.shade400).roundedLg.make();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (showDownloadIcon)
+          SvgPicture.asset(
+            "assets/images/download_icon.svg",
+            height: 16,
+            width: 16,
+            color: Colors.white,
+          ).pOnly(right: 6),
+        buttonText.text.white.bold.make(),
+      ],
+    ).box.size(120, 34).alignCenter.color(Colors.green.shade500).roundedLg.make();
   }
 }
 

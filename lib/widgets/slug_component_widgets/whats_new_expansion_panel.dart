@@ -16,9 +16,9 @@ class WhatsNewExpansionPanel extends StatelessWidget {
       contentWidget: Html(
         data: appData!['whatsnew'],
         style: {
-          "p": Style(
+          "*": Style(
             fontSize: const FontSize(14),
-            color: Colors.grey.shade600,
+            color: Colors.grey.shade500,
           )
         },
       ),

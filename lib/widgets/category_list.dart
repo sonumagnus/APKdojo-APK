@@ -48,8 +48,8 @@ class _CategoryListState extends State<CategoryList> with AutomaticKeepAliveClie
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              physics: const ScrollPhysics(),
               itemCount: widget.cateListCount == "categoryLength" ? snapshot.data!.length : int.parse(widget.cateListCount),
               itemBuilder: (BuildContext context, int index) => GestureDetector(
                 onTap: () => Navigator.of(context).push(

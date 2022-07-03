@@ -3,6 +3,7 @@ import 'package:apkdojo/screens/slug.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class SearchPage extends HookWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -48,7 +49,7 @@ class SearchPage extends HookWidget {
         ),
       ),
       body: _searchResult.value.isEmpty
-          ? const Center(child: Text("Search Apps & Games"))
+          ? Center(child: "Search Apps & Games".text.color(Theme.of(context).textTheme.titleSmall!.color).make())
           : ListView.builder(
               itemCount: _searchResult.value.length,
               itemBuilder: (BuildContext context, int index) {

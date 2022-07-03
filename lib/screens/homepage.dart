@@ -42,75 +42,68 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<
   Widget build(BuildContext context) {
     super.build(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        toolbarHeight: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      ),
-      body: CustomAppBar(
-        child: !isOnline
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.wifi_off_sharp),
-                    const SizedBox(height: 4),
-                    Text(
-                      "No Internet Connection",
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 18,
+    return CustomAppBar(
+      child: !isOnline
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.wifi_off_sharp),
+                  const SizedBox(height: 4),
+                  Text(
+                    "No Internet Connection",
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 18,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: _checkInternetConnection,
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: _checkInternetConnection,
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        border: Border.all(
+                          color: Colors.grey.shade300,
                         ),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          border: Border.all(
-                            color: Colors.grey.shade300,
-                          ),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(5),
-                          ),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(5),
                         ),
-                        child: const Text("Refresh"),
                       ),
-                    )
-                  ],
-                ),
-              )
-            : SingleChildScrollView(
-                child: Column(
-                  children: const [
-                    AppType(
-                      mainHeading: "Editor's Choice",
-                      followUpText: "Features By Apkdojo",
-                      seeAllUrl: NewAddedAndUpdatedApps(applicationType: "featured_apps"),
-                      showSeeAll: true,
+                      child: const Text("Refresh"),
                     ),
-                    FeaturedApps(),
-                    HomePageAppsGrid(type: "new_apps"),
-                    AppType(
-                      mainHeading: "Top Categories",
-                      followUpText: "Applications",
-                      seeAllUrl: CategoryByTabs(selectedIndex: 0, mediaQueryHeightDivider: 4.7),
-                      showSeeAll: true,
-                    ),
-                    CategoryList(type: 'apps', cateListCount: '6'),
-                    HomePageAppsGrid(type: "new_games"),
-                    AppType(mainHeading: "Top Categories", followUpText: "Games", seeAllUrl: CategoryByTabs(selectedIndex: 1), showSeeAll: true),
-                    CategoryList(type: 'games', cateListCount: '6'),
-                  ],
-                ),
+                  )
+                ],
               ),
-      ),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: const [
+                  AppType(
+                    mainHeading: "Editor's Choice",
+                    followUpText: "Features By Apkdojo",
+                    seeAllUrl: NewAddedAndUpdatedApps(applicationType: "featured_apps"),
+                    showSeeAll: true,
+                  ),
+                  FeaturedApps(),
+                  HomePageAppsGrid(type: "new_apps"),
+                  AppType(
+                    mainHeading: "Top Categories",
+                    followUpText: "Applications",
+                    seeAllUrl: CategoryByTabs(selectedIndex: 0, mediaQueryHeightDivider: 4.7),
+                    showSeeAll: true,
+                  ),
+                  CategoryList(type: 'apps', cateListCount: '6'),
+                  HomePageAppsGrid(type: "new_games"),
+                  AppType(mainHeading: "Top Categories", followUpText: "Games", seeAllUrl: CategoryByTabs(selectedIndex: 1), showSeeAll: true),
+                  CategoryList(type: 'games', cateListCount: '6'),
+                ],
+              ),
+            ),
     );
   }
 }

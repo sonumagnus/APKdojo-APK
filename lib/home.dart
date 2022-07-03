@@ -1,8 +1,10 @@
-import 'package:apkdojo/screens/download_manager.dart';
 import 'package:apkdojo/screens/homepage.dart';
 import 'package:apkdojo/screens/search_page.dart';
-import 'package:apkdojo/widgets/categorytabs.dart';
-// import 'package:apkdojo/widgets/test.dart';
+import 'package:apkdojo/widgets/category_list.dart';
+import 'package:apkdojo/widgets/download_manager_widgets/device_installed_apps.dart';
+import 'package:apkdojo/widgets/download_manager_widgets/downloads.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/modern_dual_tabbar.dart';
+import 'package:apkdojo/widgets/test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -20,9 +22,24 @@ class _HomeState extends State<Home> {
 
   static const List<Widget> _pages = [
     HomePage(),
-    CategoryByTabs(selectedIndex: 0, mediaQueryHeightDivider: 3.5),
+    ModernDualTabBar(
+      firstTabName: "Apps",
+      secondTabName: "Games",
+      firstChild: CategoryList(type: "apps", cateListCount: "categoryLength"),
+      secondChild: CategoryList(
+        type: "games",
+        cateListCount: "categoryLength",
+      ),
+      appBarTitle: "Categories",
+    ),
     SearchPage(),
-    DownloadManager(),
+    ModernDualTabBar(
+      firstTabName: "DOWNLOAD",
+      secondTabName: "INSTALLED",
+      firstChild: Downloads(),
+      secondChild: DeviceInstalledApps(),
+      appBarTitle: "Download Manager",
+    ),
   ];
 
   void _onItemTapped(int index) {
@@ -53,19 +70,20 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () => Navigator.of(context).push(
-      //     MaterialPageRoute(
-      //       builder: (context) => const Test(),
-      //     ),
-      //   ),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const Test(),
+          ),
+        ),
+      ),
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
         children: _pages,
         controller: pageController,
         onPageChanged: onPageChanged,
       ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: [

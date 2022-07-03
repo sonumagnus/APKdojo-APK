@@ -50,7 +50,7 @@ class CategoryAppListing extends HookWidget {
                 "*": Style(
                   fontSize: const FontSize(20),
                   fontWeight: FontWeight.w600,
-                  // color: Colors.grey.shade900,
+                  color: Theme.of(context).textTheme.titleMedium!.color,
                   margin: EdgeInsets.zero,
                 )
               },
@@ -139,16 +139,19 @@ class _CategoryBodyAppListState extends State<CategoryBodyAppList> with Automati
                   physics: const ScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: _appsList.value.length,
-                  itemBuilder: (context, index) => Column(
-                    children: [
-                      SingleHorizontalAppTile(
-                        icon: _appsList.value[index]['icon'],
-                        name: _appsList.value[index]['name'],
-                        seourl: _appsList.value[index]['seourl'],
-                        developer: _appsList.value[index]['developer'],
-                      )
-                    ],
-                  ),
+                  itemBuilder: (context, index) {
+                    var app = _appsList.value[index];
+                    return Column(
+                      children: [
+                        SingleHorizontalAppTile(
+                          icon: app['icon'],
+                          name: app['name'],
+                          seourl: app['seourl'],
+                          developer: app['developer'],
+                        )
+                      ],
+                    );
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

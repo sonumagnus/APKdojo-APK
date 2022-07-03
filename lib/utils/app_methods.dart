@@ -1,13 +1,17 @@
 import 'dart:io';
+import 'package:apkdojo/providers/downloading_progress.dart';
+import 'package:device_apps/device_apps.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:open_file/open_file.dart';
 import 'package:package_archive_info/package_archive_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 abstract class App {
   // get apk name from path (includes name_version)
-  static fileName(String filePath) {
+  static fileName({required String filePath}) {
     final _splitedList = filePath.split("/");
     final _apkNameWithExtension = _splitedList.last;
     final _apkNameWithoutExtension = _apkNameWithExtension.replaceAll(".apk", "");
@@ -15,8 +19,8 @@ abstract class App {
   }
 
   // Get apk name (without _version) from apk path
-  static apkName(String filePath) {
-    final String _apkNameWithoutExtension = fileName(filePath);
+  static apkName({required String apkPath}) {
+    final String _apkNameWithoutExtension = fileName(filePath: apkPath);
     final List<String> _splitedListofNameAndVersion = _apkNameWithoutExtension.split("_");
     final String _realAppName = _splitedListofNameAndVersion.first;
     return _realAppName;
@@ -34,8 +38,8 @@ abstract class App {
     }
   }
 
-  // method for path of application specific directory
-  static Future<String> getApksDirectory() async {
+  // get starting path for local storage path
+  static Future<String> internalStoragePath() async {
     Directory? directory = await getExternalStorageDirectory();
     String _apkPath = "";
 
@@ -48,18 +52,29 @@ abstract class App {
         break;
       }
     }
+    return _apkPath;
+  }
 
-    String _apkListPath = _apkPath + "/APKdojo";
+  // method for path of application specific directory
+  static Future<String> getApksDirectory() async {
+    String _apkListPath = await internalStoragePath() + "/APKdojo";
     return _apkListPath;
   }
 
   // get list of all the .APK files those are located in application specific directory
-  static Future<List<FileSystemEntity>> getListOfApplicationsFromDirectory() async {
-    late List<FileSystemEntity> apkFiles;
-    late List<FileSystemEntity> allFiles;
+  static Future<List<FileSystemEntity>> getListOfApplicationsFromDirectory({
+    bool getApksFromAllDirectories = false,
+  }) async {
+    late List<FileSystemEntity> allFiles, apkFiles;
+    String _newPath;
 
     Directory? directory;
-    String _newPath = await getApksDirectory();
+
+    if (getApksFromAllDirectories) {
+      _newPath = await App.internalStoragePath();
+    } else {
+      _newPath = await App.getApksDirectory();
+    }
 
     directory = Directory(_newPath);
 
@@ -67,17 +82,15 @@ abstract class App {
     String apkDirectory = '$dir/';
     final myDir = Directory(apkDirectory);
 
-    // creating application directory if isn't exist
-    await createApplicationDirectory();
-
     allFiles = myDir.listSync(recursive: true, followLinks: true);
 
     apkFiles = allFiles.where((element) => element.path.endsWith('.apk')).toList();
+
     return apkFiles;
   }
 
   // Read the version of any app located in application specific directory
-  static Future<String> getAppVersion(String apkPath) async {
+  static Future<String> getAppVersion({required String apkPath}) async {
     String _apkVersion;
     try {
       PackageArchiveInfo info = await PackageArchiveInfo.fromPath(apkPath);
@@ -90,45 +103,95 @@ abstract class App {
     return _apkVersion;
   }
 
+  static Future<Map> getApkPathToApkDetailsFromDB({required String apkPath}) async {
+    Map data = {};
+    try {
+      PackageArchiveInfo info = await PackageArchiveInfo.fromPath(apkPath);
+      String api = "https://appidmongo.herokuapp.com/${info.packageName}";
+      Response res = await Dio().get(api);
+      data = res.data;
+    } catch (e) {
+      return data;
+    }
+    return data;
+  }
+
   // function to access Single app path
-  static Future<String> getApkPath(String name, String version) async {
+  static Future<String> getApkPath({required String apkName}) async {
     String _apkFilesDirectory = await getApksDirectory();
-    String _apkFilePath = _apkFilesDirectory + "/" + name + "_" + version.trimRight() + ".apk";
+    String _apkFilePath = _apkFilesDirectory + "/" + apkName + ".apk";
     return _apkFilePath;
   }
 
   // check if the app is already available in the application specific directory
-  static Future<bool> isApkFileAlreadyDownloaded(String name, String version) async {
-    bool _apkAlreadyDownloaded = false;
+  static Future<bool> isApkFileAlreadyDownloaded({required String apkName, required String packageName, required String currentVersion}) async {
+    late List<FileSystemEntity> _apkFiles;
+    bool apkAlreadyDownloaded = false;
 
-    String _apkFilePath = await getApkPath(name, version);
+    _apkFiles = await getListOfApplicationsFromDirectory();
 
-    if (File(_apkFilePath).existsSync()) {
-      _apkAlreadyDownloaded = true;
+    for (int i = 0; i < _apkFiles.length; i++) {
+      try {
+        PackageArchiveInfo _appInfo = await PackageArchiveInfo.fromPath(
+          _apkFiles[i].path,
+        );
+        if (packageName == _appInfo.packageName) {
+          if (_appInfo.version == currentVersion) {
+            apkAlreadyDownloaded = true;
+          } else {
+            apkAlreadyDownloaded = false;
+          }
+          break;
+        }
+      } catch (e) {
+        // return oldVersionAvailable;
+      }
     }
+    return apkAlreadyDownloaded;
+  }
 
-    return _apkAlreadyDownloaded;
+  static Future<bool> isInstalled({required String packageName}) async {
+    bool isApkInstalled;
+    try {
+      isApkInstalled = await DeviceApps.isAppInstalled(packageName);
+    } catch (e) {
+      isApkInstalled = false;
+    }
+    return isApkInstalled;
   }
 
   // Check if the app's older version is already available in the directory
-  static Future<bool> isOldVersionAlreadyAvaiable(String name) async {
+  static Future<bool> isOldVersionAlreadyAvaiable({required String packageName, required String currentVersion}) async {
     late List<FileSystemEntity> _apkFiles;
     bool oldVersionAvailable = false;
 
     _apkFiles = await getListOfApplicationsFromDirectory();
 
     for (int i = 0; i < _apkFiles.length; i++) {
-      String _apkNameWithVersion = fileName(_apkFiles[i].path);
-      bool _isContainsName = _apkNameWithVersion.contains(name);
-      if (_isContainsName) {
-        oldVersionAvailable = _isContainsName;
+      try {
+        PackageArchiveInfo _appInfo = await PackageArchiveInfo.fromPath(
+          _apkFiles[i].path,
+        );
+        if (packageName == _appInfo.packageName) {
+          if (_appInfo.version == currentVersion) {
+            oldVersionAvailable = false;
+          } else {
+            oldVersionAvailable = true;
+          }
+          break;
+        }
+      } catch (e) {
+        // return oldVersionAvailable;
       }
     }
     return oldVersionAvailable;
   }
 
   // Download method
-  static download(String url, String name) async {
+  static download({required String url, required String name}) async {
+    // extraction extesnion from the url
+    List<String> splitedUrl = url.split(".");
+    String apkExtension = splitedUrl.last;
     final status = await Permission.storage.request();
     final applicationSpecificFolderPath = await getApksDirectory();
 
@@ -139,7 +202,7 @@ abstract class App {
       // ignore: unused_local_variable
       final taskId = await FlutterDownloader.enqueue(
         url: url,
-        fileName: name.trimRight() + '.apk',
+        fileName: name.trim() + "." + apkExtension,
         savedDir: applicationSpecificFolderPath + "/",
         showNotification: true,
         openFileFromNotification: true,
@@ -147,6 +210,17 @@ abstract class App {
       );
     } else {
       // debugPrint('Permission Denied');
+    }
+  }
+
+  static downloadButtonGesture({required SingleAPkState globalState, required String apkName, required apkUrl, required String packageName}) async {
+    bool downloadingRunning = globalState.downloadTaskStatus == DownloadTaskStatus.running;
+    if (globalState.isApkInstalled && !downloadingRunning) {
+      DeviceApps.openApp(packageName);
+    } else if (globalState.appAlreadyDownloaded && !downloadingRunning) {
+      OpenFile.open(await getApkPath(apkName: apkName));
+    } else if (!downloadingRunning && globalState.downloadTaskStatus == DownloadTaskStatus.undefined) {
+      App.download(name: apkName, url: apkUrl);
     }
   }
 }

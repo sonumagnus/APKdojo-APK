@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class ReviewsList extends StatelessWidget {
   final String rating, name, comment, date;
@@ -22,61 +23,20 @@ class ReviewsList extends StatelessWidget {
           children: [
             Row(
               children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade300,
-                    borderRadius: const BorderRadius.all(Radius.circular(3)),
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        rating,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const Icon(
-                        Icons.star,
-                        size: 12,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                  ),
-                ),
+                Row(
+                  children: [
+                    rating.text.white.size(12).bold.make(),
+                    const Icon(Icons.star, size: 12, color: Colors.white),
+                  ],
+                ).box.color(Colors.green.shade300).withRounded(value: 3).margin(const EdgeInsets.only(right: 8)).padding(const EdgeInsets.symmetric(horizontal: 8, vertical: 2)).make(),
+                name.text.medium.color(Theme.of(context).textTheme.titleMedium!.color).make(),
               ],
             ),
-            if (showDate == true)
-              Text(
-                date,
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-              ),
+            if (showDate) date.text.size(12).color(Colors.grey.shade600).make()
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Text(
-            comment,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade600,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-        const Divider(
-          height: 15,
-        )
+        comment.text.size(12).color(Colors.grey.shade600).medium.make().pOnly(top: 8),
+        const Divider(height: 15)
       ],
     );
   }

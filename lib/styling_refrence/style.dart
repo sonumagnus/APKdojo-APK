@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-double p20 = 20;
+double p20 = 25;
 
 abstract class CustomColor {
   static Color appBarTitleColor = Colors.black;

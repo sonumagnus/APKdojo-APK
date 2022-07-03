@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class RatingSizeVersionTable extends StatelessWidget {
   final String rating;
@@ -16,22 +17,22 @@ class RatingSizeVersionTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextStyle _keyOptionStyling = TextStyle(
-      fontSize: 12,
-      color: Theme.of(context).textTheme.titleSmall!.color,
+      fontSize: 14,
+      color: Theme.of(context).textTheme.labelMedium!.color,
     );
 
     TextStyle _keyDataStyling = TextStyle(
-      fontSize: 14,
+      fontSize: 15,
       color: Theme.of(context).textTheme.titleMedium!.color,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w600,
     );
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(width: 1, color: Colors.grey.shade300),
-          bottom: BorderSide(width: 1, color: Colors.grey.shade300),
+          top: BorderSide(width: 1, color: Colors.grey.shade200),
+          bottom: BorderSide(width: 1, color: Colors.grey.shade200),
         ),
       ),
       child: GridView(
@@ -40,7 +41,7 @@ class RatingSizeVersionTable extends StatelessWidget {
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          childAspectRatio: 3 / 1,
+          childAspectRatio: 3 / 1.2,
         ),
         children: [
           Padding(
@@ -68,15 +69,15 @@ class RatingSizeVersionTable extends StatelessWidget {
                     ),
                     Text('Rating', style: _keyOptionStyling),
                   ],
-                ),
+                ).pOnly(top: 5),
               ],
             ),
           ),
           Container(
             decoration: BoxDecoration(
               border: Border(
-                left: BorderSide(width: 1, color: Colors.grey.shade300),
-                right: BorderSide(width: 1, color: Colors.grey.shade300),
+                left: BorderSide(width: 1, color: Colors.grey.shade200),
+                right: BorderSide(width: 1, color: Colors.grey.shade200),
               ),
             ),
             padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -88,7 +89,7 @@ class RatingSizeVersionTable extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text('Size', style: _keyOptionStyling),
+                Text('Size', style: _keyOptionStyling).pOnly(top: 5),
               ],
             ),
           ),
@@ -104,7 +105,7 @@ class RatingSizeVersionTable extends StatelessWidget {
               Text(
                 "Version",
                 style: _keyOptionStyling,
-              ),
+              ).pOnly(top: 5),
             ]),
           ),
         ],

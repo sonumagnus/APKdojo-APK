@@ -79,7 +79,14 @@ class ApkDetailsSingleKeyValue extends StatelessWidget {
           visualDensity: VisualDensity.compact,
           dense: true,
           leading: title.text.color(Theme.of(context).textTheme.titleMedium!.color).size(16).make(),
-          trailing: value.text.size(16).color(Theme.of(context).textTheme.titleSmall!.color).ellipsis.make(),
+          trailing: Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.titleSmall!.color,
+            ),
+          ).box.width(context.mq.size.width * 3 / 5).alignCenterRight.make(),
         ),
         const Divider(height: 4)
       ],

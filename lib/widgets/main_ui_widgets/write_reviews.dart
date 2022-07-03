@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class WriteReviews extends HookWidget {
   final String name, icon, appurl, type;
@@ -39,14 +40,7 @@ class WriteReviews extends HookWidget {
               color: Colors.grey.shade600,
             ),
           ),
-          subtitle: Text(
-            name,
-            style: TextStyle(
-              color: Colors.grey.shade900,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          subtitle: name.text.size(18).bold.color(Theme.of(context).textTheme.titleMedium!.color).make(),
           trailing: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(5)),
             child: CachedNetworkImage(
@@ -74,7 +68,8 @@ class WriteReviews extends HookWidget {
             reviewDetails.value["rating"] = rating;
           },
         ),
-        const Text("Tab a Star to Rate"),
+        const SizedBox(height: 10),
+        "Tab a Star to Rate".text.color(Colors.grey.shade500).make(),
         ListView(
           physics: const ScrollPhysics(),
           padding: const EdgeInsets.all(15),
@@ -117,7 +112,7 @@ class WriteReviews extends HookWidget {
                 style: ButtonStyle(
                   elevation: MaterialStateProperty.all(0),
                   backgroundColor: MaterialStateProperty.all(
-                    Colors.cyan.shade50,
+                    Theme.of(context).textTheme.displayMedium!.color,
                   ),
                 ),
               ),

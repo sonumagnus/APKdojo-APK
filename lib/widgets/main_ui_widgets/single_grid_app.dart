@@ -45,7 +45,7 @@ class SingleGridApp extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               StarRating(rating: starRating, starSize: '9'),
-              (rating == "null" ? "0.0" : rating).text.scale(0.6).make(),
+              (rating == "null" ? "0.0" : rating).text.scale(0.6).color(Theme.of(context).textTheme.titleMedium!.color).make(),
             ],
           ).pOnly(right: 10)
         ],

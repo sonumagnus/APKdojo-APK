@@ -52,7 +52,7 @@ class _HomePageAppsGridState extends State<HomePageAppsGrid> {
                   crossAxisCount: 4,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
-                  childAspectRatio: 21 / 30,
+                  childAspectRatio: 21 / 31,
                 ),
                 itemCount: 8,
                 itemBuilder: (BuildContext context, int index) => SingleGridApp(

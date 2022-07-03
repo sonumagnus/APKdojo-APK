@@ -45,31 +45,33 @@ class SingleVerticalApp extends StatelessWidget {
           createRouteRightToLeft(targetRoute: Slug(seourl: seourl)),
         );
       },
-      child: Consumer<ThemeProvider>(builder: (context, value, child) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: CachedNetworkImage(
-                placeholder: (context, url) => Image.asset(
-                  'assets/images/lazy_images/lazy-image.jpg',
+      child: Consumer<ThemeProvider>(
+        builder: (context, value, child) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: CachedNetworkImage(
+                  placeholder: (context, url) => Image.asset(
+                    'assets/images/lazy_images/lazy-image.jpg',
+                  ),
+                  imageUrl: icon,
+                  width: 85,
                 ),
-                imageUrl: icon,
-                width: 85,
               ),
-            ),
-            name.text.size(12).medium.ellipsis.color(Theme.of(context).textTheme.labelMedium!.color).maxLines(2).make(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                StarRating(rating: starRating, starSize: '9'),
-                (rating == "null" ? "0.0" : rating).text.scale(0.6).make(),
-              ],
-            ),
-          ],
-        ).p(15).box.height(180).withRounded(value: 4).color(value.isDarkMode ? getDarkColor : getLightColor).make();
-      }),
+              name.text.size(12).medium.ellipsis.color(Theme.of(context).textTheme.labelMedium!.color).maxLines(2).make(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  StarRating(rating: starRating, starSize: '9'),
+                  (rating == "null" ? "0.0" : rating).text.scale(0.6).color(Theme.of(context).textTheme.titleMedium!.color).make(),
+                ],
+              ),
+            ],
+          ).p(15).box.height(180).withRounded(value: 4).color(value.isDarkMode ? getDarkColor : getLightColor).make();
+        },
+      ),
     );
   }
 }

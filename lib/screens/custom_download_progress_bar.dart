@@ -9,14 +9,13 @@ class CustomDownloadProgressBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CustomDownloadProgressBar> createState() =>
-      _CustomDownloadProgressBarState();
+  State<CustomDownloadProgressBar> createState() => _CustomDownloadProgressBarState();
 }
 
 class _CustomDownloadProgressBarState extends State<CustomDownloadProgressBar> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<DownloadingProgress>(
+    return Consumer<SingleAPkState>(
       builder: (context, provider, child) {
         return Stack(
           alignment: Alignment.center,
@@ -29,8 +28,7 @@ class _CustomDownloadProgressBarState extends State<CustomDownloadProgressBar> {
                   child: LinearProgressIndicator(
                     value: provider.progress.toDouble() / 100,
                     backgroundColor: Colors.white,
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Colors.grey.shade300),
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.grey.shade300),
                   ),
                 ),
               ),
@@ -45,8 +43,7 @@ class _CustomDownloadProgressBarState extends State<CustomDownloadProgressBar> {
                       "${provider.progress < 100 ? "Downloading" : "Downloaded"} : ${provider.appName}",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style:
-                          TextStyle(fontSize: 16, color: Colors.grey.shade700),
+                      style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
                     ),
                   ),
                   Text("(${provider.progress}%)"),

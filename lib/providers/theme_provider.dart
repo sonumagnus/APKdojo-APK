@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.system;
@@ -40,9 +41,12 @@ abstract class MyThemes {
     colorScheme: const ColorScheme.dark(),
     iconTheme: IconThemeData(color: Colors.grey.shade200, opacity: 0.8),
     shadowColor: Colors.black,
-    buttonTheme: ButtonThemeData(buttonColor: Colors.grey.shade800),
     hintColor: Colors.white60,
-    textTheme: TextTheme(
+    tabBarTheme: TabBarTheme(
+      labelColor: Colors.grey.shade200,
+      unselectedLabelColor: Colors.grey.shade200,
+    ),
+    textTheme: GoogleFonts.robotoTextTheme().copyWith(
       labelMedium: const TextStyle(color: Colors.white70),
       titleLarge: TextStyle(color: Colors.grey.shade100),
       titleMedium: TextStyle(color: Colors.grey.shade200),
@@ -59,7 +63,11 @@ abstract class MyThemes {
     iconTheme: IconThemeData(color: Colors.grey.shade700, opacity: 0.8),
     shadowColor: Colors.black12,
     hintColor: Colors.grey.shade700,
-    textTheme: TextTheme(
+    tabBarTheme: TabBarTheme(
+      labelColor: Colors.grey.shade800,
+      unselectedLabelColor: Colors.grey.shade800,
+    ),
+    textTheme: GoogleFonts.robotoTextTheme().copyWith(
       labelMedium: TextStyle(color: Colors.grey.shade700),
       titleLarge: TextStyle(color: Colors.grey.shade900),
       titleMedium: TextStyle(color: Colors.grey.shade800),

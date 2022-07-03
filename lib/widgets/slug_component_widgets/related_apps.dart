@@ -1,3 +1,4 @@
+import 'package:apkdojo/styling_refrence/style.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_grid_app.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/slug_custom_card_shadow.dart';
 import 'package:flutter/material.dart';
@@ -14,29 +15,30 @@ class RelatedApps extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          "You May Like".text.size(18).bold.make().pSymmetric(v: 14, h: 4),
+          "You May Like".text.size(18).bold.color(Theme.of(context).textTheme.titleMedium!.color).make().pSymmetric(v: 14, h: 4),
           GridView.builder(
             physics: const ScrollPhysics(),
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
-              childAspectRatio: 21 / 30.5,
+              childAspectRatio: 21 / 32,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
             itemCount: relatedApps.length,
-            itemBuilder: (BuildContext context, int index) {
+            itemBuilder: (context, index) {
+              final app = relatedApps[index];
               return SingleGridApp(
-                rating: relatedApps[index]['rating'].toString(),
-                seourl: relatedApps[index]['seourl'],
-                name: relatedApps[index]['name'],
-                icon: relatedApps[index]['icon'],
-                starRating: relatedApps[index]['star_rating'].toString(),
+                rating: app['rating'].toString(),
+                seourl: app['seourl'],
+                name: app['name'],
+                icon: app['icon'],
+                starRating: app['star_rating'].toString(),
               );
             },
           ),
         ],
-      ).pOnly(left: 16, right: 16, top: 0, bottom: 14),
+      ).pOnly(left: p20, right: p20, top: 0, bottom: p20),
     );
   }
 }

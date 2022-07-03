@@ -1,4 +1,5 @@
 import 'package:apkdojo/api/api.dart';
+import 'package:apkdojo/screens/search_screen.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/category_app_listing_animation.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/single_horizonatal_app_tile.dart';
@@ -60,6 +61,15 @@ class _NewAddedAndUpdatedAppsState extends State<NewAddedAndUpdatedApps> {
           elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           iconTheme: Theme.of(context).iconTheme,
+          actions: [
+            IconButton(
+              onPressed: () => showSearch(
+                context: context,
+                delegate: SearchScreen(),
+              ),
+              icon: const Icon(Icons.search_rounded),
+            ),
+          ],
         ),
         body: _appsList.value.isEmpty
             ? const CategoryAppListingAnimation(animatedTileCount: 9)
@@ -85,15 +95,16 @@ class _NewAddedAndUpdatedAppsState extends State<NewAddedAndUpdatedApps> {
                       shrinkWrap: true,
                       itemCount: _appsList.value.length,
                       itemBuilder: (context, index) {
+                        final _app = _appsList.value[index];
                         return ListView(
                           physics: const ScrollPhysics(),
                           shrinkWrap: true,
                           children: [
                             SingleHorizontalAppTile(
-                              icon: _appsList.value[index]['icon'],
-                              name: _appsList.value[index]['name'],
-                              seourl: _appsList.value[index]['seourl'],
-                              developer: _appsList.value[index]['developer'],
+                              icon: _app['icon'],
+                              name: _app['name'],
+                              seourl: _app['seourl'],
+                              developer: _app['developer'],
                             )
                           ],
                         );

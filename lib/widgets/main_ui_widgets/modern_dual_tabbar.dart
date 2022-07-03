@@ -1,59 +1,42 @@
-import 'package:apkdojo/widgets/category_list.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/basic_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:velocity_x/velocity_x.dart';
 
-class CategoryByTabs extends StatefulWidget {
-  final int selectedIndex;
-  final double mediaQueryHeightDivider;
-  const CategoryByTabs({
+class ModernDualTabBar extends HookWidget {
+  final String firstTabName, secondTabName, appBarTitle;
+  final Widget firstChild, secondChild;
+  final int initialIndex;
+  const ModernDualTabBar({
     Key? key,
-    this.selectedIndex = 0,
-    this.mediaQueryHeightDivider = 4.7,
+    required this.firstTabName,
+    required this.secondTabName,
+    required this.firstChild,
+    required this.secondChild,
+    required this.appBarTitle,
+    this.initialIndex = 0,
   }) : super(key: key);
 
   @override
-  State<CategoryByTabs> createState() => _CategoryByTabsState();
-}
-
-class _CategoryByTabsState extends State<CategoryByTabs> with SingleTickerProviderStateMixin {
-  late TabController tabController;
-
-  @override
-  void initState() {
-    tabController = TabController(
-      length: 2,
-      vsync: this,
-      initialIndex: widget.selectedIndex,
-    );
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    tabController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final _size = MediaQuery.of(context).size;
+    final TabController _tabController = useTabController(initialLength: 2, initialIndex: initialIndex);
     final _textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: basicAppBar(title: "Categories", context: context),
+      appBar: basicAppBar(title: appBarTitle, context: context),
       body: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
               color: Colors.transparent,
               child: Container(
                 clipBehavior: Clip.hardEdge,
                 height: 42,
                 decoration: BoxDecoration(
                   boxShadow: [
-                    BoxShadow(color: Colors.grey.shade200),
+                    BoxShadow(color: Theme.of(context).shadowColor),
                     BoxShadow(
                       color: _textTheme.displayMedium!.color!,
                       spreadRadius: -1.0,
@@ -63,7 +46,7 @@ class _CategoryByTabsState extends State<CategoryByTabs> with SingleTickerProvid
                   borderRadius: const BorderRadius.all(Radius.circular(7)),
                 ),
                 child: TabBar(
-                  controller: tabController,
+                  controller: _tabController,
                   unselectedLabelColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
                   labelColor: Theme.of(context).tabBarTheme.labelColor,
                   padding: const EdgeInsets.all(4.0),
@@ -73,29 +56,23 @@ class _CategoryByTabsState extends State<CategoryByTabs> with SingleTickerProvid
                       BoxShadow(
                         blurRadius: 1,
                         spreadRadius: 1,
-                        color: Colors.grey.shade200,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ],
                     borderRadius: const BorderRadius.all(
                       Radius.circular(5),
                     ),
                   ),
-                  tabs: const [
-                    Tab(text: "Apps"),
-                    Tab(text: "Games"),
-                  ],
+                  tabs: [Tab(text: firstTabName), Tab(text: secondTabName)],
                 ),
               ),
             ),
             SizedBox(
-              width: _size.width,
-              height: _size.height - _size.height / widget.mediaQueryHeightDivider,
+              width: context.mq.size.width,
+              height: context.mq.size.height - kToolbarHeight - kBottomNavigationBarHeight - 114,
               child: TabBarView(
-                controller: tabController,
-                children: const [
-                  CategoryList(type: "apps", cateListCount: "categoryLength"),
-                  CategoryList(type: "games", cateListCount: "categoryLength"),
-                ],
+                controller: _tabController,
+                children: [firstChild, secondChild],
               ),
             )
           ],
