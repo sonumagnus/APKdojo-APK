@@ -90,7 +90,7 @@ class _DownloadsState extends State<Downloads> {
                         return ListTile(
                           leading: Image(
                             image: CachedNetworkImageProvider(
-                              snapshot.data!['icon'],
+                              snapshot.data!['icon'].toString(),
                             ),
                             fit: BoxFit.fill,
                           ).box.square(50).clip(Clip.hardEdge).color(Theme.of(context).textTheme.displayMedium!.color!).withRounded(value: 12).make(),

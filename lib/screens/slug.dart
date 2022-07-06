@@ -20,7 +20,6 @@ import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -220,104 +219,93 @@ class SlugBottomDownloadButtonSheet extends StatelessWidget {
     );
     return Consumer<SingleAPkState>(
       builder: (context, state, child) {
-        var startCondition = state.downloadTaskStatus == DownloadTaskStatus.running && name == state.appName;
-        return Stack(
-          alignment: state.downloadTaskStatus == DownloadTaskStatus.running ? Alignment.centerLeft : Alignment.center,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).shadowColor,
-                    offset: const Offset(0.0, -2.0),
-                    blurRadius: 5.0,
-                  ),
-                ],
+        bool downloadingRunning = state.downloadTaskStatus == DownloadTaskStatus.running;
+        bool startCondition = downloadingRunning && name == state.downloadingAppName;
+        return GestureDetector(
+          onTap: () => App.downloadButtonGesture(globalState: state, apkName: name, apkUrl: apkurl, packageName: packageName),
+          child: Stack(
+            alignment: downloadingRunning ? Alignment.centerLeft : Alignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).shadowColor,
+                      offset: const Offset(0.0, -2.0),
+                      blurRadius: 5.0,
+                    ),
+                  ],
+                ),
+                height: 55,
+                width: context.mq.size.width,
+                child: LinearProgressIndicator(
+                  backgroundColor: Colors.green.shade500,
+                  color: Colors.green.shade700,
+                  value: state.progress / 100,
+                ),
               ),
-              height: 55,
-              width: context.mq.size.width,
-              child: LinearProgressIndicator(
-                backgroundColor: Colors.green.shade500,
-                color: Colors.green.shade700,
-                value: state.progress / 100,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              width: context.mq.size.width,
-              child: startCondition
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("DOWNLOADING...", style: _buttonStyle),
-                            Text(
-                              getDownloadPercentage(state.progress) + "MB" + "/$size",
-                              style: _buttonStyle,
-                            ),
-                          ],
-                        ),
-                        IconButton(
-                          onPressed: () => FlutterDownloader.cancel(taskId: state.id),
-                          icon: Icon(
-                            Icons.close_rounded,
-                            color: Colors.grey.shade200,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                width: context.mq.size.width,
+                child: startCondition
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("DOWNLOADING...", style: _buttonStyle),
+                              Text(
+                                getDownloadPercentage(state.progress) + "MB" + "/$size",
+                                style: _buttonStyle,
+                              ),
+                            ],
                           ),
-                        )
-                      ],
-                    )
-                  : Consumer<SingleAPkState>(
-                      builder: (context, value, child) {
-                        if (value.isApkInstalled) {
-                          return SizedBox(
+                          IconButton(
+                            onPressed: () => FlutterDownloader.cancel(taskId: state.id),
+                            icon: Icon(
+                              Icons.close_rounded,
+                              color: Colors.grey.shade200,
+                            ),
+                          )
+                        ],
+                      )
+                    : state.isApkInstalled
+                        ? SizedBox(
                             width: context.mq.size.width,
                             height: 30,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                TextButton(
-                                  onPressed: () => DeviceApps.uninstallApp(packageName),
-                                  child: Text("UNINSTALL", style: _buttonStyle),
+                                Expanded(
+                                  child: TextButton(
+                                    onPressed: () => DeviceApps.uninstallApp(packageName),
+                                    child: Text("UNINSTALL", style: _buttonStyle),
+                                  ),
                                 ),
                                 const VerticalDivider(color: Colors.white),
-                                TextButton(
-                                  onPressed: () => DeviceApps.openApp(packageName),
-                                  child: Text("OPEN", style: _buttonStyle),
+                                Expanded(
+                                  child: TextButton(
+                                    onPressed: () => DeviceApps.openApp(packageName),
+                                    child: Text("OPEN", style: _buttonStyle),
+                                  ),
                                 ),
                               ],
                             ),
-                          );
-                        } else if (value.appAlreadyDownloaded && state.downloadTaskStatus != DownloadTaskStatus.running) {
-                          return Align(
-                            alignment: Alignment.center,
-                            child: TextButton(
-                              onPressed: () async => OpenFile.open(
-                                await App.getApkPath(apkName: name),
+                          )
+                        : state.appAlreadyDownloaded && !downloadingRunning
+                            ? Align(
+                                alignment: Alignment.center,
+                                child: Text("INSTALL", style: _buttonStyle),
+                              )
+                            : Align(
+                                alignment: Alignment.center,
+                                child: Text(state.isOldVersionAvailable && state.downloadTaskStatus != DownloadTaskStatus.running ? "UPDATE" : "INSTALL", style: _buttonStyle),
                               ),
-                              child: Text("INSTALL", style: _buttonStyle),
-                            ),
-                          );
-                        } else {
-                          return Align(
-                            alignment: Alignment.center,
-                            child: TextButton(
-                                onPressed: () {
-                                  if (value.downloadTaskStatus != DownloadTaskStatus.running) {
-                                    App.download(url: apkurl, name: name);
-                                  } else {
-                                    // show alerts that a app is already downloading
-                                  }
-                                },
-                                child: Text(value.isOldVersionAvailable && state.downloadTaskStatus != DownloadTaskStatus.running ? "UPDATE" : "INSTALL", style: _buttonStyle)),
-                          );
-                        }
-                      },
-                    ),
-            ),
-          ],
+              ),
+            ],
+          ),
         );
       },
     );

@@ -11,7 +11,7 @@ class ShowUpAnimation extends HookWidget {
     Key? key,
     required this.activate,
     required this.child,
-    this.animationDuration = const Duration(milliseconds: 500),
+    this.animationDuration = const Duration(milliseconds: 300),
     this.beginAnimOffset = const Offset(0.0, 0.65),
     this.curve = Curves.ease,
   }) : super(key: key);

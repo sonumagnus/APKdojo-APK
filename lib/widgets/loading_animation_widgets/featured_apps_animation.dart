@@ -14,23 +14,18 @@ class FeaturedAppAnimation extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: Theme.of(context).textTheme.displayMedium!.color!,
       highlightColor: Theme.of(context).textTheme.displaySmall!.color!,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GridView.builder(
-            shrinkWrap: true,
-            clipBehavior: Clip.none,
-            itemCount: animatedItemCount,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: 2 / 2.9,
-              crossAxisSpacing: 10,
-            ),
-            itemBuilder: (BuildContext context, int index) {
-              return const _SingleApp();
-            },
-          ),
-        ],
+      child: GridView.builder(
+        shrinkWrap: true,
+        clipBehavior: Clip.none,
+        itemCount: animatedItemCount,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 2 / 2.9,
+          crossAxisSpacing: 10,
+        ),
+        itemBuilder: (context, index) {
+          return const _SingleApp();
+        },
       ).pOnly(left: 20),
     );
   }
@@ -42,9 +37,8 @@ class _SingleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 170,
       decoration: const BoxDecoration(
-        color: Colors.cyan,
+        color: Vx.gray100,
         borderRadius: BorderRadius.all(
           Radius.circular(5),
         ),

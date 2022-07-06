@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:apkdojo/screens/about.dart';
 import 'package:apkdojo/screens/developers.dart';
 import 'package:apkdojo/screens/terms_of_use.dart';
-import 'package:apkdojo/widgets/categorytabs.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -62,17 +61,6 @@ class MyDrawer extends StatelessWidget {
                 color: Colors.grey.shade700,
               ),
               title: const Text("Apps", style: textStyle),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CategoryByTabs(
-                      selectedIndex: 0,
-                      mediaQueryHeightDivider: 4.7,
-                    ),
-                  ),
-                );
-              },
             ),
             ListTile(
               leading: Icon(
@@ -81,17 +69,6 @@ class MyDrawer extends StatelessWidget {
                 color: _iconColor,
               ),
               title: const Text("Games", style: textStyle),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CategoryByTabs(
-                      selectedIndex: 1,
-                      mediaQueryHeightDivider: 4.7,
-                    ),
-                  ),
-                );
-              },
             ),
             ListTile(
               leading: Icon(

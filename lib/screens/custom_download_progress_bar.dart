@@ -40,7 +40,7 @@ class _CustomDownloadProgressBarState extends State<CustomDownloadProgressBar> {
                 children: [
                   Expanded(
                     child: Text(
-                      "${provider.progress < 100 ? "Downloading" : "Downloaded"} : ${provider.appName}",
+                      "${provider.progress < 100 ? "Downloading" : "Downloaded"} : ${provider.downloadingAppName}",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 16, color: Colors.grey.shade700),

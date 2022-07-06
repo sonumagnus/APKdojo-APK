@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:apkdojo/widgets/categorytabs.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/app_type.dart';
 import 'package:apkdojo/widgets/category_list.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/home_app_grid.dart';
 import 'package:apkdojo/widgets/main_ui_widgets/custom_appbar.dart';
+import 'package:apkdojo/widgets/main_ui_widgets/modern_dual_tabbar.dart';
 import 'package:apkdojo/widgets/new_added_n_updated_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:apkdojo/widgets/home_page_ui_widgets/featured_apps.dart';
@@ -94,12 +94,36 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<
                   AppType(
                     mainHeading: "Top Categories",
                     followUpText: "Applications",
-                    seeAllUrl: CategoryByTabs(selectedIndex: 0, mediaQueryHeightDivider: 4.7),
+                    seeAllUrl: ModernDualTabBar(
+                      firstTabName: "Apps",
+                      secondTabName: "Games",
+                      firstChild: CategoryList(type: "apps", cateListCount: "categoryLength"),
+                      secondChild: CategoryList(
+                        type: "games",
+                        cateListCount: "categoryLength",
+                      ),
+                      appBarTitle: "Categories",
+                    ),
                     showSeeAll: true,
                   ),
                   CategoryList(type: 'apps', cateListCount: '6'),
                   HomePageAppsGrid(type: "new_games"),
-                  AppType(mainHeading: "Top Categories", followUpText: "Games", seeAllUrl: CategoryByTabs(selectedIndex: 1), showSeeAll: true),
+                  AppType(
+                    mainHeading: "Top Categories",
+                    followUpText: "Games",
+                    seeAllUrl: ModernDualTabBar(
+                      initialIndex: 1,
+                      firstTabName: "Apps",
+                      secondTabName: "Games",
+                      firstChild: CategoryList(type: "apps", cateListCount: "categoryLength"),
+                      secondChild: CategoryList(
+                        type: "games",
+                        cateListCount: "categoryLength",
+                      ),
+                      appBarTitle: "Categories",
+                    ),
+                    showSeeAll: true,
+                  ),
                   CategoryList(type: 'games', cateListCount: '6'),
                 ],
               ),

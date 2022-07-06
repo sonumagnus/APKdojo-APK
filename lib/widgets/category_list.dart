@@ -48,7 +48,7 @@ class _CategoryListState extends State<CategoryList> with AutomaticKeepAliveClie
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
+              physics: const ScrollPhysics(),
               shrinkWrap: true,
               itemCount: widget.cateListCount == "categoryLength" ? snapshot.data!.length : int.parse(widget.cateListCount),
               itemBuilder: (BuildContext context, int index) => GestureDetector(
@@ -78,6 +78,7 @@ class _CategoryListState extends State<CategoryList> with AutomaticKeepAliveClie
                         height: 28,
                       ),
                       title: Html(
+                        shrinkWrap: true,
                         data: snapshot.data![index]['catname'],
                         style: {
                           "*": Style(

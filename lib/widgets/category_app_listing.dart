@@ -37,14 +37,17 @@ class CategoryAppListing extends HookWidget {
 
     return Scaffold(
       body: NestedScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
             pinned: true,
+            floating: true,
             elevation: 0,
             expandedHeight: 100,
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             iconTheme: Theme.of(context).iconTheme,
             title: Html(
+              shrinkWrap: true,
               data: categoryList.data![_tabController.index]['catname'],
               style: {
                 "*": Style(
@@ -60,9 +63,22 @@ class CategoryAppListing extends HookWidget {
               isScrollable: true,
               indicatorSize: TabBarIndicatorSize.label,
               indicatorColor: Colors.green.shade500,
-              // labelColor: Colors.grey.shade900,
-              // unselectedLabelColor: Colors.grey.shade600,
-              tabs: categoryList.data!.map((e) => Tab(child: Text(e['catname']))).toList(),
+              tabs: categoryList.data!
+                  .map((e) => Tab(
+                        child: Html(
+                          shrinkWrap: true,
+                          data: e['catname'],
+                          style: {
+                            "*": Style(
+                              fontSize: const FontSize(13),
+                              fontWeight: FontWeight.w400,
+                              color: Theme.of(context).textTheme.titleMedium!.color,
+                              textTransform: TextTransform.uppercase,
+                            )
+                          },
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
         ],
@@ -141,15 +157,11 @@ class _CategoryBodyAppListState extends State<CategoryBodyAppList> with Automati
                   itemCount: _appsList.value.length,
                   itemBuilder: (context, index) {
                     var app = _appsList.value[index];
-                    return Column(
-                      children: [
-                        SingleHorizontalAppTile(
-                          icon: app['icon'],
-                          name: app['name'],
-                          seourl: app['seourl'],
-                          developer: app['developer'],
-                        )
-                      ],
+                    return SingleHorizontalAppTile(
+                      icon: app['icon'],
+                      name: app['name'],
+                      seourl: app['seourl'],
+                      developer: app['developer'],
                     );
                   },
                 ),

@@ -47,10 +47,10 @@ abstract class MyThemes {
       unselectedLabelColor: Colors.grey.shade200,
     ),
     textTheme: GoogleFonts.robotoTextTheme().copyWith(
-      labelMedium: const TextStyle(color: Colors.white70),
       titleLarge: TextStyle(color: Colors.grey.shade100),
       titleMedium: TextStyle(color: Colors.grey.shade200),
       titleSmall: TextStyle(color: Colors.grey.shade500),
+      labelMedium: const TextStyle(color: Colors.white70),
       displayMedium: TextStyle(color: Colors.grey.shade800),
       displaySmall: TextStyle(color: Colors.grey.shade700),
     ),
@@ -60,7 +60,7 @@ abstract class MyThemes {
     scaffoldBackgroundColor: Colors.white,
     primaryColor: Colors.white,
     colorScheme: const ColorScheme.light(),
-    iconTheme: IconThemeData(color: Colors.grey.shade700, opacity: 0.8),
+    iconTheme: IconThemeData(color: Colors.grey.shade800, opacity: 0.8),
     shadowColor: Colors.black12,
     hintColor: Colors.grey.shade700,
     tabBarTheme: TabBarTheme(
@@ -68,10 +68,10 @@ abstract class MyThemes {
       unselectedLabelColor: Colors.grey.shade800,
     ),
     textTheme: GoogleFonts.robotoTextTheme().copyWith(
-      labelMedium: TextStyle(color: Colors.grey.shade700),
       titleLarge: TextStyle(color: Colors.grey.shade900),
       titleMedium: TextStyle(color: Colors.grey.shade800),
       titleSmall: TextStyle(color: Colors.grey.shade600),
+      labelMedium: TextStyle(color: Colors.grey.shade700),
       displayMedium: TextStyle(color: Colors.grey.shade100),
       displaySmall: TextStyle(color: Colors.grey.shade50),
     ),

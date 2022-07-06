@@ -7,6 +7,7 @@ class ModernDualTabBar extends HookWidget {
   final String firstTabName, secondTabName, appBarTitle;
   final Widget firstChild, secondChild;
   final int initialIndex;
+  final bool keepBottomNavigatiorBarHeight;
   const ModernDualTabBar({
     Key? key,
     required this.firstTabName,
@@ -15,6 +16,7 @@ class ModernDualTabBar extends HookWidget {
     required this.secondChild,
     required this.appBarTitle,
     this.initialIndex = 0,
+    this.keepBottomNavigatiorBarHeight = false,
   }) : super(key: key);
 
   @override
@@ -22,6 +24,7 @@ class ModernDualTabBar extends HookWidget {
     final TabController _tabController = useTabController(initialLength: 2, initialIndex: initialIndex);
     final _textTheme = Theme.of(context).textTheme;
 
+    var bottomNavigationBarHeight = keepBottomNavigatiorBarHeight ? kBottomNavigationBarHeight : 0;
     return Scaffold(
       appBar: basicAppBar(title: appBarTitle, context: context),
       body: SingleChildScrollView(
@@ -69,7 +72,7 @@ class ModernDualTabBar extends HookWidget {
             ),
             SizedBox(
               width: context.mq.size.width,
-              height: context.mq.size.height - kToolbarHeight - kBottomNavigationBarHeight - 114,
+              height: context.mq.size.height - kToolbarHeight - bottomNavigationBarHeight - 114,
               child: TabBarView(
                 controller: _tabController,
                 children: [firstChild, secondChild],

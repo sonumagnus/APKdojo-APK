@@ -30,6 +30,7 @@ class _HomeState extends State<Home> {
         type: "games",
         cateListCount: "categoryLength",
       ),
+      keepBottomNavigatiorBarHeight: true,
       appBarTitle: "Categories",
     ),
     SearchPage(),

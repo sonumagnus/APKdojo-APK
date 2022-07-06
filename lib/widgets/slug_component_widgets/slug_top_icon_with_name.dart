@@ -30,7 +30,7 @@ class SlugTopIconWithName extends StatelessWidget {
   Widget build(BuildContext context) {
     return [
       Consumer<SingleAPkState>(builder: (context, value, child) {
-        bool _downloadingRunning = value.downloadTaskStatus == DownloadTaskStatus.running && value.appName == name;
+        bool _downloadingRunning = value.downloadTaskStatus == DownloadTaskStatus.running && value.downloadingAppName == name;
         return Stack(
           alignment: Alignment.center,
           children: [
@@ -74,6 +74,7 @@ class SlugTopIconWithName extends StatelessWidget {
       }),
       [
         Html(
+          shrinkWrap: true,
           data: name,
           style: {
             "*": Style(
@@ -94,6 +95,7 @@ class SlugTopIconWithName extends StatelessWidget {
           child: [
             "• ".text.size(20).color(Colors.red.shade200).make(),
             Html(
+              shrinkWrap: true,
               data: developer,
               style: {
                 "*": Style(
@@ -108,20 +110,14 @@ class SlugTopIconWithName extends StatelessWidget {
             ).expand(),
           ].hStack(),
         ),
-        [
-          DownloadButtonWithLogic(
-            name: name!,
-            apkurl: apkurl!,
-            version: version!,
-            playStoreUrl: playStoreUrl!,
-            packageName: packageName!,
-            size: size!,
-          ).pOnly(top: 5),
-        ].hStack(
-          alignment: MainAxisAlignment.spaceBetween,
-          crossAlignment: CrossAxisAlignment.end,
-          axisSize: MainAxisSize.max,
-        ),
+        DownloadButtonWithLogic(
+          name: name!,
+          apkurl: apkurl!,
+          version: version!,
+          playStoreUrl: playStoreUrl!,
+          packageName: packageName!,
+          size: size!,
+        ).pOnly(top: 5),
       ].vStack(crossAlignment: CrossAxisAlignment.start).expand()
     ].hStack(crossAlignment: CrossAxisAlignment.start).pLTRB(p20, 12, p20, 10);
   }
