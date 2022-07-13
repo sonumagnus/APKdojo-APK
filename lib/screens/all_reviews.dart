@@ -42,26 +42,30 @@ class AllReviewsState extends State<AllReviews> {
         future: reviews,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            var _app = snapshot.data!;
             return SingleChildScrollView(
               child: Column(
                 children: [
                   WriteReviews(
-                    name: snapshot.data!['name'],
-                    icon: snapshot.data!['icon'],
-                    appid: snapshot.data!['app_id'],
-                    appurl: snapshot.data!['app_url'],
-                    type: snapshot.data!['type'],
+                    name: _app['name'],
+                    icon: _app['icon'],
+                    appid: _app['app_id'],
+                    appurl: _app['app_url'],
+                    type: _app['type'],
                   ),
                   ListView.builder(
                     physics: const ScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: snapshot.data!['reviews'] != null ? snapshot.data!['reviews'].length : 0,
-                    itemBuilder: (BuildContext context, int index) {
+                    itemCount: _app['reviews'] != null
+                        ? snapshot.data!['reviews'].length
+                        : 0,
+                    itemBuilder: (context, index) {
+                      var _review = snapshot.data!['reviews'][index];
                       return ReviewsList(
-                        rating: snapshot.data!['reviews'][index]['rating'].toString(),
-                        name: snapshot.data!['reviews'][index]['name'],
-                        comment: snapshot.data!['reviews'][index]['comment'],
-                        date: snapshot.data!['reviews'][index]['time'],
+                        rating: _review['rating'].toString(),
+                        name: _review['name'],
+                        comment: _review['comment'],
+                        date: _review['time'],
                         showDate: true,
                       );
                     },

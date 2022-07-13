@@ -1,17 +1,16 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:apkdojo/utils/app_methods.dart';
+import 'package:apkdojo/utils/state_managment.dart';
 import 'package:apkdojo/utils/xapk_installer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class DownloadButtonWithLogic extends StatefulWidget {
@@ -32,12 +31,11 @@ class DownloadButtonWithLogic extends StatefulWidget {
 
 class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with WidgetsBindingObserver {
   DownloadTaskStatus status = DownloadTaskStatus.undefined;
-  bool isApkInstalled = false;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      setState(() => checkIfAppInstalled());
+      setState(() => SlugStateManagments.checkIfAppInstalled(context, packageName: widget.packageName));
     }
   }
 
@@ -53,17 +51,13 @@ class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with 
     }
   }
 
-  void checkIfAppInstalled() async {
-    isApkInstalled = await App.isInstalled(packageName: widget.packageName);
-    context.read<SingleAPkState>().setIsAppInstalled(isAppInstalled: isApkInstalled);
-  }
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    isDownloadednInstalled(
+    SlugStateManagments.isDownloadednInstalled(
+      context,
       name: widget.name,
       packageName: widget.packageName,
       version: widget.version,
@@ -87,7 +81,7 @@ class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with 
             globalState.downloadTaskStatus == DownloadTaskStatus.canceled ||
             globalState.downloadTaskStatus == DownloadTaskStatus.failed) {
           Future.delayed(
-            const Duration(seconds: 0),
+            const Duration(milliseconds: 1),
             () {
               // resetting Global state
               globalState.setDownloadingPSIN(progress: 0, downloadTaskStatus: DownloadTaskStatus.undefined, id: "", downloadingApkName: "");
@@ -116,16 +110,6 @@ class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with 
   static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
     final SendPort send = IsolateNameServer.lookupPortByName('downloader_send_port')!;
     send.send([id, status, progress]);
-  }
-
-  void isDownloadednInstalled({required String name, required String packageName, required String version}) async {
-    bool isApkAlreadyDownloaded = await App.isApkFileAlreadyDownloaded(apkName: name, packageName: packageName, currentVersion: version);
-
-    bool isOldVersionAvailable = await App.isOldVersionAlreadyAvaiable(packageName: packageName, currentVersion: version);
-
-    context.read<SingleAPkState>().setIsAppAlreadyDownloaded(isApkAlreadyDownloaded, isOldVersionAvailable: isOldVersionAvailable);
-
-    checkIfAppInstalled();
   }
 
   @override
@@ -222,8 +206,11 @@ class GetFromPlayStore extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        if (await canLaunch(playStoreUrl)) {
-          await launch(playStoreUrl);
+        if (await canLaunchUrlString(playStoreUrl)) {
+          await launchUrlString(
+            playStoreUrl,
+            mode: LaunchMode.externalApplication,
+          );
         }
       },
       child: [

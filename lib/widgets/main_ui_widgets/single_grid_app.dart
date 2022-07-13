@@ -39,13 +39,23 @@ class SingleGridApp extends StatelessWidget {
               width: 68.33,
             ),
           ),
-          name.text.maxLines(2).size(12).color(Theme.of(context).textTheme.labelMedium!.color).medium.make().pOnly(right: 10),
+          name.text
+              .maxLines(2)
+              .size(12)
+              .color(Theme.of(context).textTheme.labelMedium!.color)
+              .medium
+              .make()
+              .pOnly(right: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               StarRating(rating: starRating, starSize: '9'),
-              (rating == "null" ? "0.0" : rating).text.scale(0.6).color(Theme.of(context).textTheme.titleMedium!.color).make(),
+              (rating == "null" ? "0.0" : rating)
+                  .text
+                  .scale(0.6)
+                  .color(Theme.of(context).textTheme.titleMedium!.color)
+                  .make(),
             ],
           ).pOnly(right: 10)
         ],

@@ -38,25 +38,30 @@ class _DownloadsState extends State<Downloads> {
   }
 
   Future<void> _deleteConfirmationAlertBox(String file) async {
-    var snackBar = SnackBar(content: Text("${App.apkName(apkPath: file)} Deleted"));
+    var snackBar =
+        SnackBar(content: Text("${App.apkName(apkPath: file)} Deleted"));
     return showDialog<void>(
       context: context,
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Do You Really Want to Delete ${App.apkName(apkPath: file)} ?'),
+          title: Text(App.apkName(apkPath: file)),
+          content: const Text(
+            "Do You Really Want to Delete this application?",
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 12.0),
           actions: [
             TextButton(
-              child: const Text('Confirm'),
+              child: const Text('CANCEL'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('DELETE'),
               onPressed: () {
                 _deleteFile(File(file));
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               },
-            ),
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(),
             ),
           ],
         );
@@ -93,9 +98,31 @@ class _DownloadsState extends State<Downloads> {
                               snapshot.data!['icon'].toString(),
                             ),
                             fit: BoxFit.fill,
-                          ).box.square(50).clip(Clip.hardEdge).color(Theme.of(context).textTheme.displayMedium!.color!).withRounded(value: 12).make(),
-                          title: "${App.apkName(apkPath: _app.path)}".text.color(Theme.of(context).textTheme.titleMedium!.color).medium.make(),
-                          subtitle: " ${snapshot.data!['developer']}".text.color(Theme.of(context).textTheme.titleMedium!.color).make(),
+                          )
+                              .box
+                              .square(50)
+                              .clip(Clip.hardEdge)
+                              .color(Theme.of(context)
+                                  .textTheme
+                                  .displayMedium!
+                                  .color!)
+                              .withRounded(value: 12)
+                              .make(),
+                          title: "${App.apkName(apkPath: _app.path)}"
+                              .text
+                              .color(Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .color)
+                              .medium
+                              .make(),
+                          subtitle: " ${snapshot.data!['developer']}"
+                              .text
+                              .color(Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .color)
+                              .make(),
                           trailing: popupMenuButtonBox(
                             index,
                             snapshot,
@@ -153,7 +180,8 @@ class _DownloadsState extends State<Downloads> {
               ],
             ),
             onTap: () {
-              Future.delayed(const Duration(seconds: 0), () => _deleteConfirmationAlertBox(_apkFiles[index].path));
+              Future.delayed(const Duration(seconds: 0),
+                  () => _deleteConfirmationAlertBox(_apkFiles[index].path));
             },
           ),
           PopupMenuItem(
@@ -178,8 +206,19 @@ class _DownloadsState extends State<Downloads> {
       leading: Image.asset(
         "assets/images/lazy_images/lazy-image.jpg",
         fit: BoxFit.fill,
-      ).box.square(50).clip(Clip.hardEdge).white.border(color: Vx.gray300).withRounded(value: 12).make(),
-      title: "${App.apkName(apkPath: _apkFiles[index].path)}".text.color(_textTheme.titleMedium!.color).medium.make(),
+      )
+          .box
+          .square(50)
+          .clip(Clip.hardEdge)
+          .white
+          .border(color: Vx.gray300)
+          .withRounded(value: 12)
+          .make(),
+      title: "${App.apkName(apkPath: _apkFiles[index].path)}"
+          .text
+          .color(_textTheme.titleMedium!.color)
+          .medium
+          .make(),
       trailing: PopupMenuButton<MenuItem>(
         elevation: 1,
         padding: EdgeInsets.zero,

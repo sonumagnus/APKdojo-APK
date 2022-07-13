@@ -78,13 +78,16 @@ class ApkDetailsSingleKeyValue extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           visualDensity: VisualDensity.compact,
           dense: true,
-          leading: title.text.color(Theme.of(context).textTheme.titleMedium!.color).size(16).make(),
+          leading: title.text
+              .color(Theme.of(context).textTheme.titleSmall!.color)
+              .size(16)
+              .make(),
           trailing: Text(
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: Theme.of(context).textTheme.titleSmall!.color,
+              color: Theme.of(context).textTheme.titleMedium!.color,
             ),
           ).box.width(context.mq.size.width * 3 / 5).alignCenterRight.make(),
         ),

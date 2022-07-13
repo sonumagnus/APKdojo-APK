@@ -10,7 +10,16 @@ import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class SlugTopIconWithName extends StatelessWidget {
-  final String? icon, name, developer, developerUrl, seourl, apkurl, playStoreUrl, version, packageName, size;
+  final String? icon,
+      name,
+      developer,
+      developerUrl,
+      seourl,
+      apkurl,
+      playStoreUrl,
+      version,
+      packageName,
+      size;
 
   const SlugTopIconWithName({
     Key? key,
@@ -30,13 +39,17 @@ class SlugTopIconWithName extends StatelessWidget {
   Widget build(BuildContext context) {
     return [
       Consumer<SingleAPkState>(builder: (context, value, child) {
-        bool _downloadingRunning = value.downloadTaskStatus == DownloadTaskStatus.running && value.downloadingAppName == name;
+        bool _downloadingRunning =
+            value.downloadTaskStatus == DownloadTaskStatus.running &&
+                value.downloadingAppName == name;
         return Stack(
           alignment: Alignment.center,
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 100),
-              padding: _downloadingRunning ? const EdgeInsets.all(22) : const EdgeInsets.all(0),
+              padding: _downloadingRunning
+                  ? const EdgeInsets.all(22)
+                  : const EdgeInsets.all(0),
               width: 75,
               height: 75,
               child: ClipRRect(

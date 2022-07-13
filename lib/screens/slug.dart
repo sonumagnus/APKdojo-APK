@@ -4,6 +4,7 @@ import 'package:apkdojo/api/api.dart';
 import 'package:apkdojo/providers/downloading_progress.dart';
 import 'package:apkdojo/screens/search_screen.dart';
 import 'package:apkdojo/utils/app_methods.dart';
+import 'package:apkdojo/utils/calculation.dart';
 import 'package:apkdojo/widgets/dio_error_message.dart';
 import 'package:apkdojo/widgets/loading_animation_widgets/slug_animation.dart';
 import 'package:apkdojo/widgets/slug_component_widgets/apk_datail_expansion_panel.dart';
@@ -150,12 +151,8 @@ class _SlugState extends State<Slug> {
                         version: app['version'],
                         totalRating: app['total_ratings'].toString(),
                       ),
-                      SlugScreenshot(
-                        screenshots: app['screenshots'],
-                      ),
-                      SlugDescription(
-                        description: app['des'],
-                      ),
+                      SlugScreenshot(screenshots: app['screenshots']),
+                      SlugDescription(description: app['des']),
                       SlugCustomCardShadow(
                         hideUpshadow: true,
                         child: Column(
@@ -219,12 +216,19 @@ class SlugBottomDownloadButtonSheet extends StatelessWidget {
     );
     return Consumer<SingleAPkState>(
       builder: (context, state, child) {
-        bool downloadingRunning = state.downloadTaskStatus == DownloadTaskStatus.running;
-        bool startCondition = downloadingRunning && name == state.downloadingAppName;
+        bool downloadingRunning =
+            state.downloadTaskStatus == DownloadTaskStatus.running;
+        bool startCondition =
+            downloadingRunning && name == state.downloadingAppName;
         return GestureDetector(
-          onTap: () => App.downloadButtonGesture(globalState: state, apkName: name, apkUrl: apkurl, packageName: packageName),
+          onTap: () => App.downloadButtonGesture(
+              globalState: state,
+              apkName: name,
+              apkUrl: apkurl,
+              packageName: packageName),
           child: Stack(
-            alignment: downloadingRunning ? Alignment.centerLeft : Alignment.center,
+            alignment:
+                downloadingRunning ? Alignment.centerLeft : Alignment.center,
             children: [
               Container(
                 decoration: BoxDecoration(
@@ -257,13 +261,17 @@ class SlugBottomDownloadButtonSheet extends StatelessWidget {
                             children: [
                               Text("DOWNLOADING...", style: _buttonStyle),
                               Text(
-                                getDownloadPercentage(state.progress) + "MB" + "/$size",
+                                Calculation.getDownloadPercentage(
+                                        progress: state.progress, size: size) +
+                                    "MB" +
+                                    "/$size",
                                 style: _buttonStyle,
                               ),
                             ],
                           ),
                           IconButton(
-                            onPressed: () => FlutterDownloader.cancel(taskId: state.id),
+                            onPressed: () =>
+                                FlutterDownloader.cancel(taskId: state.id),
                             icon: Icon(
                               Icons.close_rounded,
                               color: Colors.grey.shade200,
@@ -280,14 +288,17 @@ class SlugBottomDownloadButtonSheet extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: TextButton(
-                                    onPressed: () => DeviceApps.uninstallApp(packageName),
-                                    child: Text("UNINSTALL", style: _buttonStyle),
+                                    onPressed: () =>
+                                        DeviceApps.uninstallApp(packageName),
+                                    child:
+                                        Text("UNINSTALL", style: _buttonStyle),
                                   ),
                                 ),
                                 const VerticalDivider(color: Colors.white),
                                 Expanded(
                                   child: TextButton(
-                                    onPressed: () => DeviceApps.openApp(packageName),
+                                    onPressed: () =>
+                                        DeviceApps.openApp(packageName),
                                     child: Text("OPEN", style: _buttonStyle),
                                   ),
                                 ),
@@ -301,7 +312,13 @@ class SlugBottomDownloadButtonSheet extends StatelessWidget {
                               )
                             : Align(
                                 alignment: Alignment.center,
-                                child: Text(state.isOldVersionAvailable && state.downloadTaskStatus != DownloadTaskStatus.running ? "UPDATE" : "INSTALL", style: _buttonStyle),
+                                child: Text(
+                                    state.isOldVersionAvailable &&
+                                            state.downloadTaskStatus !=
+                                                DownloadTaskStatus.running
+                                        ? "UPDATE"
+                                        : "INSTALL",
+                                    style: _buttonStyle),
                               ),
               ),
             ],
@@ -309,13 +326,5 @@ class SlugBottomDownloadButtonSheet extends StatelessWidget {
         );
       },
     );
-  }
-
-  String getDownloadPercentage(int progress) {
-    String apkSize = size.replaceAll("..", "").replaceAll("MB", "");
-    double appSize = double.parse(apkSize);
-    double downloadedSize = (appSize * progress / 100);
-    String roundedDownloadSize = downloadedSize.toStringAsFixed(2);
-    return roundedDownloadSize;
   }
 }

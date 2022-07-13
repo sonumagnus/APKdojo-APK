@@ -1,4 +1,3 @@
-import 'package:apkdojo/widgets/main_ui_widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
 
 class TermsOfUse extends StatelessWidget {
@@ -7,7 +6,6 @@ class TermsOfUse extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MyDrawer(),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: const [
@@ -20,7 +18,8 @@ class TermsOfUse extends StatelessWidget {
                   "At APKdojo, We solely intend to provide you with free android APK's for mobile apps and to use our free service; we require our users to abide by a few terms and conditions listed below. Please do note that these terms and conditions may be changed or modified by us without any prior notice.\nAll the content offered on our site is copyrighted content of their respective owners; a user must not copy, distribute or modify any of the content provided on APKdojo.\nAll the content provided on our website is collected from various sources over the internet; we shall not be responsible for any kind of loss or harm that may occur by using the services. The user will be solely and only responsible for any such event.\nThe user must agree to use APKdojo for personal use only, and hence no commercial use of the website or any content hosted will be tolerated.\nThe user must follow their respective country's laws while using APKdojo; we are not liable for any unlawful use of the content hosted on the website.\nThe user must not use the website to threaten, harras or abuse any person, user, or the admins of APKdojo. We may take legal action against those violating our terms and conditions."),
           TermsOfUseHeadings(heading: "PRIVACY POLICY"),
           TermsOfUseTextContent(
-            textContent: "At APKdojo, we consider privacy policy as our utmost concern, so that is why we would like to elaborate on what and why we collect these data.",
+            textContent:
+                "At APKdojo, we consider privacy policy as our utmost concern, so that is why we would like to elaborate on what and why we collect these data.",
           ),
           TermsOfUseTextContent(
             textContent: "What Personal Data do we intend to collect and Why?",

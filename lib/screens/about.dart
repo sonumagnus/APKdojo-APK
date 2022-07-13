@@ -30,7 +30,8 @@ class About extends StatelessWidget {
           ),
           const AboutSectionHeading(heading: "Priority to Data Security"),
           const AboutSectionTextContent(
-            content: "All the applications are virus and malware-free on APKdojo. Our technical team scans all the apps with multiple antivirus software before uploading them on the website.",
+            content:
+                "All the applications are virus and malware-free on APKdojo. Our technical team scans all the apps with multiple antivirus software before uploading them on the website.",
           ),
           Container(
             color: Colors.blue,
