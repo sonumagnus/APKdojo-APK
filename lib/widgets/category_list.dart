@@ -20,7 +20,8 @@ class CategoryList extends StatefulWidget {
   State<CategoryList> createState() => _CategoryListState();
 }
 
-class _CategoryListState extends State<CategoryList> with AutomaticKeepAliveClientMixin<CategoryList> {
+class _CategoryListState extends State<CategoryList>
+    with AutomaticKeepAliveClientMixin<CategoryList> {
   late Future<List> categories;
 
   Future<List> getCategories() async {
@@ -50,8 +51,10 @@ class _CategoryListState extends State<CategoryList> with AutomaticKeepAliveClie
             return ListView.builder(
               physics: const ScrollPhysics(),
               shrinkWrap: true,
-              itemCount: widget.cateListCount == "categoryLength" ? snapshot.data!.length : int.parse(widget.cateListCount),
-              itemBuilder: (BuildContext context, int index) => GestureDetector(
+              itemCount: widget.cateListCount == "categoryLength"
+                  ? snapshot.data!.length
+                  : int.parse(widget.cateListCount),
+              itemBuilder: (_, index) => GestureDetector(
                 onTap: () => Navigator.of(context).push(
                   createRouteRightToLeft(
                     targetRoute: CategoryAppListing(
@@ -82,7 +85,8 @@ class _CategoryListState extends State<CategoryList> with AutomaticKeepAliveClie
                         data: snapshot.data![index]['catname'],
                         style: {
                           "*": Style(
-                            color: Theme.of(context).textTheme.titleLarge!.color,
+                            color:
+                                Theme.of(context).textTheme.titleLarge!.color,
                             fontSize: const FontSize(20),
                             fontWeight: FontWeight.w500,
                           ),
@@ -102,7 +106,9 @@ class _CategoryListState extends State<CategoryList> with AutomaticKeepAliveClie
           }
 
           return CategoryListAnimation(
-            animatedTileCount: widget.cateListCount == 'categoryLength' ? 12 : int.parse(widget.cateListCount),
+            animatedTileCount: widget.cateListCount == 'categoryLength'
+                ? 12
+                : int.parse(widget.cateListCount),
           );
         },
       ),

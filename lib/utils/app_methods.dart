@@ -14,14 +14,16 @@ abstract class App {
   static fileName({required String filePath}) {
     final _splitedList = filePath.split("/");
     final _apkNameWithExtension = _splitedList.last;
-    final _apkNameWithoutExtension = _apkNameWithExtension.replaceAll(".apk", "");
+    final _apkNameWithoutExtension =
+        _apkNameWithExtension.replaceAll(".apk", "");
     return _apkNameWithoutExtension;
   }
 
   // Get apk name (without _version) from apk path
   static apkName({required String apkPath}) {
     final String _apkNameWithoutExtension = fileName(filePath: apkPath);
-    final List<String> _splitedListofNameAndVersion = _apkNameWithoutExtension.split("_");
+    final List<String> _splitedListofNameAndVersion =
+        _apkNameWithoutExtension.split("_");
     final String _realAppName = _splitedListofNameAndVersion.first;
     return _realAppName;
   }
@@ -62,19 +64,16 @@ abstract class App {
   }
 
   // get list of all the .APK files those are located in application specific directory
-  static Future<List<FileSystemEntity>> getListOfApplicationsFromDirectory({
-    bool getApksFromAllDirectories = false,
-  }) async {
+  static Future<List<FileSystemEntity>>
+      getListOfApplicationsFromDirectory() async {
     late List<FileSystemEntity> allFiles, apkFiles;
     String _newPath;
-
     Directory? directory;
 
-    if (getApksFromAllDirectories) {
-      _newPath = await App.internalStoragePath();
-    } else {
-      _newPath = await App.getApksDirectory();
-    }
+    // Creating Application Directory if it doesn't exist Becausee to get list of all the
+    //.APK files we need to create application specific directory must to avoid "no such directory error"
+    await createApplicationDirectory();
+    _newPath = await getApksDirectory();
 
     directory = Directory(_newPath);
 
@@ -84,7 +83,8 @@ abstract class App {
 
     allFiles = myDir.listSync(recursive: true, followLinks: true);
 
-    apkFiles = allFiles.where((element) => element.path.endsWith('.apk')).toList();
+    apkFiles =
+        allFiles.where((element) => element.path.endsWith('.apk')).toList();
 
     return apkFiles;
   }
@@ -103,7 +103,8 @@ abstract class App {
     return _apkVersion;
   }
 
-  static Future<Map> getApkPathToApkDetailsFromDB({required String apkPath}) async {
+  static Future<Map> getApkPathToApkDetailsFromDB(
+      {required String apkPath}) async {
     Map data = {};
     try {
       PackageArchiveInfo info = await PackageArchiveInfo.fromPath(apkPath);
@@ -124,7 +125,10 @@ abstract class App {
   }
 
   // check if the app is already available in the application specific directory
-  static Future<bool> isApkFileAlreadyDownloaded({required String apkName, required String packageName, required String currentVersion}) async {
+  static Future<bool> isApkFileAlreadyDownloaded(
+      {required String apkName,
+      required String packageName,
+      required String currentVersion}) async {
     late List<FileSystemEntity> _apkFiles;
     bool apkAlreadyDownloaded = false;
 
@@ -161,7 +165,8 @@ abstract class App {
   }
 
   // Check if the app's older version is already available in the directory
-  static Future<bool> isOldVersionAlreadyAvaiable({required String packageName, required String currentVersion}) async {
+  static Future<bool> isOldVersionAlreadyAvaiable(
+      {required String packageName, required String currentVersion}) async {
     late List<FileSystemEntity> _apkFiles;
     bool oldVersionAvailable = false;
 
@@ -213,14 +218,20 @@ abstract class App {
     }
   }
 
-  static downloadButtonGesture({required SingleAPkState globalState, required String apkName, required apkUrl, required String packageName}) async {
-    bool downloadingRunning = globalState.downloadTaskStatus == DownloadTaskStatus.running;
+  static downloadButtonGesture(
+      {required SingleAPkState globalState,
+      required String apkName,
+      required apkUrl,
+      required String packageName}) async {
+    bool downloadingRunning =
+        globalState.downloadTaskStatus == DownloadTaskStatus.running;
     if (globalState.isApkInstalled && !downloadingRunning) {
       DeviceApps.openApp(packageName);
     } else if (globalState.appAlreadyDownloaded && !downloadingRunning) {
       OpenFile.open(await getApkPath(apkName: apkName));
-    } else if (!downloadingRunning && globalState.downloadTaskStatus == DownloadTaskStatus.undefined) {
-      App.download(name: apkName, url: apkUrl);
+    } else if (!downloadingRunning &&
+        globalState.downloadTaskStatus == DownloadTaskStatus.undefined) {
+      download(name: apkName, url: apkUrl);
     }
   }
 }

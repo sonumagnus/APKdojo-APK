@@ -39,19 +39,23 @@ abstract class XapkInstaller {
 
     allFiles = myDir.listSync(recursive: true, followLinks: true);
 
-    apkFiles = allFiles.where((element) => element.path.endsWith('.apk')).toList();
+    apkFiles =
+        allFiles.where((element) => element.path.endsWith('.apk')).toList();
     for (int x = 0; x < apkFiles.length; x++) {
       final String filePath = apkFiles[x].path;
       try {
         appInfo = await PackageArchiveInfo.fromPath(filePath);
         appPackageName = appInfo.packageName;
       } catch (e) {
-        appInfo = PackageArchiveInfo(appName: "", packageName: "", version: "", buildNumber: "");
+        appInfo = PackageArchiveInfo(
+            appName: "", packageName: "", version: "", buildNumber: "");
       }
-      if (appInfo.appName.isNotEmpty && appPackageName == App.apkName(apkPath: filePath)) {
+      if (appInfo.appName.isNotEmpty &&
+          appPackageName == App.apkName(apkPath: filePath)) {
         try {
           // moving real app from extracting folder to APKdojo folder
-          File(filePath).copySync(await App.getApksDirectory() + "/$appName.apk");
+          File(filePath)
+              .copySync(await App.getApksDirectory() + "/$appName.apk");
 
           // moving obb file to android/obb folder
           _moveObbToAndroidDir(allFiles, appPackageName);
@@ -86,7 +90,8 @@ abstract class XapkInstaller {
     }
   }
 
-  static _moveObbToAndroidDir(List<FileSystemEntity> allFiles, String appPackageName) async {
+  static _moveObbToAndroidDir(
+      List<FileSystemEntity> allFiles, String appPackageName) async {
     for (int x = 0; x < allFiles.length; x++) {
       final fileExtension = allFiles[x].path.split("/").last.split(".").last;
 
@@ -94,10 +99,18 @@ abstract class XapkInstaller {
         String filepath = allFiles[x].path;
         String obbFileName = filepath.split("/").last.split(".").first;
 
-        String obbDirPath = await App.internalStoragePath() + "/" + "Android" + "/" + "obb" + "/" + appPackageName;
+        String obbDirPath = await App.internalStoragePath() +
+            "/" +
+            "Android" +
+            "/" +
+            "obb" +
+            "/" +
+            appPackageName;
 
         // creating the directory inside android/obb folder to place obb files
-        if (!Directory(obbDirPath).existsSync()) Directory(obbDirPath).createSync();
+        if (!Directory(obbDirPath).existsSync()) {
+          Directory(obbDirPath).createSync();
+        }
 
         // rename path should also contains filename means whole path with filename and extension
         final String renamePath = obbDirPath + "/" + obbFileName + ".obb";

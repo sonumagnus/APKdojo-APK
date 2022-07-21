@@ -6,10 +6,8 @@ import 'package:flutter/material.dart';
 
 class UserReviewsExpansionPanel extends StatelessWidget {
   final Map<dynamic, dynamic>? appData;
-  const UserReviewsExpansionPanel({
-    Key? key,
-    required this.appData,
-  }) : super(key: key);
+  const UserReviewsExpansionPanel({Key? key, required this.appData})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +19,8 @@ class UserReviewsExpansionPanel extends StatelessWidget {
           ListView.builder(
             shrinkWrap: true,
             physics: const ScrollPhysics(),
-            itemCount: appData!['reviews'] != null ? appData!['reviews'].length : 0,
+            itemCount:
+                appData!['reviews'] != null ? appData!['reviews'].length : 0,
             itemBuilder: (BuildContext context, int index) {
               return ReviewsList(
                 rating: appData!['reviews'][index]['rating'],
@@ -42,10 +41,7 @@ class UserReviewsExpansionPanel extends StatelessWidget {
             },
             child: const Text(
               "All Reviews",
-              style: TextStyle(
-                color: Colors.green,
-                fontSize: 16,
-              ),
+              style: TextStyle(color: Colors.green, fontSize: 16),
             ),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(0),
