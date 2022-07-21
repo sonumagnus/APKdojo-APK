@@ -26,16 +26,23 @@ class DownloadButtonWithLogic extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<DownloadButtonWithLogic> createState() => _DownloadButtonWithLogicState();
+  State<DownloadButtonWithLogic> createState() =>
+      _DownloadButtonWithLogicState();
 }
 
-class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with WidgetsBindingObserver {
+class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic>
+    with WidgetsBindingObserver {
   DownloadTaskStatus status = DownloadTaskStatus.undefined;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      setState(() => SlugStateManagments.checkIfAppInstalled(context, packageName: widget.packageName));
+      setState(
+        () => SlugStateManagments.checkIfAppInstalled(
+          context,
+          packageName: widget.packageName,
+        ),
+      );
     }
   }
 
@@ -47,7 +54,10 @@ class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with 
     if (apkExtension == 'apk') {
       OpenFile.open(await App.getApkPath(apkName: widget.name));
     } else {
-      XapkInstaller.install(apkPath: await App.getApksDirectory() + "/${widget.name.trim()}" + ".xapk");
+      XapkInstaller.install(
+          apkPath: await App.getApksDirectory() +
+              "/${widget.name.trim()}" +
+              ".xapk");
     }
   }
 
@@ -63,7 +73,8 @@ class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with 
       version: widget.version,
     );
 
-    IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
+    IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader_send_port');
     _port.listen(
       (dynamic data) async {
         SingleAPkState globalState = context.read<SingleAPkState>();
@@ -84,7 +95,11 @@ class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with 
             const Duration(milliseconds: 1),
             () {
               // resetting Global state
-              globalState.setDownloadingPSIN(progress: 0, downloadTaskStatus: DownloadTaskStatus.undefined, id: "", downloadingApkName: "");
+              globalState.setDownloadingPSIN(
+                  progress: 0,
+                  downloadTaskStatus: DownloadTaskStatus.undefined,
+                  id: "",
+                  downloadingApkName: "");
             },
           );
         }
@@ -107,8 +122,10 @@ class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with 
     super.dispose();
   }
 
-  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
-    final SendPort send = IsolateNameServer.lookupPortByName('downloader_send_port')!;
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    final SendPort send =
+        IsolateNameServer.lookupPortByName('downloader_send_port')!;
     send.send([id, status, progress]);
   }
 
@@ -116,7 +133,8 @@ class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with 
   Widget build(BuildContext context) {
     return Consumer<SingleAPkState>(
       builder: (context, value, child) {
-        bool downloadingRunning = value.downloadTaskStatus == DownloadTaskStatus.running;
+        bool downloadingRunning =
+            value.downloadTaskStatus == DownloadTaskStatus.running;
         return GestureDetector(
           onTap: () => App.downloadButtonGesture(
             apkName: widget.name,
@@ -129,13 +147,16 @@ class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with 
               const Button(buttonText: "Open")
             else if (value.appAlreadyDownloaded && !downloadingRunning)
               const Button(buttonText: "Install")
-            else if (value.isOldVersionAvailable && value.downloadTaskStatus == DownloadTaskStatus.undefined)
+            else if (value.isOldVersionAvailable &&
+                value.downloadTaskStatus == DownloadTaskStatus.undefined)
               const Button(buttonText: "Update")
             else if (widget.apkurl == "")
               GetFromPlayStore(playStoreUrl: widget.playStoreUrl)
-            else if (value.downloadTaskStatus == DownloadTaskStatus.undefined || value.downloadingAppName != widget.name)
+            else if (value.downloadTaskStatus == DownloadTaskStatus.undefined ||
+                value.downloadingAppName != widget.name)
               const Button(buttonText: "Install", showDownloadIcon: true)
-            else if (downloadingRunning && value.downloadingAppName == widget.name)
+            else if (downloadingRunning &&
+                value.downloadingAppName == widget.name)
               downloadProgressWithCancelButton(value, context)
             else if (value.downloadTaskStatus == DownloadTaskStatus.complete)
               const Button(buttonText: "Downloaded")
@@ -149,12 +170,16 @@ class _DownloadButtonWithLogicState extends State<DownloadButtonWithLogic> with 
     );
   }
 
-  Widget downloadProgressWithCancelButton(SingleAPkState value, BuildContext context) {
+  Widget downloadProgressWithCancelButton(
+      SingleAPkState value, BuildContext context) {
     return SizedBox(
       height: 34,
       child: Row(
         children: [
-          "${value.progress}% of ${widget.size}".text.color(Theme.of(context).textTheme.titleMedium!.color).make(),
+          "${value.progress}% of ${widget.size}"
+              .text
+              .color(Theme.of(context).textTheme.titleMedium!.color)
+              .make(),
           const SizedBox(width: 10),
           IconButton(
             padding: EdgeInsets.zero,
@@ -194,13 +219,20 @@ class Button extends StatelessWidget {
           ).pOnly(right: 6),
         buttonText.text.white.bold.make(),
       ],
-    ).box.size(120, 34).alignCenter.color(Colors.green.shade500).roundedLg.make();
+    )
+        .box
+        .size(120, 34)
+        .alignCenter
+        .color(Colors.green.shade500)
+        .roundedLg
+        .make();
   }
 }
 
 class GetFromPlayStore extends StatelessWidget {
   final String playStoreUrl;
-  const GetFromPlayStore({Key? key, required this.playStoreUrl}) : super(key: key);
+  const GetFromPlayStore({Key? key, required this.playStoreUrl})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

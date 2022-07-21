@@ -40,6 +40,7 @@ class _HomeState extends State<Home> {
       firstChild: Downloads(),
       secondChild: DeviceInstalledApps(),
       appBarTitle: "Download Manager",
+      keepBottomNavigatiorBarHeight: true,
     ),
   ];
 
@@ -114,7 +115,9 @@ class _HomeState extends State<Home> {
             icon: SvgPicture.asset(
               'assets/images/search_icon.svg',
               height: 22,
-              color: _selectedIndex == 2 ? Colors.green.shade400 : Colors.grey.shade700,
+              color: _selectedIndex == 2
+                  ? Colors.green.shade400
+                  : Colors.grey.shade700,
             ),
             label: 'Search',
           ),
@@ -126,7 +129,9 @@ class _HomeState extends State<Home> {
                 'assets/images/download.svg',
                 height: 18,
                 width: 18,
-                color: _selectedIndex == 3 ? Colors.green.shade300 : Colors.grey.shade700,
+                color: _selectedIndex == 3
+                    ? Colors.green.shade300
+                    : Colors.grey.shade700,
                 semanticsLabel: "download",
               ),
             ),

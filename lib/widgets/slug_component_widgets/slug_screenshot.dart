@@ -22,20 +22,6 @@ class SlugScreenshot extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            // boxShadow: [
-            //   const BoxShadow(
-            //     blurRadius: 5,
-            //     spreadRadius: 1,
-            //     color: Colors.black12,
-            //     offset: Offset(0, 1),
-            //   ),
-            //   BoxShadow(
-            //     blurRadius: 5,
-            //     spreadRadius: 1,
-            //     color: value.isDarkMode ? Colors.grey.shade900 : Colors.white,
-            //     offset: const Offset(0, -5),
-            //   ),
-            // ],
           ),
           child: ListView.builder(
             clipBehavior: Clip.none,
@@ -90,7 +76,9 @@ class ZoomedScreenshot extends HookWidget {
     List<Widget> _buildPageIndicator() {
       List<Widget> list = [];
       for (int i = 0; i < screenshots.length; i++) {
-        list.add(i == _selectedIndex.value ? _singleDotIndicator(true) : _singleDotIndicator(false));
+        list.add(i == _selectedIndex.value
+            ? _singleDotIndicator(true)
+            : _singleDotIndicator(false));
       }
       return list;
     }
@@ -111,7 +99,12 @@ class ZoomedScreenshot extends HookWidget {
           ),
           Positioned(
             bottom: 40,
-            child: Row(children: _buildPageIndicator()).box.color(Colors.black45).withRounded(value: 15).p8.make(),
+            child: Row(children: _buildPageIndicator())
+                .box
+                .color(Colors.black45)
+                .withRounded(value: 15)
+                .p8
+                .make(),
           )
         ],
       ),

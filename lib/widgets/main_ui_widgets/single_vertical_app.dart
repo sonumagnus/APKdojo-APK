@@ -35,9 +35,11 @@ class SingleVerticalApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final getLightColor = _lightColors[Calculation.getNumberSequence(maxNumber: _lightColors.length, index: index)];
+    final getLightColor = _lightColors[Calculation.getNumberSequence(
+        maxNumber: _lightColors.length, index: index)];
 
-    final getDarkColor = _darkColors[Calculation.getNumberSequence(maxNumber: _lightColors.length, index: index)];
+    final getDarkColor = _darkColors[Calculation.getNumberSequence(
+        maxNumber: _lightColors.length, index: index)];
 
     return GestureDetector(
       onTap: () {
@@ -60,16 +62,32 @@ class SingleVerticalApp extends StatelessWidget {
                   width: 85,
                 ),
               ),
-              name.text.size(12).medium.ellipsis.color(Theme.of(context).textTheme.labelMedium!.color).maxLines(2).make(),
+              name.text
+                  .size(12)
+                  .medium
+                  .ellipsis
+                  .color(Theme.of(context).textTheme.labelMedium!.color)
+                  .maxLines(2)
+                  .make(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   StarRating(rating: starRating, starSize: '9'),
-                  (rating == "null" ? "0.0" : rating).text.scale(0.6).color(Theme.of(context).textTheme.titleMedium!.color).make(),
+                  (rating == "null" ? "0.0" : rating)
+                      .text
+                      .scale(0.6)
+                      .color(Theme.of(context).textTheme.titleMedium!.color)
+                      .make(),
                 ],
               ),
             ],
-          ).p(15).box.height(180).withRounded(value: 4).color(value.isDarkMode ? getDarkColor : getLightColor).make();
+          )
+              .p(15)
+              .box
+              .height(180)
+              .withRounded(value: 4)
+              .color(value.isDarkMode ? getDarkColor : getLightColor)
+              .make();
         },
       ),
     );
